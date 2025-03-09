@@ -8,7 +8,6 @@ import com.connection.client.msg.HandShakeRequest;
 import com.connection.client.msg.handler.HandShakeHandler;
 import com.connection.jackson.JacksonObjectWrapper;
 import com.connection.main.ConnectionServiceImpl;
-import com.connection.message.queue.RabbitMQFrameworkImpl;
 import com.connection.services.PlayerSession;
 import com.connection.services.ServiceMessage;
 

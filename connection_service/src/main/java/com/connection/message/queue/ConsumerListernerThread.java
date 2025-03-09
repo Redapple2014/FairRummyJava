@@ -62,7 +62,7 @@ public class ConsumerListernerThread extends Thread
 	@Override
 	public void run()
 	{
-		System.out.println( "Run is up.." + listening );
+
 		while( listening )
 		{
 
@@ -94,8 +94,6 @@ public class ConsumerListernerThread extends Thread
 				{
 					try
 					{
-						// System.out.println("AutoAck
-						// is false : "+autoAck);
 						consumer.getChannel().basicAck( delivery.getEnvelope().getDeliveryTag(), true );
 					}
 					catch( IOException e )

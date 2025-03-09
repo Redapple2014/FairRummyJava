@@ -86,7 +86,7 @@ public class CS2ClientDispatcher
 						if( playerSession != null )
 						{
 							ChannelInfo channelInfo = ChannelIDChannelInfoMap.getChannelInfo( playerSession.getChannelID() );
-							logger.debug( "OutGoing Message:" + new String( session.getPayload() ) );
+							logger.debug( "OutGoing channelInfo Message:" + new String( session.getPayload() ) );
 							if( channelInfo == null )
 							{
 								return;

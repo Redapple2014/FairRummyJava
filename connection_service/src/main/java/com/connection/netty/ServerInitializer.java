@@ -46,17 +46,12 @@ public class ServerInitializer
 					ch.pipeline().addLast( "http-chunked", new ChunkedWriteHandler() );
 					ch.pipeline().addLast( "aggregator", new HttpObjectAggregator( 65536 ) );
 					ch.pipeline().addLast( "websocketprotocolhandler", new WebSocketServerProtocolHandler( "/ws" ) );
-					// ch.pipeline().addLast(
-					// "idleStateHandler", new
-					// IdleStateHandler( 60, 30, 0 ) );
 					ch.pipeline().addLast( "handler", new WebSocketHandler( jacksonObjectWrapper, messageDigester ) );
 				}
 			} );
 
 			System.out.println( "WebSocket server started at port " + port );
 			b.bind( port ).sync().channel().closeFuture().sync();
-			// ChannelFuture f = b.bind( port ).sync().channel();
-			// f.channel().closeFuture().sync();
 		}
 		finally
 		{

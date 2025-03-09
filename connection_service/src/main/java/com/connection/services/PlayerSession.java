@@ -1,11 +1,8 @@
 package com.connection.services;
 
-import java.io.Serializable;
-
-public class PlayerSession implements Serializable
+public class PlayerSession
 {
 
-	private static final long serialVersionUID = -2382616042872210756L;
 	private long channelID;
 	private long userID;
 	private int serviceId;
