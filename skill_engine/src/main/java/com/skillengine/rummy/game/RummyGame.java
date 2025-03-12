@@ -496,7 +496,7 @@ public class RummyGame extends TrickTakingGame
 					{
 						playerScoreMap.put( activePlayer, 0 );
 						setWinner( activePlayer );
-						DealWinner dealWinner = new DealWinner( currentPlayer, 0.0, false );
+						DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false );
 						table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 						scheduleWinningTimeout( activePlayer, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 					}
@@ -638,7 +638,7 @@ public class RummyGame extends TrickTakingGame
 			addOrderedPlayerIds( playerId );
 		}
 		log.info( "Players after toss : " + getOrderedPlayerIds() );
-		TossInfo info = new TossInfo( tossCardList, tossWinner );
+		TossInfo info = new TossInfo( table.getTableId(), tossCardList, tossWinner );
 		table.getDispatcher().sendMessage( playerIdList, info );
 
 	}
@@ -725,7 +725,7 @@ public class RummyGame extends TrickTakingGame
 			playerScoreMap.put( currentPlayer, 0 );
 			setWinner( currentPlayer );
 			// NO SHOW WINNER CASE AT THE START OF THE GAME PLAY
-			DealWinner dealWinner = new DealWinner( currentPlayer, 0.0, false );
+			DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false );
 			table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 			scheduleWinnerTimeout( currentPlayer, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 			return;
@@ -889,7 +889,7 @@ public class RummyGame extends TrickTakingGame
 				{
 					playerScoreMap.put( currentPlayer, 0 );
 					setWinner( currentPlayer );
-					DealWinner dealWinner = new DealWinner( currentPlayer, 0.0, false );
+					DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false );
 					table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 					scheduleWinningTimeout( currentPlayer, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 				}
@@ -1863,7 +1863,7 @@ public class RummyGame extends TrickTakingGame
 				setWinner( playerId );
 				gameDeclareTime = System.currentTimeMillis();
 				playerScoreMap.put( playerId, score );
-				DealWinner dealWinner = new DealWinner( playerId, 0.0, true );
+				DealWinner dealWinner = new DealWinner( table.getTableId(), playerId, 0.0, true );
 				table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 				scheduleWinningTimeout( playerId, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 				log.info( "TableId : " + table.getTableId() + " PlayerId : " + playerId + " finish with show" );
