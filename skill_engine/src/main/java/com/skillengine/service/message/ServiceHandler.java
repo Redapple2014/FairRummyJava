@@ -5,6 +5,7 @@ import com.skillengine.rummy.message.BoardSetup;
 import com.skillengine.rummy.message.Declare;
 import com.skillengine.rummy.message.Discard;
 import com.skillengine.rummy.message.Drop;
+import com.skillengine.rummy.message.Finish;
 import com.skillengine.rummy.message.LeaveBoard;
 import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.PickClosedDeck;
@@ -14,6 +15,7 @@ import com.skillengine.rummy.message.TableCreation;
 import com.skillengine.rummy.message.handler.DeclareHandler;
 import com.skillengine.rummy.message.handler.DiscardHandler;
 import com.skillengine.rummy.message.handler.DropHandler;
+import com.skillengine.rummy.message.handler.FinishHandler;
 import com.skillengine.rummy.message.handler.LeaveBoardHandler;
 import com.skillengine.rummy.message.handler.PickCloseHandler;
 import com.skillengine.rummy.message.handler.PickOpenHandler;
@@ -54,6 +56,7 @@ public class ServiceHandler
 		case Discard discard -> new DiscardHandler().handleMessage( playerSession, discard, message.getReceiverId() );
 		case Declare declare -> new DeclareHandler().handleMessage( playerSession, declare, message.getReceiverId() );
 		case LeaveBoard leave -> new LeaveBoardHandler().handleMessage( playerSession, leave, message.getReceiverId() );
+		case Finish finish -> new FinishHandler().handleMessage( playerSession, finish, message.getReceiverId() );
 		default -> throw new IllegalArgumentException( "Unexpected value: " + messages );
 		}
 	}

@@ -1,12 +1,10 @@
 package com.skillengine.rummy.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
 public class PickCloseDeckOutBound extends Message
 {
 	private long gPlayerId;

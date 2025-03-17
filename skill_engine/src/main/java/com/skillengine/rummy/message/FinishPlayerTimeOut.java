@@ -1,10 +1,10 @@
 package com.skillengine.rummy.message;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinishPlayerTimeOut extends Message
@@ -18,10 +18,11 @@ public class FinishPlayerTimeOut extends Message
 	 * @param tableId
 	 * @param playerId
 	 */
-	public FinishPlayerTimeOut( int serviceType, String msgType, long tableId, long playerId )
+	public FinishPlayerTimeOut( long tableId, long playerId, String finishCardId )
 	{
 		super( 1, MessageConstants.FINISH_PLAYER_TIMEOUT, tableId );
 		this.playerId = playerId;
+		this.finishCardId = finishCardId;
 	}
 
 }

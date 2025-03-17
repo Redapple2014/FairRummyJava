@@ -13,12 +13,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.skillengine.common.GameTemplates;
+import com.skillengine.dto.BoardJoinDetails;
 import com.skillengine.dto.CurrencyDetails;
 import com.skillengine.dto.ExitDetails;
+import com.skillengine.dto.PointSettlementInfo;
 import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.rummy.game.GameStateChanges;
 import com.skillengine.rummy.game.RummyGame;
 import com.skillengine.rummy.game.UserHandInfo;
+import com.skillengine.rummy.globals.APIErrorCodes;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.globals.TimeTaskTypes;
 import com.skillengine.rummy.message.BoardInfo;
@@ -31,6 +34,7 @@ import com.skillengine.rummy.message.ScoreUpdate;
 import com.skillengine.rummy.message.Seats;
 import com.skillengine.rummy.player.PlayerInfo;
 import com.skillengine.rummy.player.SeatPlayerInfo;
+import com.skillengine.rummy.settlement.PointsSettlement;
 import com.skillengine.rummy.util.ActiveBoards;
 import com.skillengine.service.CurrencyService;
 import com.skillengine.service.CurrencyServiceImpl;
@@ -43,7 +47,7 @@ public class RummyBoard extends Board
 {
 
 	protected Object tableLock = new Object();
-	private Timer timer = null;
+	private Timer tableTimer = null;
 	protected TableTimerTask currTask;
 	protected boolean tableCompletedStatus = false;
 	protected List< Long > leaveSeatReqPlayers = null;
@@ -54,6 +58,7 @@ public class RummyBoard extends Board
 	protected AtomicBoolean gameEndFlag = new AtomicBoolean( false );
 	private CurrencyService currencyService;
 	private Map< Long, PlayerInfo > userCurrencyMap = new ConcurrentHashMap<>();
+	private Map< Long, CurrencyDetails > userCurrencyDetails = new ConcurrentHashMap<>();
 	private long gameStartTime = 0l;
 	private List< Long > orderedPlayers = new ArrayList< Long >();
 	protected RummyGame rummyGame;
@@ -68,7 +73,7 @@ public class RummyBoard extends Board
 		try
 		{
 
-			timer = new Timer( "Board-" + tableId, true );
+			tableTimer = new Timer( "Board-" + tableId, true );
 			setStatus( GameGlobals.TABLE_OPEN );
 			dispatcher = new MessageDispatcher( SkillEngineImpl.getInstance().getJackson() );
 			currencyService = new CurrencyServiceImpl();
@@ -208,7 +213,7 @@ public class RummyBoard extends Board
 						rummyGame.startAt( null );
 					}
 				};
-				timer.schedule( gameStartTask, 300 );
+				tableTimer.schedule( gameStartTask, 300 );
 				dealStartTime = System.currentTimeMillis();
 				gameNo++;
 			}
@@ -254,10 +259,7 @@ public class RummyBoard extends Board
 			}
 
 			log.info( "TableId : " + getTableId() + " Winner : " + winner + " PlayerScoreMap : " + rummyGame.getScoreMap() );
-
-			// update the Seat Balance
-
-			// checkPlayerChipBal();
+			settlement();
 			log.debug( "TableId :" + getTableId() + " Status : " + status + "..endGame()" );
 			gameStartFlag.set( false );
 			gameEndFlag.set( false );
@@ -281,6 +283,14 @@ public class RummyBoard extends Board
 			return false;
 		}
 
+	}
+
+	private void settlement()
+	{
+		PointsSettlement pointsSettlement = new PointsSettlement();
+		PointSettlementInfo pointSettlementInfo = PointSettlementInfo.builder().playerVsScore( rummyGame.getScoreMap() ).winnerId( rummyGame.getWinner() )
+				.pointValue( getGameTemplates().getPointValue() ).serviceFee( getGameTemplates().getServiceFee() ).build();
+		pointsSettlement.settlement( pointSettlementInfo );
 	}
 
 	protected void checkForNextDeal()
@@ -320,14 +330,22 @@ public class RummyBoard extends Board
 				checkWhetherPlayerIsAlready( playerId );
 				return true;
 			}
+			CurrencyDetails currencyDetails = currencyService
+					.debit( new BoardJoinDetails( playerId, new BigDecimal( getGameTemplates().getMaxBuyin() ), BigDecimal.TWO, getTableId(), getGameTemplates().getId() ) );
+			if( currencyDetails == null || currencyDetails.getStatus() == APIErrorCodes.FAILURE )
+			{
+				ExitLobby lobby = new ExitLobby( getTableId(), playerId, "Funds Unavailable" );
+				dispatcher.sendMessage( playerSession, lobby );
+				return false;
+			}
+			userCurrencyDetails.put( playerId, currencyDetails );
 			userCurrencyMap.put( playerId, playerInfo );
 			int id = takeAnySeat( playerInfo );
 			if( id == -1 )
 			{
 				log.debug( " Join Issue no empty seat available" + playerId + "::" + getTableId() );
-				List< Message > listMsg = new ArrayList< Message >();
 				ExitLobby lobby = new ExitLobby( getTableId(), playerInfo.getUserId(), "JOINISSUE" );
-				listMsg.add( lobby );
+				dispatcher.sendMessage( playerSession, lobby );
 				return succ;
 			}
 			else
@@ -742,7 +760,7 @@ public class RummyBoard extends Board
 				{
 					log.info( "TableId : " + getTableId() + " Status : " + status + " Resetting GameStart Flag" );
 					gameStartFlag.set( false );
-					// gameEndFlag.set( false );
+
 				}
 				break;
 			default:
@@ -770,13 +788,12 @@ public class RummyBoard extends Board
 			setStatus( GameGlobals.COMPLETED );
 			if( currTask != null )
 				currTask.cancel();
-			if( timer != null )
+			if( tableTimer != null )
 			{
-				timer.cancel();
+				tableTimer.cancel();
 				tableCompletedStatus = true;
 			}
 			ActiveBoards.removeTable( getTableId() );
-			// GameTableEngineMap.removeTable( getTableId() );
 
 		}
 		catch( Exception e )
@@ -828,8 +845,8 @@ public class RummyBoard extends Board
 	{
 		try
 		{
-			if( timer != null )
-				timer.schedule( task, millis );
+			if( tableTimer != null )
+				tableTimer.schedule( task, millis );
 		}
 		catch( Exception ex )
 		{
@@ -850,8 +867,6 @@ public class RummyBoard extends Board
 		{
 			if( status == GameGlobals.STARTING )
 			{
-				// time = gameStartTime -
-				// System.currentTimeMillis();
 				time = getGameTemplates().getGameStartTime();
 			}
 			else if( status == GameGlobals.REGISTERING && gameNo > 0 && rummyGame != null )
@@ -904,7 +919,7 @@ public class RummyBoard extends Board
 
 	public Timer getTimer()
 	{
-		return timer;
+		return tableTimer;
 	}
 
 	public void setTableIdDealer( int tableIdDealer )

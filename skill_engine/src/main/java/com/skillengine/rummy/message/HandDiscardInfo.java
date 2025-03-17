@@ -1,12 +1,10 @@
 package com.skillengine.rummy.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
 public class HandDiscardInfo extends Message
 {
 
@@ -22,7 +20,7 @@ public class HandDiscardInfo extends Message
 	 */
 	public HandDiscardInfo( long tableId, long playingPlayerId, String discardCardId )
 	{
-		super( 1, MessageConstants.PLAYER_DISCARD, tableId );
+		super( 1, MessageConstants.PLAYER_TIME_OUT_DISCARD, tableId );
 		this.playingPlayerId = playingPlayerId;
 		this.discardCardId = discardCardId;
 	}

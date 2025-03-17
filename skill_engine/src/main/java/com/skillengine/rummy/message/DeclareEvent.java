@@ -13,7 +13,7 @@ public class DeclareEvent extends Message
 
 	public DeclareEvent( long tableId, int timeLeft )
 	{
-		super( 1, MessageConstants.DECLARE, tableId );
+		super( 1, MessageConstants.DECLARE_SERVER, tableId );
 		this.timeLeft = timeLeft;
 	}
 

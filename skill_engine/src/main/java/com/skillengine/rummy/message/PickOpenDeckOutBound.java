@@ -1,16 +1,15 @@
 package com.skillengine.rummy.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
 public class PickOpenDeckOutBound extends Message
 {
 	private String pickedCard;
 	private boolean isJokerCard;
+	private long playingPlayerId;
 
 	/**
 	 * @param serviceType
@@ -19,11 +18,12 @@ public class PickOpenDeckOutBound extends Message
 	 * @param pickedCard
 	 * @param isJokerCard
 	 */
-	public PickOpenDeckOutBound( long tableId, String pickedCard, boolean isJokerCard )
+	public PickOpenDeckOutBound( long tableId, String pickedCard, boolean isJokerCard, long playingPlayerId )
 	{
 		super( 1, MessageConstants.PICK_OPEN_DECK_OUTBOUND, tableId );
 		this.pickedCard = pickedCard;
 		this.isJokerCard = isJokerCard;
+		this.playingPlayerId = playingPlayerId;
 	}
 
 }

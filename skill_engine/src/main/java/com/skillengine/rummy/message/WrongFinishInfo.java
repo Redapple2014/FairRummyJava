@@ -20,7 +20,7 @@ public class WrongFinishInfo extends Message
 	 */
 	public WrongFinishInfo( long tableId, long playingPlayerId, String finishCardId )
 	{
-		super( 1, MessageConstants.BOARD_INFO, tableId );
+		super( 1, MessageConstants.WRONG_FINISH, tableId );
 		this.playingPlayerId = playingPlayerId;
 		this.finishCardId = finishCardId;
 	}

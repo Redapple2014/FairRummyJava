@@ -25,5 +25,6 @@ public class GameTemplates
 	private int noOfDeck;
 	private int cardsPerPlayer;
 	private int playerTurnTime;
+	private double serviceFee;
 
 }

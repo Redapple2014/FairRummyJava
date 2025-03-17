@@ -21,7 +21,7 @@ public class Declare extends Message
 	 */
 	public Declare( long tableId, List< List< String > > cardsGrouping )
 	{
-		super( 1, MessageConstants.USER_DECLARE, tableId );
+		super( 1, MessageConstants.DECLARE, tableId );
 		this.cardsGrouping = cardsGrouping;
 	}
 

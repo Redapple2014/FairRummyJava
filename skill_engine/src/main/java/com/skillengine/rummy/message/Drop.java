@@ -1,5 +1,10 @@
 package com.skillengine.rummy.message;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 public class Drop extends Message
 {
 

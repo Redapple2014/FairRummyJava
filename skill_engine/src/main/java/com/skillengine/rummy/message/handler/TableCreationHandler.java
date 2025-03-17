@@ -42,7 +42,7 @@ public class TableCreationHandler implements MessageHandler< TableCreation >
 			return;
 		}
 		GameTemplates gameTemplates = GameTemplates.builder().id( 10001 ).maxBuyin( 10000 ).maxPlayer( 6 ).minBuyin( 100 ).minPlayer( 2 ).noOfCards( 52 ).gameStartTime( 5000 )
-				.cardsPerPlayer( 13 ).noOfDeck( 1 ).playerTurnTime( 5000 ).build();
+				.cardsPerPlayer( 13 ).noOfDeck( 1 ).playerTurnTime( 20000 ).build();
 		CurrencyDetails currencyDetails = currencyService.debit( new BoardJoinDetails( playerId, message.getTxnMoney(), BigDecimal.TWO, message.getTableId(), gameTemplates.getId() ) );
 		if( currencyDetails == null || currencyDetails.getStatus() == APIErrorCodes.FAILURE )
 		{
