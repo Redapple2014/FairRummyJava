@@ -41,7 +41,7 @@ public abstract class Board
 			this.gameType = templateDetails.getGid();
 			this.tableId = tableId;
 			this.gameTemplates = templateDetails;
-			int maxPlayer = 6;
+			int maxPlayer = templateDetails.getMaxPlayer();
 			this.observers = new ArrayList< PlayerInfo >();
 			this.curPlayingPlayer = new ArrayList< PlayerInfo >();
 			this.playingPlayerMap = new ConcurrentHashMap< Long, PlayerInfo >();
@@ -161,9 +161,9 @@ public abstract class Board
 					break;
 				}
 			}
-			for( int i = 0; i < playingPlayerMap.size(); i++ )
+			for( int i = 0; i < curPlayingPlayer.size(); i++ )
 			{
-				PlayerInfo p = playingPlayerMap.get( i );
+				PlayerInfo p = curPlayingPlayer.get( i );
 				if( p != null && p.getUserId() == playerId )
 				{
 					type = PlayerGlobals.PLAYING;

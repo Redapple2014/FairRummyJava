@@ -1,5 +1,7 @@
 package com.skillengine.message.parsers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -132,6 +134,32 @@ public class Jackson
 		try
 		{
 			return mapper.writeValueAsString( message );
+		}
+		catch( JsonProcessingException e )
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public < T > T readValue( InputStream message, Class< T > classz )
+	{
+		try
+		{
+			return mapper.readValue( message, classz );
+		}
+		catch( IOException e )
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String writeValueAsString( Object classz )
+	{
+		try
+		{
+			return mapper.writeValueAsString( classz );
 		}
 		catch( JsonProcessingException e )
 		{

@@ -33,8 +33,7 @@ public class PointsSettlement implements Settlement
 		double companyRake = totalPointsWonByUser * ( pointSettlementInfo.getServiceFee() / 100 );
 		double updatedWinningAmt = totalPointsWonByUser - companyRake;
 		losingAmt.put( winnerId, new BigDecimal( updatedWinningAmt ) );
-		return SettlementCurrencyInfo.builder().companyRake( new BigDecimal( companyRake ) ).playersCnt( playerScore.size() ).userCurrencyDetails( losingAmt ).build();
-
+		return SettlementCurrencyInfo.builder().companyRake( new BigDecimal( companyRake ) ).playersCnt( playerScore.size() ).userCurrencyDetails( losingAmt ).winnerId( winnerId ).build();
 	}
 
 }

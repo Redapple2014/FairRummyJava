@@ -63,23 +63,58 @@
 		</dependency>
 
 	</dependencies>
-	<build>
-		<plugins>
+
+<build>
+
+	<finalName>connection-service</finalName>
+
+  	<plugins>
+
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
+
+				<groupId>org.apache.maven.plugins</groupId>
+
+				<artifactId>maven-shade-plugin</artifactId>
+
+				<version>3.4.1</version>
+
 				<executions>
+
 					<execution>
+
+						<phase>package</phase>
+
 						<goals>
-							<goal>java</goal>
+
+							<goal>shade</goal>
+
 						</goals>
+
+						<configuration>
+
+							<transformers>
+
+								<transformer
+
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+
+									<mainClass>com.connection.main.ConnectionServiceMain</mainClass>
+
+								</transformer>
+
+							</transformers>
+
+						</configuration>
+
 					</execution>
+
 				</executions>
-				<configuration>
-					<mainClass>com.connection.main.ConnectionServiceMain</mainClass>
-				</configuration>
+
 			</plugin>
+
 		</plugins>
+
 	</build>
+
+
 </project>

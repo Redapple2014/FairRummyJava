@@ -21,7 +21,7 @@ public class ResetCards extends Message
 	 */
 	public ResetCards( long tableId, List< List< String > > cardIds )
 	{
-		super( 1, MessageConstants.BOARD_INFO, tableId );
+		super( 1, MessageConstants.RESET_CARDS, tableId );
 		this.cardIds = cardIds;
 	}
 

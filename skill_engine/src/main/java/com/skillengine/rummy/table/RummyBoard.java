@@ -17,6 +17,7 @@ import com.skillengine.dto.BoardJoinDetails;
 import com.skillengine.dto.CurrencyDetails;
 import com.skillengine.dto.ExitDetails;
 import com.skillengine.dto.PointSettlementInfo;
+import com.skillengine.dto.SettlementCurrencyInfo;
 import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.rummy.game.GameStateChanges;
 import com.skillengine.rummy.game.RummyGame;
@@ -24,6 +25,7 @@ import com.skillengine.rummy.game.UserHandInfo;
 import com.skillengine.rummy.globals.APIErrorCodes;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.globals.TimeTaskTypes;
+import com.skillengine.rummy.globals.VariantTypes;
 import com.skillengine.rummy.message.BoardInfo;
 import com.skillengine.rummy.message.BoardStatus;
 import com.skillengine.rummy.message.Converter;
@@ -32,6 +34,7 @@ import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.MessageDispatcher;
 import com.skillengine.rummy.message.ScoreUpdate;
 import com.skillengine.rummy.message.Seats;
+import com.skillengine.rummy.message.UpdateSeatBalance;
 import com.skillengine.rummy.player.PlayerInfo;
 import com.skillengine.rummy.player.SeatPlayerInfo;
 import com.skillengine.rummy.settlement.PointsSettlement;
@@ -66,6 +69,7 @@ public class RummyBoard extends Board
 	private AtomicInteger tableIdDealer = new AtomicInteger( 0 );
 	private ScoreUpdate scoreUpdate;
 	private long gameEndTime = 0l;
+	private long winnerId = 0;
 
 	public RummyBoard( long tableId, GameTemplates templateDetails )
 	{
@@ -109,6 +113,7 @@ public class RummyBoard extends Board
 		try
 		{
 
+			winnerId = 0;
 			if( checkPlayersAtStartGame() )
 			{
 				setStatus( GameGlobals.IN_PROGRESS );
@@ -216,6 +221,7 @@ public class RummyBoard extends Board
 				tableTimer.schedule( gameStartTask, 300 );
 				dealStartTime = System.currentTimeMillis();
 				gameNo++;
+				System.out.println( "gameNo###########" + gameNo );
 			}
 			else
 			{
@@ -238,16 +244,15 @@ public class RummyBoard extends Board
 			gameEndFlag.set( true );
 			setGameEndStatus();
 			log.info( "TableId : " + getTableId() + " endGame : Status" + getStatus() );
-			Map< Long, Long > playerChipBal = new HashMap< Long, Long >();
 			if( getRummyGame() == null )
 			{
 				log.error( "TableId : " + getTableId() + " Game is NULL" );
 				return true;
 			}
-
 			Map< Long, UserHandInfo > playerMap = getRummyGame().getUserHandInfo();
 			Iterator< Long > playerIdItr = playerMap.keySet().iterator();
 			long winner = rummyGame.getWinner();
+			winnerId = rummyGame.getWinner();
 			while( playerIdItr.hasNext() )
 			{
 				long playerId = playerIdItr.next();
@@ -258,26 +263,35 @@ public class RummyBoard extends Board
 				}
 			}
 
-			log.info( "TableId : " + getTableId() + " Winner : " + winner + " PlayerScoreMap : " + rummyGame.getScoreMap() );
-			settlement();
-			log.debug( "TableId :" + getTableId() + " Status : " + status + "..endGame()" );
+			log.info( "TableId : " + getTableId() + " Winner : " + winner + " PlayerScoreMap : " + rummyGame.getScoreMap()  + "variantType : " + getGameTemplates().getVariantType());
+			if( getGameTemplates().getVariantType() == VariantTypes.POINTS_RUMMY )
+			{
+				pointSettlement();
+			}
+			log.info( "TableId :" + getTableId() + " Status : " + status + "..endGame()" );
 			gameStartFlag.set( false );
 			gameEndFlag.set( false );
 			gameEndTime = System.currentTimeMillis();
 			rummyGame = null;
-
+			if( getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
+			{
+				return true;
+			}
 			if( status != GameGlobals.COMPLETED )
 			{
 				checkForNextDeal();
+			}
+			if(currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_END)
+			{
+				currTask = null;
 			}
 			if( getAllplayer().size() == 0 )
 			{
 				setCompletedStatus();
 			}
-
 			return true;
 		}
-		catch( Throwable e )
+		catch( Exception e )
 		{
 			e.printStackTrace();
 			return false;
@@ -285,12 +299,57 @@ public class RummyBoard extends Board
 
 	}
 
-	private void settlement()
+	private SettlementCurrencyInfo pointSettlement()
 	{
+		try
+		{
 		PointsSettlement pointsSettlement = new PointsSettlement();
 		PointSettlementInfo pointSettlementInfo = PointSettlementInfo.builder().playerVsScore( rummyGame.getScoreMap() ).winnerId( rummyGame.getWinner() )
 				.pointValue( getGameTemplates().getPointValue() ).serviceFee( getGameTemplates().getServiceFee() ).build();
-		pointsSettlement.settlement( pointSettlementInfo );
+		SettlementCurrencyInfo info = pointsSettlement.settlement( pointSettlementInfo );
+		if( info == null )
+		{
+			return null;
+		}
+		Map< Long, BigDecimal > losingInfo = info.getUserCurrencyDetails();
+		for( Long losingPlayerId : losingInfo.keySet() )
+		{
+			BigDecimal losingAmt = losingInfo.get( losingPlayerId );
+			if( info.getWinnerId() == losingPlayerId )
+			{
+				CurrencyDetails winningDetails = userCurrencyDetails.get( losingPlayerId );
+				winningDetails.setWithdrawable( winningDetails.getWithdrawable().add( losingAmt ) );
+				userCurrencyDetails.put( losingPlayerId, winningDetails );
+				continue;
+			}
+			calculateSeatBalance( losingPlayerId, losingAmt );
+		}
+		for( Long settledPlayers : info.getUserCurrencyDetails().keySet() )
+		{
+			updateTableSeatBalance( settledPlayers, info.getWinnerId() == settledPlayers );
+		}
+		return info;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private void updateTableSeatBalance( long playerId, boolean isWinner )
+	{
+		CurrencyDetails currencyDetails = userCurrencyDetails.get( playerId );
+		SeatInfo seat = getSeat( playerId );
+		if(seat == null)
+		{
+
+			return;
+		}
+		seat.setSeatPlayerBalance( currencyDetails.getDepositBucket().add( currencyDetails.getWithdrawable() ).add( currencyDetails.getNonWithdrawable() ) );
+		UpdateSeatBalance balance = new UpdateSeatBalance( getTableId(), seat.getSeatPlayerBalance(), playerId, isWinner );
+		dispatcher.sendMessage( getAllplayer(), balance );
+
 	}
 
 	protected void checkForNextDeal()
@@ -362,6 +421,10 @@ public class RummyBoard extends Board
 			if( succ )
 			{
 				tossRequired.set( true );
+				if( getAvlSeat() <= 0 )
+				{
+					ActiveBoards.removeTable( getGameTemplates().getId(), getTableId() );
+				}
 			}
 			return succ;
 		}
@@ -431,6 +494,7 @@ public class RummyBoard extends Board
 		boolean dealEnd = rummyGame != null ? rummyGame.getGameState() == GameStateChanges.COMPLETED ? true : false : false;
 		if( rummyGame != null && gameStartFlag.get() && !gameEndFlag.get() )
 		{
+			log.info( "Entering the Rummy Game {} gameStartFlag{} gameEndFlag{}", getTableId(), gameStartFlag.get(), gameEndFlag.get() );
 			synchronized( tableLock )
 			{
 				if( leaveSeatReqPlayers != null )
@@ -454,6 +518,7 @@ public class RummyBoard extends Board
 			int typeOfUser = whatTypeOfPlayer( playerId );
 			if( typeOfUser == 2 && playerReqFlag && !dealEnd )
 			{
+				log.info( "Rummy Game Process User left {} typeOfUser {} dealEnd{} ", getTableId(), typeOfUser, dealEnd );
 				succ = rummyGame.processUserLeft( playerId );
 			}
 			else
@@ -463,19 +528,25 @@ public class RummyBoard extends Board
 			if( succ && typeOfUser == 2 )
 			{
 				// Get the updated Balance
-				PlayerInfo playerInfo = userCurrencyMap.getOrDefault( playerId, null );
+				CurrencyDetails playerInfo = userCurrencyDetails.getOrDefault( playerId, null );
 				if( playerInfo == null )
 				{
 					log.info( "TableID: {} playerID {} currency is Null{}", getTableId(), playerId );
 					return false;
 				}
-				CurrencyDetails details = currencyService
-						.credit( new ExitDetails( playerId, playerInfo.getNonWithdrawable(), playerInfo.getWithdrawable(), playerInfo.getDepositBalance(), getTableId() ) );
-
+				currencyService.credit( new ExitDetails( playerId, playerInfo.getNonWithdrawable(), playerInfo.getWithdrawable(), playerInfo.getDepositBucket(), getTableId() ) );
 			}
 			removePlayer( playerId, 0, playerReqFlag, false );
+			return true;
+		}
+		CurrencyDetails playerInfo = userCurrencyDetails.getOrDefault( playerId, null );
+		if( playerInfo == null )
+		{
+			log.info( "TableID: {} playerID {} currency is Null{}", getTableId(), playerId );
 			return false;
 		}
+		currencyService.credit( new ExitDetails( playerId, playerInfo.getNonWithdrawable(), playerInfo.getWithdrawable(), playerInfo.getDepositBucket(), getTableId() ) );
+		removePlayer( playerId, 0, playerReqFlag, false );
 		return true;
 	}
 
@@ -648,7 +719,6 @@ public class RummyBoard extends Board
 				SeatInfo st = getSeat( playerId );
 				BigDecimal amount = BigDecimal.ZERO;
 				int playerType = 0;
-
 				if( st != null )
 				{
 					playerInfo = st.getPlayer();
@@ -794,6 +864,7 @@ public class RummyBoard extends Board
 				tableCompletedStatus = true;
 			}
 			ActiveBoards.removeTable( getTableId() );
+			ActiveBoards.removeTable( getGameTemplates().getId(), getTableId() );
 
 		}
 		catch( Exception e )
@@ -946,4 +1017,57 @@ public class RummyBoard extends Board
 	{
 		setStatus( GameGlobals.IN_BETWEEN_MATCHES );
 	}
+
+	private void calculateSeatBalance( long losingPlayerId, BigDecimal losingAmt )
+	{
+		CurrencyDetails currencyDetails = userCurrencyDetails.get( losingPlayerId );
+
+		BigDecimal remainingAmt = BigDecimal.ZERO;
+		BigDecimal nonWithdraw = currencyDetails.getNonWithdrawable().compareTo( BigDecimal.ZERO ) > 0 && currencyDetails.getNonWithdrawable().compareTo( losingAmt ) >= 0
+				? currencyDetails.getNonWithdrawable().subtract( losingAmt )
+				: BigDecimal.ZERO;
+		if( nonWithdraw.compareTo( BigDecimal.ZERO ) > 0 )
+		{
+			currencyDetails.setNonWithdrawable( nonWithdraw );
+		}
+		else
+		{
+			remainingAmt = currencyDetails.getNonWithdrawable().compareTo( BigDecimal.ZERO ) > 0 ? losingAmt.subtract( currencyDetails.getNonWithdrawable() ) : BigDecimal.ZERO;
+			currencyDetails.setNonWithdrawable( BigDecimal.ZERO );
+		}
+		BigDecimal withdraw = remainingAmt.compareTo( BigDecimal.ZERO ) > 0 && currencyDetails.getWithdrawable().compareTo( BigDecimal.ZERO ) > 0
+				&& currencyDetails.getWithdrawable().compareTo( remainingAmt ) >= 0 ? remainingAmt : BigDecimal.ZERO;
+		if( withdraw.compareTo( BigDecimal.ZERO ) > 0 )
+		{
+			currencyDetails.setWithdrawable( withdraw );
+		}
+		else
+		{
+			remainingAmt = remainingAmt.compareTo( BigDecimal.ZERO ) > 0 && currencyDetails.getWithdrawable().compareTo( BigDecimal.ZERO ) > 0
+					? remainingAmt.subtract( currencyDetails.getWithdrawable() )
+					: BigDecimal.ZERO;
+			currencyDetails.setWithdrawable( BigDecimal.ZERO );
+		}
+		BigDecimal deposit = remainingAmt.compareTo( BigDecimal.ZERO ) > 0 && currencyDetails.getDepositBucket().compareTo( BigDecimal.ZERO ) > 0
+				&& currencyDetails.getDepositBucket().compareTo( remainingAmt ) >= 0 ? remainingAmt : BigDecimal.ZERO;
+		if( deposit.compareTo( BigDecimal.ZERO ) > 0 )
+		{
+			currencyDetails.setDepositBucket( deposit );
+		}
+		else
+		{
+			remainingAmt = remainingAmt.compareTo( BigDecimal.ZERO ) > 0 && currencyDetails.getDepositBucket().compareTo( BigDecimal.ZERO ) > 0
+					? remainingAmt.subtract( currencyDetails.getDepositBucket() )
+					: BigDecimal.ZERO;
+			currencyDetails.setDepositBucket( BigDecimal.ZERO );
+		}
+		userCurrencyDetails.put( losingPlayerId, currencyDetails );
+
+	}
+
+	protected long getWinner()
+	{
+		return winnerId;
+	}
+
 }

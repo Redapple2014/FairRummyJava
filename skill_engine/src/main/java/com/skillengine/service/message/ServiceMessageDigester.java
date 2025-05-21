@@ -4,8 +4,11 @@ import com.skillengine.message.parsers.Jackson;
 import com.skillengine.rummy.message.BoardSetup;
 import com.skillengine.rummy.message.Declare;
 import com.skillengine.rummy.message.Discard;
+import com.skillengine.rummy.message.DiscardCardReq;
 import com.skillengine.rummy.message.Drop;
+import com.skillengine.rummy.message.FMGRequest;
 import com.skillengine.rummy.message.Finish;
+import com.skillengine.rummy.message.LeaveBoard;
 import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.MessageConstants;
 import com.skillengine.rummy.message.PickClosedDeck;
@@ -51,6 +54,12 @@ public class ServiceMessageDigester
 			return jackson.readValue( payload, Discard.class );
 		case MessageConstants.DECLARE:
 			return jackson.readValue( payload, Declare.class );
+		case MessageConstants.LEAVE_BOARD:
+			return jackson.readValue( payload, LeaveBoard.class );
+		case MessageConstants.REQUEST_DISCARD_CARDS:
+			return jackson.readValue( payload, DiscardCardReq.class );
+		case MessageConstants.FMG_REQUEST:
+			return jackson.readValue( payload, FMGRequest.class );
 		default:
 			return null;
 

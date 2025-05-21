@@ -28,6 +28,7 @@ public class HandModel
 	ArrayList< CardId > jokers = new ArrayList< CardId >();
 	private Map< Long, Integer > playersMoveCount = new HashMap< Long, Integer >();
 	private Long finishMatchPlayerId = 0L;
+	private List< String > discardedCardIds = new ArrayList<>();
 
 	public HandModel( List< PlayerInfo > orderedPlayer, int noOfjoker, int noOfDeck, int cardToDeal )
 	{
@@ -78,6 +79,15 @@ public class HandModel
 				openJokerPick = false;
 				pickedCard = topOpenCard;
 				playersMissedMove.put( mPlayerId, 0 );
+				if( !discardedCardIds.isEmpty() )
+				{
+					String topCard = discardedCardIds.get( discardedCardIds.size() - 1 );
+					CardId topCardId = new CardId( topCard );
+					if( topCardId.equals( topOpenCard ) )
+					{
+						discardedCardIds.remove( discardedCardIds.size() - 1 );
+					}
+				}
 			}
 			else
 			{
@@ -271,6 +281,16 @@ public class HandModel
 				openCardStack.addCard( discardCard );
 				succ = true;
 				pickedCard = null;
+				if( !discardedCardIds.isEmpty() )
+				{
+					String topCard = discardedCardIds.get( discardedCardIds.size() - 1 );
+					CardId topCardId = new CardId( topCard );
+					if( topCardId.equals( discardCard ) )
+					{
+						return succ;
+					}
+				}
+				discardedCardIds.add( discardCard.toString() );
 			}
 		}
 		catch( Exception ex )
@@ -558,4 +578,10 @@ public class HandModel
 	{
 		this.finishMatchPlayerId = 0L;
 	}
+
+	public List< String > getDiscardCards()
+	{
+		return discardedCardIds;
+	}
+
 }

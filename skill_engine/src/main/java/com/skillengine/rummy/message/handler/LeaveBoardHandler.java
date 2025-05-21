@@ -13,6 +13,7 @@ public class LeaveBoardHandler implements MessageHandler< LeaveBoard >
 	@Override
 	public void handleMessage( PlayerSession session, LeaveBoard message, long tableId )
 	{
+		System.out.println( "In Leave Table" + tableId );
 		if( tableId <= 0 )
 		{
 			ExitLobby lobby = new ExitLobby( tableId, session.getUserID(), "Invalid TableId" );
@@ -26,7 +27,14 @@ public class LeaveBoardHandler implements MessageHandler< LeaveBoard >
 			SkillEngineImpl.getInstance().getDispatcher().sendMessage( session, lobby );
 			return;
 		}
-		board.userLeft( session.getUserID(), 1 );
+		boolean status = board.userLeft( session.getUserID(), 1 );
+		if(status)
+		{
+			ExitLobby lobby = new ExitLobby( tableId, session.getUserID(), "Player left`" );
+			SkillEngineImpl.getInstance().getDispatcher().sendMessage( session, lobby );
+			return;
+		}
+		System.out.println( "status userLeft " + status );
 
 	}
 

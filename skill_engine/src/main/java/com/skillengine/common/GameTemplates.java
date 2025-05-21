@@ -26,5 +26,8 @@ public class GameTemplates
 	private int cardsPerPlayer;
 	private int playerTurnTime;
 	private double serviceFee;
+	private int graceTime;
+	private int dealsPerGame;
+	private int variantType;
 
 }

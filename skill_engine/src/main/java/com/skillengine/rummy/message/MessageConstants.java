@@ -40,4 +40,9 @@ public final class MessageConstants
 	public final static String DECLARE = "declare";
 	public final static String DECLARE_SERVER = "declareServer";
 	public final static String LEAVE_BOARD = "leaveBoard";
+	public final static String REQUEST_DISCARD_CARDS = "reqDiscardCards";
+	public final static String DISCARDED_CARDS = "discardedCards";
+	public final static String FMG_REQUEST = "FMGReq";
+	public final static String FMG_RESPONSE = "FMGResponse";
+	public final static String UPDATE_SEAT_BALANCE = "updateSeatBalance";
 }

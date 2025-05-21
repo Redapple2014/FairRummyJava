@@ -57,7 +57,7 @@ public class PlayerJoinHandler implements MessageHandler< PlayerTableJoin >
 			SkillEngineImpl.getInstance().getDispatcher().sendMessage( session, lobby );
 			return;
 		}
-		PlayerInfo info = new PlayerInfo( playerId, "tester-" + playerId, 0, currencyDetails.getDepositBucket(), currencyDetails.getWithdrawable(), currencyDetails.getNonWithdrawable() );
+		PlayerInfo info = new PlayerInfo( playerId, message.getPlrName(), 0, currencyDetails.getDepositBucket(), currencyDetails.getWithdrawable(), currencyDetails.getNonWithdrawable() );
 		boolean succ = board.joinPlayer( info, session );
 		if( succ )
 		{

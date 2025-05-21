@@ -1,10 +1,13 @@
 package com.skillengine.service.message;
 
+import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.rummy.message.BoardSetup;
 import com.skillengine.rummy.message.Declare;
 import com.skillengine.rummy.message.Discard;
+import com.skillengine.rummy.message.DiscardCardReq;
 import com.skillengine.rummy.message.Drop;
+import com.skillengine.rummy.message.FMGRequest;
 import com.skillengine.rummy.message.Finish;
 import com.skillengine.rummy.message.LeaveBoard;
 import com.skillengine.rummy.message.Message;
@@ -13,8 +16,10 @@ import com.skillengine.rummy.message.PickOpenDeck;
 import com.skillengine.rummy.message.PlayerTableJoin;
 import com.skillengine.rummy.message.TableCreation;
 import com.skillengine.rummy.message.handler.DeclareHandler;
+import com.skillengine.rummy.message.handler.DiscardCardHandler;
 import com.skillengine.rummy.message.handler.DiscardHandler;
 import com.skillengine.rummy.message.handler.DropHandler;
+import com.skillengine.rummy.message.handler.FMGHandler;
 import com.skillengine.rummy.message.handler.FinishHandler;
 import com.skillengine.rummy.message.handler.LeaveBoardHandler;
 import com.skillengine.rummy.message.handler.PickCloseHandler;
@@ -45,6 +50,7 @@ public class ServiceHandler
 		ServiceMessage message = jackson.readValue( gameSrvMsg, ServiceMessage.class );
 		PlayerSession playerSession = messageDigester.deserializeSession( message.getPlayerSession() );
 		Message messages = messageDigester.deserialize( message.getGamePayload() );
+		System.out.println( "messages" + message );
 		switch( messages )
 		{
 		case PlayerTableJoin playerJoin -> new PlayerJoinHandler( currencyService ).handleMessage( playerSession, playerJoin, message.getReceiverId() );
@@ -57,6 +63,8 @@ public class ServiceHandler
 		case Declare declare -> new DeclareHandler().handleMessage( playerSession, declare, message.getReceiverId() );
 		case LeaveBoard leave -> new LeaveBoardHandler().handleMessage( playerSession, leave, message.getReceiverId() );
 		case Finish finish -> new FinishHandler().handleMessage( playerSession, finish, message.getReceiverId() );
+		case DiscardCardReq discardCard -> new DiscardCardHandler().handleMessage( playerSession, discardCard, message.getReceiverId() );
+		case FMGRequest fmgReq -> new FMGHandler( SkillEngineImpl.getInstance().getTableDetailsDAO() ).handleMessage( playerSession, fmgReq, message.getReceiverId() );
 		default -> throw new IllegalArgumentException( "Unexpected value: " + messages );
 		}
 	}

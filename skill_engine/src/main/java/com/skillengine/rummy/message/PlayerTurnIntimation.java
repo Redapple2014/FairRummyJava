@@ -7,6 +7,7 @@ public class PlayerTurnIntimation extends Message
 {
 	private long playingPlayerId;
 	private long turnTimer;
+	private long graceTimer;
 
 	/**
 	 * @param serviceType
@@ -15,11 +16,12 @@ public class PlayerTurnIntimation extends Message
 	 * @param playingPlayerId
 	 * @param turnTimer
 	 */
-	public PlayerTurnIntimation( long tableId, long playingPlayerId, long turnTimer )
+	public PlayerTurnIntimation( long tableId, long playingPlayerId, long turnTimer, long graceTimer )
 	{
 		super( 1, MessageConstants.PLAYER_TURN, tableId );
 		this.playingPlayerId = playingPlayerId;
 		this.turnTimer = turnTimer;
+		this.graceTimer = graceTimer;
 	}
 
 }

@@ -1,9 +1,12 @@
 package com.skillengine.main;
 
+import com.skillengine.dao.TableDetailsDAO;
+import com.skillengine.http.APIServer;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.message.queue.GameMessageHandler;
 import com.skillengine.message.queue.RabbitMQFrameworkImpl;
 import com.skillengine.rummy.message.MessageDispatcher;
+import com.skillengine.service.BoardCreationService;
 import com.skillengine.service.CurrencyService;
 import com.skillengine.service.CurrencyServiceImpl;
 import com.skillengine.service.message.ServiceHandler;
@@ -19,6 +22,9 @@ public class SkillEngineImpl
 	private ServiceHandler handler;
 	private MessageDispatcher dispatcher;
 	private RabbitMQFrameworkImpl frameworkImpl;
+	private TableDetailsDAO detailsDAO;
+	private BoardCreationService boardCreationService;
+	private APIServer apiServer;
 
 	public static SkillEngineImpl init()
 	{
@@ -36,6 +42,18 @@ public class SkillEngineImpl
 		CurrencyService currencyService = new CurrencyServiceImpl();
 		handler = new ServiceHandler( digester, currencyService, jackson );
 		dispatcher = new MessageDispatcher( jackson );
+		detailsDAO = new TableDetailsDAO();
+		boardCreationService = new BoardCreationService();
+		apiServer = new APIServer( jackson );
+		apiServer.init();
+	}
+
+	/**
+	 * @return the apiServer
+	 */
+	public APIServer getApiServer()
+	{
+		return apiServer;
 	}
 
 	/**
@@ -106,6 +124,19 @@ public class SkillEngineImpl
 	public RabbitMQFrameworkImpl getFrameworkImpl()
 	{
 		return frameworkImpl;
+	}
+
+	public TableDetailsDAO getTableDetailsDAO()
+	{
+		return detailsDAO;
+	}
+
+	/**
+	 * @return the boardCreationService
+	 */
+	public BoardCreationService getBoardCreationService()
+	{
+		return boardCreationService;
 	}
 
 }
