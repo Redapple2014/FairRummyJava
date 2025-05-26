@@ -2,9 +2,11 @@ package com.connection.client.msg;
 
 import com.connection.msg.MessageConstants;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@NoArgsConstructor
 public class HandShakeResponse extends Message
 {
 

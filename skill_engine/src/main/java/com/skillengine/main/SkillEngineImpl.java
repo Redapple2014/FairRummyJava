@@ -106,9 +106,11 @@ public class SkillEngineImpl
 		try
 		{
 			String queuePublisher = "cs";
+			String queueGcsPublisher = "gcs";
 			String queueConsumer = "ge";
 			frameworkImpl = new RabbitMQFrameworkImpl( "" );
 			frameworkImpl.registerQueuePublisher( queuePublisher );
+			frameworkImpl.registerQueuePublisher( queueGcsPublisher );
 			frameworkImpl.registerQueueConsumer( queueConsumer, new GameMessageHandler() );
 
 		}

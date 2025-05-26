@@ -17,7 +17,7 @@ public class RabbitMQFrameworkImpl implements MessageFramework
 
 	public RabbitMQFrameworkImpl() throws TimeoutException
 	{
-		String mqIP = "127.0.0.1";
+		String mqIP = "localhost";
 		int mqPort = 5672;
 		String mqUserName = "tester";
 		String mqPassword = "tester";

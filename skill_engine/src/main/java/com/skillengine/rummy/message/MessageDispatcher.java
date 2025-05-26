@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.skillengine.dto.TableStatusInfo;
 import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.service.message.ServiceMessage;
@@ -131,5 +132,11 @@ public class MessageDispatcher
 	public void removeBlock( long playerId )
 	{
 		blockedUsers.remove( playerId );
+	}
+
+	public void publishTableStatus( TableStatusInfo statusInfo )
+	{
+		String tableInfo = parse.writeValueAsString( statusInfo );
+		SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue( "gcs", tableInfo );
 	}
 }

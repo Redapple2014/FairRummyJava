@@ -5,7 +5,9 @@ import static com.connection.services.ServiceTypes.CONNECTION_SERVICE;
 import static com.connection.services.ServiceTypes.GAME_SERVICE;
 
 import com.connection.client.msg.HandShakeRequest;
+import com.connection.client.msg.PingRequest;
 import com.connection.client.msg.handler.HandShakeHandler;
+import com.connection.client.msg.handler.PingHandler;
 import com.connection.jackson.JacksonObjectWrapper;
 import com.connection.main.ConnectionServiceImpl;
 import com.connection.services.PlayerSession;
@@ -44,6 +46,10 @@ public class MessageDigester
 			case MessageConstants.HAND_SHAKE:
 				HandShakeHandler handler = new HandShakeHandler( jacksonObjectWrapper );
 				handler.handleMessage( playerSession, jacksonObjectWrapper.readValue( messageParser.getSrvMsg(), HandShakeRequest.class ) );
+				break;
+			case MessageConstants.PING_REQUEST:
+				PingHandler pingHandler = new PingHandler( jacksonObjectWrapper );
+				pingHandler.handleMessage( playerSession, jacksonObjectWrapper.readValue( messageParser.getSrvMsg(), PingRequest.class ) );
 				break;
 			}
 		}

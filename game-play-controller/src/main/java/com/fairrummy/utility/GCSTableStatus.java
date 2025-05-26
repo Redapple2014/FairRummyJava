@@ -20,6 +20,8 @@ public class GCSTableStatus {
             }
             tableInfo.setEngineIp(response.getEngineIP());
             tableInfo.setAvailableSeats( maxPlayers -1 );
+            tableInfo.setTemplateId(templateId);
+            tableInfo.setStatus(1);
 
             TableInfoCache.putTableInfo(templateId, tableInfo);
         }
@@ -38,16 +40,16 @@ public class GCSTableStatus {
         {
             for(TableInfo tInfo : tableInfos )
             {
-                if( tInfo.getAvailableSeats() > 0 )
+                if( tInfo.getAvailableSeats() > 0 && tInfo.getStatus() < 3 || tInfo.getStatus() == 5 || tInfo.getStatus() == 7)
                 {
-                    tInfo.setAvailableSeats(tInfo.getAvailableSeats() - 1);
+                    //tInfo.setAvailableSeats(tInfo.getAvailableSeats() - 1);
 
                     info = tInfo;
 
-                    if( tInfo.getAvailableSeats() == 0 )
-                    {
-                        TableInfoCache.removeTableInfo(templateId, tInfo.getTableId());
-                    }
+//                    if( tInfo.getAvailableSeats() == 0 )
+//                    {
+//                        TableInfoCache.removeTableInfo(templateId, tInfo.getTableId());
+//                    }
                 }
             }
         }

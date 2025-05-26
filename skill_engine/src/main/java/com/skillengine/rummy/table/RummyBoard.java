@@ -2,7 +2,6 @@ package com.skillengine.rummy.table;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import com.skillengine.dto.CurrencyDetails;
 import com.skillengine.dto.ExitDetails;
 import com.skillengine.dto.PointSettlementInfo;
 import com.skillengine.dto.SettlementCurrencyInfo;
+import com.skillengine.dto.TableStatusInfo;
 import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.rummy.game.GameStateChanges;
 import com.skillengine.rummy.game.RummyGame;
@@ -221,7 +221,6 @@ public class RummyBoard extends Board
 				tableTimer.schedule( gameStartTask, 300 );
 				dealStartTime = System.currentTimeMillis();
 				gameNo++;
-				System.out.println( "gameNo###########" + gameNo );
 			}
 			else
 			{
@@ -244,6 +243,7 @@ public class RummyBoard extends Board
 			gameEndFlag.set( true );
 			setGameEndStatus();
 			log.info( "TableId : " + getTableId() + " endGame : Status" + getStatus() );
+			trackTableStatus();
 			if( getRummyGame() == null )
 			{
 				log.error( "TableId : " + getTableId() + " Game is NULL" );
@@ -263,7 +263,7 @@ public class RummyBoard extends Board
 				}
 			}
 
-			log.info( "TableId : " + getTableId() + " Winner : " + winner + " PlayerScoreMap : " + rummyGame.getScoreMap()  + "variantType : " + getGameTemplates().getVariantType());
+			log.info( "TableId : " + getTableId() + " Winner : " + winner + " PlayerScoreMap : " + rummyGame.getScoreMap() + "variantType : " + getGameTemplates().getVariantType() );
 			if( getGameTemplates().getVariantType() == VariantTypes.POINTS_RUMMY )
 			{
 				pointSettlement();
@@ -281,7 +281,7 @@ public class RummyBoard extends Board
 			{
 				checkForNextDeal();
 			}
-			if(currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_END)
+			if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_END )
 			{
 				currTask = null;
 			}
@@ -303,34 +303,34 @@ public class RummyBoard extends Board
 	{
 		try
 		{
-		PointsSettlement pointsSettlement = new PointsSettlement();
-		PointSettlementInfo pointSettlementInfo = PointSettlementInfo.builder().playerVsScore( rummyGame.getScoreMap() ).winnerId( rummyGame.getWinner() )
-				.pointValue( getGameTemplates().getPointValue() ).serviceFee( getGameTemplates().getServiceFee() ).build();
-		SettlementCurrencyInfo info = pointsSettlement.settlement( pointSettlementInfo );
-		if( info == null )
-		{
-			return null;
-		}
-		Map< Long, BigDecimal > losingInfo = info.getUserCurrencyDetails();
-		for( Long losingPlayerId : losingInfo.keySet() )
-		{
-			BigDecimal losingAmt = losingInfo.get( losingPlayerId );
-			if( info.getWinnerId() == losingPlayerId )
+			PointsSettlement pointsSettlement = new PointsSettlement();
+			PointSettlementInfo pointSettlementInfo = PointSettlementInfo.builder().playerVsScore( rummyGame.getScoreMap() ).winnerId( rummyGame.getWinner() )
+					.pointValue( getGameTemplates().getPointValue() ).serviceFee( getGameTemplates().getServiceFee() ).build();
+			SettlementCurrencyInfo info = pointsSettlement.settlement( pointSettlementInfo );
+			if( info == null )
 			{
-				CurrencyDetails winningDetails = userCurrencyDetails.get( losingPlayerId );
-				winningDetails.setWithdrawable( winningDetails.getWithdrawable().add( losingAmt ) );
-				userCurrencyDetails.put( losingPlayerId, winningDetails );
-				continue;
+				return null;
 			}
-			calculateSeatBalance( losingPlayerId, losingAmt );
+			Map< Long, BigDecimal > losingInfo = info.getUserCurrencyDetails();
+			for( Long losingPlayerId : losingInfo.keySet() )
+			{
+				BigDecimal losingAmt = losingInfo.get( losingPlayerId );
+				if( info.getWinnerId() == losingPlayerId )
+				{
+					CurrencyDetails winningDetails = userCurrencyDetails.get( losingPlayerId );
+					winningDetails.setWithdrawable( winningDetails.getWithdrawable().add( losingAmt ) );
+					userCurrencyDetails.put( losingPlayerId, winningDetails );
+					continue;
+				}
+				calculateSeatBalance( losingPlayerId, losingAmt );
+			}
+			for( Long settledPlayers : info.getUserCurrencyDetails().keySet() )
+			{
+				updateTableSeatBalance( settledPlayers, info.getWinnerId() == settledPlayers );
+			}
+			return info;
 		}
-		for( Long settledPlayers : info.getUserCurrencyDetails().keySet() )
-		{
-			updateTableSeatBalance( settledPlayers, info.getWinnerId() == settledPlayers );
-		}
-		return info;
-		}
-		catch(Exception e)
+		catch( Exception e )
 		{
 			e.printStackTrace();
 			return null;
@@ -341,7 +341,7 @@ public class RummyBoard extends Board
 	{
 		CurrencyDetails currencyDetails = userCurrencyDetails.get( playerId );
 		SeatInfo seat = getSeat( playerId );
-		if(seat == null)
+		if( seat == null )
 		{
 
 			return;
@@ -415,6 +415,7 @@ public class RummyBoard extends Board
 				dispatcher.removeBlock( playerId );
 				sendTableSeatMsg( playerId );
 				succ = true;
+				trackTableStatus();
 				log.debug( "TableId :" + getTableId() + " new Player added: " + playerId + "..joinPlayer " );
 			}
 
@@ -547,6 +548,7 @@ public class RummyBoard extends Board
 		}
 		currencyService.credit( new ExitDetails( playerId, playerInfo.getNonWithdrawable(), playerInfo.getWithdrawable(), playerInfo.getDepositBucket(), getTableId() ) );
 		removePlayer( playerId, 0, playerReqFlag, false );
+		trackTableStatus();
 		return true;
 	}
 
@@ -863,6 +865,7 @@ public class RummyBoard extends Board
 				tableTimer.cancel();
 				tableCompletedStatus = true;
 			}
+			trackTableStatus();
 			ActiveBoards.removeTable( getTableId() );
 			ActiveBoards.removeTable( getGameTemplates().getId(), getTableId() );
 
@@ -1068,6 +1071,14 @@ public class RummyBoard extends Board
 	protected long getWinner()
 	{
 		return winnerId;
+	}
+
+	protected void trackTableStatus()
+	{
+		TableStatusInfo statusInfo = TableStatusInfo.builder().templateId( getGameTemplates().getId() ).tableId( getTableId() ).maxPlayer( getGameTemplates().getMaxPlayer() ).availableSeats( getAvlSeat() )
+				.status( getStatus() ).build();
+		dispatcher.publishTableStatus( statusInfo );
+
 	}
 
 }

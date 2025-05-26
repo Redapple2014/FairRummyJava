@@ -15,6 +15,7 @@ import com.skillengine.rummy.message.PickClosedDeck;
 import com.skillengine.rummy.message.PickOpenDeck;
 import com.skillengine.rummy.message.PlayerTableJoin;
 import com.skillengine.rummy.message.TableCreation;
+import com.skillengine.rummy.message.TableReconReq;
 import com.skillengine.rummy.message.handler.DeclareHandler;
 import com.skillengine.rummy.message.handler.DiscardCardHandler;
 import com.skillengine.rummy.message.handler.DiscardHandler;
@@ -27,6 +28,7 @@ import com.skillengine.rummy.message.handler.PickOpenHandler;
 import com.skillengine.rummy.message.handler.PlayerJoinHandler;
 import com.skillengine.rummy.message.handler.SetupHandler;
 import com.skillengine.rummy.message.handler.TableCreationHandler;
+import com.skillengine.rummy.message.handler.TableReconnectionHandler;
 import com.skillengine.service.CurrencyService;
 import com.skillengine.sessions.PlayerSession;
 
@@ -65,6 +67,7 @@ public class ServiceHandler
 		case Finish finish -> new FinishHandler().handleMessage( playerSession, finish, message.getReceiverId() );
 		case DiscardCardReq discardCard -> new DiscardCardHandler().handleMessage( playerSession, discardCard, message.getReceiverId() );
 		case FMGRequest fmgReq -> new FMGHandler( SkillEngineImpl.getInstance().getTableDetailsDAO() ).handleMessage( playerSession, fmgReq, message.getReceiverId() );
+		case TableReconReq tableReconReq -> new TableReconnectionHandler().handleMessage( playerSession, tableReconReq, message.getReceiverId() );
 		default -> throw new IllegalArgumentException( "Unexpected value: " + messages );
 		}
 	}

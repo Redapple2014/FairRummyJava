@@ -15,6 +15,7 @@ import com.skillengine.rummy.message.PickClosedDeck;
 import com.skillengine.rummy.message.PickOpenDeck;
 import com.skillengine.rummy.message.PlayerTableJoin;
 import com.skillengine.rummy.message.TableCreation;
+import com.skillengine.rummy.message.TableReconReq;
 import com.skillengine.sessions.PlayerSession;
 
 public class ServiceMessageDigester
@@ -60,6 +61,8 @@ public class ServiceMessageDigester
 			return jackson.readValue( payload, DiscardCardReq.class );
 		case MessageConstants.FMG_REQUEST:
 			return jackson.readValue( payload, FMGRequest.class );
+		case MessageConstants.TABLE_RECON_REQ:
+			return jackson.readValue( payload, TableReconReq.class );
 		default:
 			return null;
 

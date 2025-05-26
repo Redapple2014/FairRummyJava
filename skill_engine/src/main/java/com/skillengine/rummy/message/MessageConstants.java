@@ -45,4 +45,5 @@ public final class MessageConstants
 	public final static String FMG_REQUEST = "FMGReq";
 	public final static String FMG_RESPONSE = "FMGResponse";
 	public final static String UPDATE_SEAT_BALANCE = "updateSeatBalance";
+	public final static String TABLE_RECON_REQ = "tableReconReq";
 }

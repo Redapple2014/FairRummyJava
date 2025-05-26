@@ -5,16 +5,13 @@ public class TableInfo implements Serializable
 {
 	private static final long serialVersionUID = 2850061435767767854L;
 
-	private Long tableId = 0l;
-	private Integer availableSeats;
-	private Integer eligibility;
+	private long tableId = 0l;
+	private int availableSeats;
 	private long gameStartTime = 0;
 	private String engineIp;
-	
-	public TableInfo()
-	{
-
-	}
+	private int templateId;
+	private int status;
+	private int maxPlayer;
 
 	public TableInfo( long tableId )
 	{
@@ -25,7 +22,6 @@ public class TableInfo implements Serializable
 	{
 		this.tableId = tableId;
 		this.availableSeats = availableSeats;
-		this.eligibility = eligibility;
 		this.gameStartTime = gameStartTime;
 	}
 
@@ -47,16 +43,6 @@ public class TableInfo implements Serializable
 	public void setAvailableSeats( Integer availableSeats )
 	{
 		this.availableSeats = availableSeats;
-	}
-
-	public Integer getEligibility()
-	{
-		return eligibility;
-	}
-
-	public void setEligibility( Integer eligibility )
-	{
-		this.eligibility = eligibility;
 	}
 
 	/**
@@ -84,14 +70,48 @@ public class TableInfo implements Serializable
 		this.engineIp = engineIp;
 	}
 
+	public void setTableId(long tableId) {
+		this.tableId = tableId;
+	}
+
+	public void setAvailableSeats(int availableSeats) {
+		this.availableSeats = availableSeats;
+	}
+
+	public int getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(int templateId) {
+		this.templateId = templateId;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public int getMaxPlayer() {
+		return maxPlayer;
+	}
+
+	public void setMaxPlayer(int maxPlayer) {
+		this.maxPlayer = maxPlayer;
+	}
+
 	@Override
 	public String toString() {
 		return "TableInfo{" +
 				"tableId=" + tableId +
 				", availableSeats=" + availableSeats +
-				", eligibility=" + eligibility +
 				", gameStartTime=" + gameStartTime +
 				", engineIp='" + engineIp + '\'' +
+				", templateId=" + templateId +
+				", status=" + status +
+				", maxPlayer=" + maxPlayer +
 				'}';
 	}
 }

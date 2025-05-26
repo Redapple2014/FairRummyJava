@@ -36,8 +36,6 @@ public class GameEngineRestClient {
         log.info("Calling tablecreate API = {}", templateId);
         String url = geURL + "v1/tablecreate";
 
-        log.info("Vibha {}", url);
-
         Map<String, Object> props = new HashMap<>();
         props.put("Content-Type", "application/json");
 
