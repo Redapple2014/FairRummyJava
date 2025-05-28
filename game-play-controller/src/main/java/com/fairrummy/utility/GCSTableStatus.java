@@ -40,7 +40,7 @@ public class GCSTableStatus {
         {
             for(TableInfo tInfo : tableInfos )
             {
-                if( tInfo.getAvailableSeats() > 0 && tInfo.getStatus() < 3 || tInfo.getStatus() == 5 || tInfo.getStatus() == 7)
+                if( tInfo.getAvailableSeats() > 0 && tInfo.getStatus() <= 3 || tInfo.getStatus() == 5 || tInfo.getStatus() == 7)
                 {
                     //tInfo.setAvailableSeats(tInfo.getAvailableSeats() - 1);
 

@@ -67,7 +67,7 @@ public class ServiceHandler
 		case Finish finish -> new FinishHandler().handleMessage( playerSession, finish, message.getReceiverId() );
 		case DiscardCardReq discardCard -> new DiscardCardHandler().handleMessage( playerSession, discardCard, message.getReceiverId() );
 		case FMGRequest fmgReq -> new FMGHandler( SkillEngineImpl.getInstance().getTableDetailsDAO() ).handleMessage( playerSession, fmgReq, message.getReceiverId() );
-		case TableReconReq tableReconReq -> new TableReconnectionHandler().handleMessage( playerSession, tableReconReq, message.getReceiverId() );
+		case TableReconReq tableReconReq -> new TableReconnectionHandler().handleMessage( playerSession, tableReconReq,  playerSession.getUserID());
 		default -> throw new IllegalArgumentException( "Unexpected value: " + messages );
 		}
 	}
