@@ -602,13 +602,17 @@ public class RummyBoard extends Board
 		if( status == GameGlobals.STARTING )
 		{
 			time = getGameTemplates().getGameStartTime();
+			if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_START && playerId > 0)
+			{
+				time = ( long ) currTask.scheduledExecutionTime() - System.currentTimeMillis();
+				time = time > 0 ? time : 0;
+			}
 		}
 		else if( status == GameGlobals.REGISTERING && gameNo > 0 && rummyGame != null )
 		{
 			log.info( "REGISTERING as the game is on TableId : " + getTableId() );
 			return null;
 		}
-
 		BoardStatus boardStatus = new BoardStatus( getTableId(), status, ( int ) time );
 		return boardStatus;
 	}
@@ -878,6 +882,7 @@ public class RummyBoard extends Board
 
 	public void scheduleStartGame( long time )
 	{
+		log.info("scheduleStartGame {}" ,gameStartFlag.get());
 		if( gameStartFlag.get() )
 		{
 			log.info( "TableId : " + getTableId() + " Game Already Started" );
@@ -942,6 +947,13 @@ public class RummyBoard extends Board
 			if( status == GameGlobals.STARTING )
 			{
 				time = getGameTemplates().getGameStartTime();
+				log.info("Time Happened{}",time );
+				if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_START && playerId > 0)
+				{
+					time = ( long ) currTask.scheduledExecutionTime() - System.currentTimeMillis();
+					time = time > 0 ? time : 0;
+				}
+				log.info("Time left Happened{}",time );
 			}
 			else if( status == GameGlobals.REGISTERING && gameNo > 0 && rummyGame != null )
 			{
@@ -1080,5 +1092,7 @@ public class RummyBoard extends Board
 		dispatcher.publishTableStatus( statusInfo );
 
 	}
+	
+	
 
 }

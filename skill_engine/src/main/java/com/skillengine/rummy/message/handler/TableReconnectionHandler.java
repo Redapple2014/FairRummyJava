@@ -11,10 +11,10 @@ public class TableReconnectionHandler implements MessageHandler< TableReconReq >
 {
 
 	@Override
-	public void handleMessage( PlayerSession session, TableReconReq message, long userId )
+	public void handleMessage( PlayerSession session, TableReconReq message, long receiverId )
 	{
-		long tableId = message.getTableId();
-		long playerId = userId;
+		long tableId = receiverId;
+		long playerId = session.getUserID();
 		if( tableId <= 0 )
 		{
 			ExitLobby exitLobby = new ExitLobby( tableId, playerId, "Table Is Invalid" );

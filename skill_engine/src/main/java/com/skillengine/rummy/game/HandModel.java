@@ -29,6 +29,7 @@ public class HandModel
 	private Map< Long, Integer > playersMoveCount = new HashMap< Long, Integer >();
 	private Long finishMatchPlayerId = 0L;
 	private List< String > discardedCardIds = new ArrayList<>();
+	private Map< Long, List< List< String > > > playerGroupedHandCards = new HashMap<>();
 
 	public HandModel( List< PlayerInfo > orderedPlayer, int noOfjoker, int noOfDeck, int cardToDeal )
 	{
@@ -582,6 +583,22 @@ public class HandModel
 	public List< String > getDiscardCards()
 	{
 		return discardedCardIds;
+	}
+
+	public List< List< String > > addGroupedHandCard( long userId, List< List< String > > groupedCards )
+	{
+		playerGroupedHandCards.put( userId, groupedCards );
+		return groupedCards;
+	}
+
+	public List< List< String > > getGroupHandCard( long userId )
+	{
+		return playerGroupedHandCards.get( userId );
+	}
+	
+	public boolean isGroupCardAvail(long userId)
+	{
+		return playerGroupedHandCards.containsKey( userId );
 	}
 
 }

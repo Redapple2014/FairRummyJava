@@ -76,7 +76,7 @@ public class RummyGame extends TrickTakingGame
 	private long winner;
 	protected AtomicBoolean playerPlayed = new AtomicBoolean( false );
 	protected AtomicLong finishPlayer = new AtomicLong( 0 );
-	protected Map<Long,List<List<String>>> declaredCards = new ConcurrentHashMap<>();
+	protected Map< Long, List< List< String > > > declaredCards = new ConcurrentHashMap<>();
 
 	public RummyGame( RummyBoard table, List< PlayerInfo > playerIdList, boolean tossRequired )
 	{
@@ -343,14 +343,15 @@ public class RummyGame extends TrickTakingGame
 					}
 					else
 					{
-						DealWinner dealWinner = new DealWinner( table.getTableId(), getWinner(), 0.0, true , declaredCards.getOrDefault( getWinner(), Collections.emptyList() ));
+						DealWinner dealWinner = new DealWinner( table.getTableId(), getWinner(), 0.0, true,
+								getCustomGroupedCards( getWinner() ) );
 						msgList.add( dealWinner );
 						DeclareEvent declareEvent = new DeclareEvent( table.getTableId(), getDeclareTime() );
 						msgList.add( declareEvent );
 					}
 				}
 			}
-			PlayerDeclaringDetails playerStateDetails = getPlayerStateDetails( new ArrayList< Long >( getOrderedPlayerIds() ) );
+			PlayerDeclaringDetails playerStateDetails = getPlayerStateDetails( new ArrayList< Long >( getOrderedPlayerIds() ), Collections.emptyList(),false );
 			if( playerStateDetails != null )
 			{
 				msgList.add( playerStateDetails );
@@ -434,7 +435,7 @@ public class RummyGame extends TrickTakingGame
 		}
 		List< Long > playerIdList = new ArrayList< Long >();
 		playerIdList.add( playerId );
-		sendPlayerState( playerIdList );
+		sendPlayerState( playerIdList, Collections.emptyList(), false );
 		PlayerBootedOut bootedOut = new PlayerBootedOut( table.getTableId(), playerId, 0, PlayerKickOutState.PLAYER_LEFT_TABLE );
 		table.getDispatcher().sendMessage( table.getAllplayer(), bootedOut );
 		if( endGame.get() )
@@ -497,8 +498,7 @@ public class RummyGame extends TrickTakingGame
 					{
 						playerScoreMap.put( activePlayer, 0 );
 						setWinner( activePlayer );
-						List< List< String > > grpCardIds = handModel.getPlayerHandString( getWinner() );
-						DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false ,grpCardIds);
+						DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false, getCustomGroupedCards( getWinner() ) );
 						table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 						scheduleWinningTimeout( activePlayer, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 					}
@@ -727,8 +727,7 @@ public class RummyGame extends TrickTakingGame
 			playerScoreMap.put( currentPlayer, 0 );
 			setWinner( currentPlayer );
 			// NO SHOW WINNER CASE AT THE START OF THE GAME PLAY
-			List< List< String > > grpCardIds = handModel.getPlayerHandString( getWinner() );
-			DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false ,grpCardIds);
+			DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false, getCustomGroupedCards( getWinner() ) );
 			table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 			scheduleWinnerTimeout( currentPlayer, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 			return;
@@ -892,8 +891,7 @@ public class RummyGame extends TrickTakingGame
 				{
 					playerScoreMap.put( currentPlayer, 0 );
 					setWinner( currentPlayer );
-					List< List< String > > grpCardIds = handModel.getPlayerHandString( getWinner() );
-					DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false ,grpCardIds);
+					DealWinner dealWinner = new DealWinner( table.getTableId(), currentPlayer, 0.0, false, getCustomGroupedCards( getWinner() ) );
 					table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 					scheduleWinningTimeout( currentPlayer, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 				}
@@ -1260,7 +1258,7 @@ public class RummyGame extends TrickTakingGame
 			playerScoreMap.put( playerId, score );
 
 		}
-		sendPlayerState( notDelaredPlayers );
+		sendPlayerState( Collections.emptyList(), notDelaredPlayers ,true);
 		if( this.getGameState() != GameStateChanges.COMPLETED )
 		{
 			scheduleDealEnd( HandConfigs.DECLARE_END_TIMEOUT );
@@ -1506,21 +1504,21 @@ public class RummyGame extends TrickTakingGame
 			table.getDispatcher().sendMessage( table.getAllplayer(), msgs );
 			List< Long > playerIdList = new ArrayList< Long >();
 			playerIdList.add( playerId );
-			sendPlayerState( playerIdList );
+			sendPlayerState( playerIdList, Collections.emptyList(), false );
 			scheduleMoveTimeOut( HandConfigs.MOVE_TIMEOUT );
 		}
 		else
 		{
 			log.info( "TableId : " + table.getTableId() + " PlayerId : " + playerId + " declareTimeout with show" );
 			setWinner( playerId );
-			DealWinner dealWinner = new DealWinner( table.getTableId(), playerId, 0.0, true ,declaredCards.getOrDefault( getWinner(), Collections.emptyList() ));
+			DealWinner dealWinner = new DealWinner( table.getTableId(), playerId, 0.0, true, getCustomGroupedCards( getWinner() ) );
 			table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
 			scheduleWinningTimeout( playerId, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 		}
 
 	}
 
-	protected PlayerDeclaringDetails getPlayerStateDetails( List< Long > playingPlayersStatus )
+	protected PlayerDeclaringDetails getPlayerStateDetails( List< Long > playingPlayersStatus , List<Long> notDeclared , boolean isDeclaringDone)
 	{
 		PlayerDeclaringDetails playerStateDetails = null;
 		try
@@ -1530,18 +1528,30 @@ public class RummyGame extends TrickTakingGame
 				List< PlayerDeclaringState > pStateList = new ArrayList<>();
 				for( long pId : playingPlayersStatus )
 				{
-					if( playerScoreMap.containsKey( pId ) )
+					int status = ResultantGameTypes.PLAYER_DECLARING;
+					List< List< String > > grpCardIds = new ArrayList< List<String> >();
+					if(pId == getWinner())
 					{
-						if( pId == winner )
-						{
-							continue;
-						}
-						int status = getGameResultStatus( pId );
-						int score = playerScoreMap.get( pId );
-						List< List< String > > grpCardIds = declaredCards.get( pId ) != null ? declaredCards.get( pId ) :  handModel.getPlayerHandString( pId );
-						pStateList.add( new PlayerDeclaringState( pId, grpCardIds, score, status ) );
-
+						status = ResultantGameTypes.WON;
+						grpCardIds = declaredCards.get( pId );
 					}
+					if(declaredCards.get( pId ) != null && pId != getWinner())
+					{
+						status = ResultantGameTypes.LOST;
+						grpCardIds = declaredCards.get( pId );
+					}
+					if(isDeclaringDone && notDeclared.contains( pId ))
+					{
+						status = ResultantGameTypes.LOST;
+						grpCardIds = getCustomGroupedCards( pId );
+					}
+					int knockState = getKnockedOutPlayer().getOrDefault( pId,-1 );
+					if(knockState > 0 )
+					{
+						status = ResultantGameTypes.PLAYER_DROP;
+					}
+					int score = playerScoreMap.getOrDefault( pId, 0 );
+					pStateList.add( new PlayerDeclaringState( pId, grpCardIds, score, status ) );
 
 				}
 				if( !pStateList.isEmpty() )
@@ -1556,6 +1566,20 @@ public class RummyGame extends TrickTakingGame
 		}
 
 		return playerStateDetails;
+	}
+
+	
+	public List<List<String>> getDeclaredCards(int status , long playerId)
+	{
+		if(status == ResultantGameTypes.PLAYER_DROP)
+		{
+			return Collections.emptyList();
+		}
+		if(declaredCards.get( playerId ) != null)
+		{
+			return declaredCards.get( playerId );
+		}
+		return Collections.emptyList();
 	}
 
 	private int getGameResultStatus( long pId )
@@ -1580,6 +1604,8 @@ public class RummyGame extends TrickTakingGame
 			case PlayerKickOutState.WRONG_FINISH:
 				status = ResultantGameTypes.PLAYER_DROP;
 				break;
+			default:
+				status = ResultantGameTypes.PLAYER_DECLARING;
 			}
 		}
 		return status;
@@ -1634,14 +1660,16 @@ public class RummyGame extends TrickTakingGame
 		}
 	}
 
-	private void sendPlayerState( List< Long > playingPlayersStatus )
+	private void sendPlayerState( List< Long > playingPlayersStatus ,List<Long> notDeclaredPlayers ,boolean isDeclaringDone)
 	{
-		PlayerDeclaringDetails playerStateDetails = getPlayerStateDetails( playingPlayersStatus );
+		PlayerDeclaringDetails playerStateDetails = getPlayerStateDetails( getOrderedPlayerIds() , notDeclaredPlayers , isDeclaringDone );
 		if( playerStateDetails != null )
 		{
 			table.getDispatcher().sendMessage( table.getAllplayer(), playerStateDetails );
 		}
 	}
+	
+	
 
 	private void sendScores()
 	{
@@ -1719,7 +1747,7 @@ public class RummyGame extends TrickTakingGame
 		{
 			userScore = -( userScore * pointValue );
 		}
-		UserScore userScoreMsg = new UserScore( playerId, userScore, declaredCards.getOrDefault( playerId, Collections.emptyList() ), status, table.getGameTemplates().getPointValue() );
+		UserScore userScoreMsg = new UserScore( playerId, userScore, getCustomGroupedCards( playerId ), status, table.getGameTemplates().getPointValue() );
 		return userScoreMsg;
 	}
 
@@ -1860,7 +1888,7 @@ public class RummyGame extends TrickTakingGame
 				}
 				else
 				{
-					
+
 					scheduleMoveTimeOut( HandConfigs.MOVE_TIMEOUT );
 				}
 				return;
@@ -1870,8 +1898,12 @@ public class RummyGame extends TrickTakingGame
 				setWinner( playerId );
 				gameDeclareTime = System.currentTimeMillis();
 				playerScoreMap.put( playerId, score );
-				DealWinner dealWinner = new DealWinner( table.getTableId(), playerId, 0.0, true ,declaredCards.getOrDefault( playerId, Collections.emptyList() ));
-				table.getDispatcher().sendMessage( table.getAllplayer(), dealWinner );
+				List<Message> messages = new ArrayList<>();
+				DealWinner dealWinner = new DealWinner( table.getTableId(), playerId, 0.0, true, getCustomGroupedCards( playerId ) );
+				messages.add( dealWinner );
+//				PlayerDeclaringDetails declaringDetails = sendPlayerState();
+//				messages.add( declaringDetails );
+				table.getDispatcher().sendMessage( table.getAllplayer(), messages );
 				scheduleWinningTimeout( playerId, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 				log.info( "TableId : " + table.getTableId() + " PlayerId : " + playerId + " finish with show" );
 				Set< Long > playerIds = playerScoreMap.keySet();
@@ -1895,7 +1927,7 @@ public class RummyGame extends TrickTakingGame
 			log.info( "TableId : " + table.getTableId() + " PlayerId : " + playerId + "Game.. Looser" );
 			List< Long > playerIdList = new ArrayList< Long >();
 			playerIdList.add( playerId );
-			sendPlayerState( playerIdList );
+			sendPlayerState( playerIdList ,Collections.emptyList(),false);
 
 		}
 		if( getPlayerScoreSize() == getPlayerSize() )
@@ -1934,6 +1966,29 @@ public class RummyGame extends TrickTakingGame
 	public List< String > getDiscardCards()
 	{
 		return handModel.getDiscardCards();
+	}
+
+	public void addHandCard( long userId, List< List< String > > handCards )
+	{
+		handModel.addGroupedHandCard( userId, handCards );
+	}
+	
+	public List< List< String > > getCustomGroupedCards( long userId )
+	{
+		if( declaredCards.get( userId ) != null )
+		{
+			return declaredCards.get( userId );
+		}
+		if( handModel.isGroupCardAvail( userId )  )
+		{
+			return handModel.getGroupHandCard( userId );
+		}
+		List< List< String > > playerHandCard = handModel.getPlayerHandString( userId );
+		if( playerHandCard == null )
+		{
+			return Collections.emptyList();
+		}
+		return playerHandCard;
 	}
 
 }
