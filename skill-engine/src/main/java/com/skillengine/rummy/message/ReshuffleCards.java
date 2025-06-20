@@ -1,16 +1,14 @@
 package com.skillengine.rummy.message;
 
-public class ReshuffleCards extends Message
-{
+public class ReshuffleCards extends Message {
 
-	/**
-	 * @param serviceType
-	 * @param msgType
-	 * @param tableId
-	 */
-	public ReshuffleCards( long tableId )
-	{
-		super( 1, MessageConstants.RESHUFFLE, tableId );
-	}
+    /**
+     * @param serviceType
+     * @param msgType
+     * @param tableId
+     */
+    public ReshuffleCards(long tableId) {
+        super(1, MessageConstants.RESHUFFLE, tableId);
+    }
 
 }

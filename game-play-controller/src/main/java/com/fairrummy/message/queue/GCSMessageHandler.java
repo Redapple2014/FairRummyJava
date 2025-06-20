@@ -6,21 +6,16 @@ import com.fairrummy.utility.TableInfoCache;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GCSMessageHandler implements MessageHandler
-{
+public class GCSMessageHandler implements MessageHandler {
 
     @Override
-    public void handleMessage( String message )
-    {
-        log.info( "GCSMessageHandler Received Message {}", message );
+    public void handleMessage(String message) {
+        log.info("GCSMessageHandler Received Message {}", message);
         TableInfo tableInfo = GsonUtils.fromJson(message, TableInfo.class);
         System.out.println("GCSMessageHandler Typecasted : " + tableInfo);
-        if( tableInfo.getStatus() != 6 )
-        {
+        if (tableInfo.getStatus() != 6) {
             TableInfoCache.putTableInfo(tableInfo.getTemplateId(), tableInfo);
-        }
-        else
-        {
+        } else {
             TableInfoCache.removeTableInfo(tableInfo.getTemplateId(), tableInfo.getTableId());
         }
 

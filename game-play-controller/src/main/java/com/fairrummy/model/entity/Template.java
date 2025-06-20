@@ -14,8 +14,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Entity
-public class Template
-{
+public class Template {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;

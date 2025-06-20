@@ -1,83 +1,71 @@
 package com.skillengine.rummy.table;
 
+import com.skillengine.rummy.player.SeatPlayerInfo;
+
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.skillengine.rummy.player.SeatPlayerInfo;
-
 public class SeatInfo {
-	private int id;
-	private SeatPlayerInfo player;
-	private AtomicInteger state; // 0-empty, 1-occupied
-	private BigDecimal seatPlayerBalance;
-	
-	
-	public SeatInfo( int id )
-	{
-		this.id = id;
-		this.state = new AtomicInteger( 0 );
-	}
+    private int id;
+    private SeatPlayerInfo player;
+    private AtomicInteger state; // 0-empty, 1-occupied
+    private BigDecimal seatPlayerBalance;
 
-	public SeatInfo( int id, long playerId )
-	{
-		this.id = id;
-		this.player = new SeatPlayerInfo( playerId );
-	}
-    
-	public int getId()
-	{
-		return id;
-	}
 
-	public void setId( int id )
-	{
-		this.id = id;
-	}
+    public SeatInfo(int id) {
+        this.id = id;
+        this.state = new AtomicInteger(0);
+    }
 
-	public SeatPlayerInfo getPlayer()
-	{
-		return player;
-	}
+    public SeatInfo(int id, long playerId) {
+        this.id = id;
+        this.player = new SeatPlayerInfo(playerId);
+    }
 
-	public void setPlayer( SeatPlayerInfo player )
-	{
-		this.player = player;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getState()
-	{
-		return state.intValue();
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setState( int state )
-	{
-		this.state.set( state );
-	}
+    public SeatPlayerInfo getPlayer() {
+        return player;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return id;
-	}
+    public void setPlayer(SeatPlayerInfo player) {
+        this.player = player;
+    }
 
-	public BigDecimal getSeatPlayerBalance()
-	{
-		return seatPlayerBalance;
-	}
+    public int getState() {
+        return state.intValue();
+    }
 
-	public void removePlayer()
-	{
-		this.player = null;
-		this.seatPlayerBalance = BigDecimal.ZERO;
-		this.state.set( 0 );
-	}
+    public void setState(int state) {
+        this.state.set(state);
+    }
 
-	public void setState( AtomicInteger state )
-	{
-		this.state = state;
-	}
+    @Override
+    public int hashCode() {
+        return id;
+    }
 
-	public void setSeatPlayerBalance(BigDecimal seatPlayerBalance) {
-		this.seatPlayerBalance = seatPlayerBalance;
-	}
+    public BigDecimal getSeatPlayerBalance() {
+        return seatPlayerBalance;
+    }
+
+    public void removePlayer() {
+        this.player = null;
+        this.seatPlayerBalance = BigDecimal.ZERO;
+        this.state.set(0);
+    }
+
+    public void setState(AtomicInteger state) {
+        this.state = state;
+    }
+
+    public void setSeatPlayerBalance(BigDecimal seatPlayerBalance) {
+        this.seatPlayerBalance = seatPlayerBalance;
+    }
 }

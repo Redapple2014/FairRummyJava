@@ -96,7 +96,7 @@ public class CommonUtils {
         }
         int fullChunks = (size - 1) / length;
         return IntStream.range(0, fullChunks + 1)
-                .mapToObj(n4 -> source.subList(n4 * length, n4 == fullChunks ? size : (n4 + 1) * length));
+              .mapToObj(n4 -> source.subList(n4 * length, n4 == fullChunks ? size : (n4 + 1) * length));
     }
 
     public static String dateToString(long time) {
@@ -235,7 +235,7 @@ public class CommonUtils {
     }
 
     private static double getDoubleValue(String points) {
-        if (StringUtils.isEmptyOrNull(points)){
+        if (StringUtils.isEmptyOrNull(points)) {
             return 0.0;
         }
         return Double.parseDouble(points);

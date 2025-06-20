@@ -8,18 +8,18 @@ import java.util.List;
 
 public interface MatchMakingConfigService {
     MatchMakingConfigResponseDTO createMatchMakingConfig(
-            MatchMakingConfigRequestDTO matchMakingConfigRequestDTO)
-            throws MatchMakingConfigBadRequestException;
+          MatchMakingConfigRequestDTO matchMakingConfigRequestDTO)
+          throws MatchMakingConfigBadRequestException;
 
     MatchMakingConfigResponseDTO updateMatchMakingConfig(
-            String matchMakingConfigId, MatchMakingConfigRequestDTO matchMakingConfigRequestDTO)
-            throws MatchMakingConfigBadRequestException;
+          String matchMakingConfigId, MatchMakingConfigRequestDTO matchMakingConfigRequestDTO)
+          throws MatchMakingConfigBadRequestException;
 
     MatchMakingConfigResponseDTO getMatchMakingConfig(String configId)
-            throws MatchMakingConfigBadRequestException;
+          throws MatchMakingConfigBadRequestException;
 
     List<MatchMakingConfigResponseDTO> getAllMatchMakingConfig()
-            throws MatchMakingConfigBadRequestException;
+          throws MatchMakingConfigBadRequestException;
 
     MatchMakingConfigResponseDTO getMatchMakingConfigByTemplateId(String templateId);
 }

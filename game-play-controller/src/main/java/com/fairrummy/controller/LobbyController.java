@@ -21,8 +21,7 @@ public class LobbyController {
     private final LobbyService lobbyService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<LobbyCashGameResponseDTO>> getAllTemplates(@RequestParam(value= "userId") Long userId)
-    {
+    public ResponseEntity<ApiResponse<LobbyCashGameResponseDTO>> getAllTemplates(@RequestParam(value = "userId") Long userId) {
         LobbyCashGameResponseDTO lobbyTemplates = lobbyService.getLobbyData(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK.value(), lobbyTemplates));

@@ -14,9 +14,8 @@ public class ExpansionDO {
     String target;
     List<ExpansionStep> steps;
 
-    public void addStep(ExpansionStep step)
-    {
-        if( steps == null )
+    public void addStep(ExpansionStep step) {
+        if (steps == null)
             steps = new ArrayList<>();
         steps.add(step);
     }

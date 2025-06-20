@@ -8,6 +8,7 @@ import com.fairrummy.request.dto.TemplateCreateRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 import static com.fairrummy.mapper.TemplateMapper.mapToTemplate;
@@ -20,7 +21,7 @@ public class TemplateDao {
     private GameTemplateMapper gameTemplateMapper;
 
     public Template createTemplate(TemplateCreateRequestDTO templateCreateRequestDTO)
-            throws TemplateInternalServerException, TemplateBadRequestException {
+          throws TemplateInternalServerException, TemplateBadRequestException {
 
         Template template = mapToTemplate(templateCreateRequestDTO);
         gameTemplateMapper.save(template);

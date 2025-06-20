@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TemplateInfo
-{
-	private long templateId;
+public class TemplateInfo {
+    private long templateId;
 }

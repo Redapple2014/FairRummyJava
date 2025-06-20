@@ -1,62 +1,49 @@
 package com.skillengine.message.queue;
 
-import java.io.IOException;
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 
-public class QueuePublisher implements Publisher
-{
+import java.io.IOException;
 
-	private Connection connection;
+public class QueuePublisher implements Publisher {
 
-	private Channel channel;
+    private Connection connection;
 
-	private String queueName;
+    private Channel channel;
 
-	public QueuePublisher( Connection connection, String queueName )
-	{
-		this.connection = connection;
-		this.queueName = queueName;
-		try
-		{
-			this.channel = connection.createChannel();
-			channel.queueDeclare( queueName, true, false, false, null );
-		}
-		catch( IOException e )
-		{
-			e.printStackTrace();
-		}
-	}
+    private String queueName;
 
-	@Override
-	public void close() throws IOException
-	{
-		try
-		{
-			channel.close();
-		}
-		catch( Exception e )
-		{
-			e.printStackTrace();
-		}
+    public QueuePublisher(Connection connection, String queueName) {
+        this.connection = connection;
+        this.queueName = queueName;
+        try {
+            this.channel = connection.createChannel();
+            channel.queueDeclare(queueName, true, false, false, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	}
+    @Override
+    public void close() throws IOException {
+        try {
+            channel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	@Override
-	public boolean publishMessage( String message )
-	{
-		try
-		{
-			channel.basicPublish( "", queueName, null, message.getBytes() );
-			return true;
-		}
-		catch( IOException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
+    }
+
+    @Override
+    public boolean publishMessage(String message) {
+        try {
+            channel.basicPublish("", queueName, null, message.getBytes());
+            return true;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

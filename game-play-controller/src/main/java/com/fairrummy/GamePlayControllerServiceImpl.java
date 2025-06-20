@@ -8,36 +8,28 @@ public class GamePlayControllerServiceImpl {
 
     private RabbitMQFrameworkImpl frameworkImpl;
 
-    public static GamePlayControllerServiceImpl init()
-    {
-        if( instance == null )
-        {
+    public static GamePlayControllerServiceImpl init() {
+        if (instance == null) {
             instance = new GamePlayControllerServiceImpl();
         }
         return instance;
     }
 
-    public GamePlayControllerServiceImpl()
-    {
+    public GamePlayControllerServiceImpl() {
 
     }
 
-    public void initMessageQueue()
-    {
-        try
-        {
+    public void initMessageQueue() {
+        try {
             String queueConsumer = "gcs";
             frameworkImpl = new RabbitMQFrameworkImpl("");
-            frameworkImpl.registerQueueConsumer( queueConsumer, new GCSMessageHandler() );
-        }
-        catch( Exception e )
-        {
+            frameworkImpl.registerQueueConsumer(queueConsumer, new GCSMessageHandler());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public RabbitMQFrameworkImpl getFrameworkImpl()
-    {
+    public RabbitMQFrameworkImpl getFrameworkImpl() {
         return frameworkImpl;
     }
 }

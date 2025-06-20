@@ -21,7 +21,7 @@ public class RegistrationDO {
     List<ExpansionDO> expansions;
 
     public void addExpansion(ExpansionDO expansionDO) {
-        if(expansions == null)
+        if (expansions == null)
             expansions = new ArrayList<>();
         expansions.add(expansionDO);
     }

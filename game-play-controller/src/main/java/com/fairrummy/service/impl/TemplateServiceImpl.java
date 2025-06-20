@@ -13,12 +13,14 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.fairrummy.mapper.TemplateMapper.mapToResponseDTO;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
 
-    @Autowired private TemplateDao templateDao;
+    @Autowired
+    private TemplateDao templateDao;
 
     @Override
     public TemplateResponseDTO createTemplate(TemplateCreateRequestDTO templateRequestDTO) throws TemplateInternalServerException, TemplateBadRequestException {
@@ -27,15 +29,15 @@ public class TemplateServiceImpl implements TemplateService {
         return responseDTO;
     }
 
-//    @Override
-//    public void moveTemplateToDraft(String templateId) throws TemplateInternalServerException {
-//        templateDao.moveTemplateToDraft(templateId);
-//    }
-//
-//    @Override
-//    public void moveTemplateToActive(String templateId) throws TemplateInternalServerException {
-//        templateDao.moveTemplateToActive(templateId);
-//    }
+    //    @Override
+    //    public void moveTemplateToDraft(String templateId) throws TemplateInternalServerException {
+    //        templateDao.moveTemplateToDraft(templateId);
+    //    }
+    //
+    //    @Override
+    //    public void moveTemplateToActive(String templateId) throws TemplateInternalServerException {
+    //        templateDao.moveTemplateToActive(templateId);
+    //    }
 
     @Override
     public TemplateResponseDTO getTemplate(int templateId) throws TemplateInternalServerException {
@@ -49,9 +51,8 @@ public class TemplateServiceImpl implements TemplateService {
 
         List<TemplateResponseDTO> responseList = new ArrayList<>();
 
-        if(!CollectionUtils.isEmpty(templates))
-        {
-            for(Template template: templates)
+        if (!CollectionUtils.isEmpty(templates)) {
+            for (Template template : templates)
                 responseList.add(mapToResponseDTO(template));
         }
 

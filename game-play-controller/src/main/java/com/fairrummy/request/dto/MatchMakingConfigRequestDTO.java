@@ -16,9 +16,14 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatchMakingConfigRequestDTO {
-    @NotEmpty private List<String> templateIds;
-    @NotEmpty private String gameFormat;
-    @NotNull private Long searchTimeout;
-    @NotEmpty private Map<Integer, Long> skillVsWaitTime;
-    @NotNull private Boolean isActive;
+    @NotEmpty
+    private List<String> templateIds;
+    @NotEmpty
+    private String gameFormat;
+    @NotNull
+    private Long searchTimeout;
+    @NotEmpty
+    private Map<Integer, Long> skillVsWaitTime;
+    @NotNull
+    private Boolean isActive;
 }

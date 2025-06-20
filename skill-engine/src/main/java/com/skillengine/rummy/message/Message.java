@@ -1,35 +1,29 @@
 package com.skillengine.rummy.message;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Message
+ */
+@Getter
 @NoArgsConstructor
-public class Message
-{
-	private int serviceType;
-	private String msgType;
-	private long tableId;
+public abstract class Message {
 
-	public Message( int serviceType, String msgType, long tableId )
-	{
-		super();
-		this.serviceType = serviceType;
-		this.msgType = msgType;
-		this.tableId = tableId;
-	}
+    private int serviceType;
+    private String messageType;
+    private long tableId;
 
-	public int getServiceType()
-	{
-		return serviceType;
-	}
-
-	public String getMsgType()
-	{
-		return msgType;
-	}
-
-	public long getTableId()
-	{
-		return tableId;
-	}
-
+    /**
+     * Constructor
+     *
+     * @param serviceType Service type
+     * @param msgType     Message type
+     * @param tableId     Table id
+     */
+    protected Message(int serviceType, String msgType, long tableId) {
+        this.serviceType = serviceType;
+        this.messageType = msgType;
+        this.tableId = tableId;
+    }
 }

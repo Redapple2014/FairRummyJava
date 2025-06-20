@@ -12,7 +12,7 @@ public class ApiResponse<T> {
     private Instant timestamp;
     private T payload;
 
-    public ApiResponse(int status, T payload){
+    public ApiResponse(int status, T payload) {
         this.status = status;
         this.payload = payload;
         this.timestamp = Instant.now();

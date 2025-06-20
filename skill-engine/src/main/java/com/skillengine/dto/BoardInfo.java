@@ -5,8 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class BoardInfo
-{
-	private long tableId;
-	private long gameStartTime;
+public class BoardInfo {
+    private long tableId;
+    private long gameStartTime;
 }

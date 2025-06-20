@@ -26,11 +26,10 @@ public class LobbyServiceImpl implements LobbyService {
     public LobbyCashGameResponseDTO getLobbyData(Long userId) {
         List<TemplateResponseDTO> templates = templateService.getAllActiveTemplates();
 
-        if(templates != null && !CollectionUtils.isEmpty(templates))
-        {
+        if (templates != null && !CollectionUtils.isEmpty(templates)) {
             List<LobbyCashGameResponseDTO.CashGameTemplate> lobbyTemplates = templates.stream()
-                    .map(TemplateMapper::mapToLobbyTemplateResponseDTO)
-                    .collect(Collectors.toList());
+                  .map(TemplateMapper::mapToLobbyTemplateResponseDTO)
+                  .collect(Collectors.toList());
 
             String socketURL = "";
 

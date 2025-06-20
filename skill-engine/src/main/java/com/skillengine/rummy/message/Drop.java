@@ -3,19 +3,20 @@ package com.skillengine.rummy.message;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import static com.skillengine.rummy.message.MessageConstants.DROP;
+
 @Getter
-public class Drop extends Message
-{
+@NoArgsConstructor
+public class Drop extends Message {
 
-	/**
-	 * @param serviceType
-	 * @param msgType
-	 * @param tableId
-	 */
-	public Drop( long tableId )
-	{
-		super( 1, MessageConstants.DROP, tableId );
-	}
+    public static final int SERVICE_TYPE = 1;
 
+    /**
+     * Constructor
+     *
+     * @param tableId Table Id
+     */
+    public Drop(long tableId) {
+        super(SERVICE_TYPE, DROP, tableId);
+    }
 }

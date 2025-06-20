@@ -29,31 +29,38 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
+        <!-- RabbitMQ -->
+
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>5.24.0</version>
+            <version>${rabbitmq.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+        <!-- MyBatis -->
+
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.5.19</version>
         </dependency>
 
+        <!-- PostgreSQL -->
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.5</version>
+            <version>${postgresql.version}</version>
         </dependency>
+
+        <!-- HikariCP -->
 
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.1.0</version>
+            <version>${hikaricp.version}</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/dev.mccue/josql -->
         <dependency>
             <groupId>dev.mccue</groupId>
@@ -62,55 +69,37 @@
         </dependency>
 
     </dependencies>
-    <build>
 
+    <!-- Build -->
+
+    <build>
         <finalName>skill-engine</finalName>
 
+        <!-- Plugins -->
+
         <plugins>
-
             <plugin>
-
                 <groupId>org.apache.maven.plugins</groupId>
-
                 <artifactId>maven-shade-plugin</artifactId>
-
-                <version>3.4.1</version>
-
+                <version>${maven-shade-plugin.version}</version>
                 <executions>
-
                     <execution>
-
                         <phase>package</phase>
-
                         <goals>
-
                             <goal>shade</goal>
-
                         </goals>
-
                         <configuration>
-
                             <transformers>
-
                                 <transformer
-
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-
                                     <mainClass>com.skillengine.main.SkillEngineMain</mainClass>
-
                                 </transformer>
-
                             </transformers>
-
                         </configuration>
-
                     </execution>
-
                 </executions>
-
             </plugin>
-
         </plugins>
-
     </build>
+
 </project>

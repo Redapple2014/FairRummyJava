@@ -13,8 +13,7 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 @EnableJpaRepositories(basePackages = {"com.fairrummy.mapper"})
 public class GamePlayControllerServiceApplication {
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         SpringApplication.run(GamePlayControllerServiceApplication.class, args);
         TableInfoCache.initializeTableInfoCache("", "");
         GamePlayControllerServiceImpl impl = new GamePlayControllerServiceImpl();

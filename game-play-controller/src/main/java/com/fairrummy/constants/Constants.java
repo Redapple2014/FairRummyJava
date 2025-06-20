@@ -17,9 +17,13 @@ public final class Constants {
 
         private String type;
 
-        private MatchMakingAttribute(String type) {this.type = type; }
+        private MatchMakingAttribute(String type) {
+            this.type = type;
+        }
 
-        public String getType() { return type;}
+        public String getType() {
+            return type;
+        }
     }
 
     public enum Distribution {
@@ -27,9 +31,13 @@ public final class Constants {
 
         private String type;
 
-        private Distribution(String type) {this.type = type; }
+        private Distribution(String type) {
+            this.type = type;
+        }
 
-        public String getType() { return type;}
+        public String getType() {
+            return type;
+        }
     }
 
     public enum Communication {

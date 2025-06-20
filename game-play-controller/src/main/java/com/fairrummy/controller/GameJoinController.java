@@ -18,10 +18,9 @@ public class GameJoinController {
     private GameJoinService gameJoinService;
 
     @PostMapping(value = "/gamejoin",
-    produces = {"application/json"},
-    consumes = {"application/json"})
-    public ResponseEntity<FMGResponse> validate(@RequestBody FMGRequest fmgReq)
-    {
+          produces = {"application/json"},
+          consumes = {"application/json"})
+    public ResponseEntity<FMGResponse> validate(@RequestBody FMGRequest fmgReq) {
         FMGResponse response = gameJoinService.joinTable(fmgReq);
         return ResponseEntity.ok(response);
     }

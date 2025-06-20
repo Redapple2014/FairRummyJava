@@ -9,78 +9,68 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class CustomMQConsumer extends DefaultConsumer
-{
-	private final BlockingQueue< Delivery > queue = new LinkedBlockingQueue<>();
+public class CustomMQConsumer extends DefaultConsumer {
+    private final BlockingQueue<Delivery> queue = new LinkedBlockingQueue<>();
 
-	public CustomMQConsumer( Channel channel )
-	{
-		super( channel );
-	}
+    public CustomMQConsumer(Channel channel) {
+        super(channel);
+    }
 
-	@Override
-	public void handleDelivery( String consumerTag, Envelope envelope, BasicProperties properties, byte[] body ) throws IOException
-	{
-		queue.add( new Delivery( envelope, properties, body, consumerTag ) );
-	}
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body) throws IOException {
+        queue.add(new Delivery(envelope, properties, body, consumerTag));
+    }
 
-	public Delivery nextMessage() throws Exception
-	{
-		return queue.take();
-	}
+    public Delivery nextMessage() throws Exception {
+        return queue.take();
+    }
 
-	public static class Delivery
-	{
-		private String consumerTag;
-		private final Envelope _envelope;
-		private final BasicProperties _properties;
-		private final byte[] _body;
+    public static class Delivery {
+        private String consumerTag;
+        private final Envelope _envelope;
+        private final BasicProperties _properties;
+        private final byte[] _body;
 
-		public Delivery( Envelope envelope, BasicProperties properties, byte[] body, String consumerTag )
-		{
-			_envelope = envelope;
-			_properties = properties;
-			_body = body;
-			this.consumerTag = consumerTag;
-		}
+        public Delivery(Envelope envelope, BasicProperties properties, byte[] body, String consumerTag) {
+            _envelope = envelope;
+            _properties = properties;
+            _body = body;
+            this.consumerTag = consumerTag;
+        }
 
-		/**
-		 * Retrieve the message envelope.
-		 * 
-		 * @return the message envelope
-		 */
-		public Envelope getEnvelope()
-		{
-			return _envelope;
-		}
+        /**
+         * Retrieve the message envelope.
+         *
+         * @return the message envelope
+         */
+        public Envelope getEnvelope() {
+            return _envelope;
+        }
 
-		/**
-		 * Retrieve the message properties.
-		 * 
-		 * @return the message properties
-		 */
-		public BasicProperties getProperties()
-		{
-			return _properties;
-		}
+        /**
+         * Retrieve the message properties.
+         *
+         * @return the message properties
+         */
+        public BasicProperties getProperties() {
+            return _properties;
+        }
 
-		/**
-		 * Retrieve the message body.
-		 * 
-		 * @return the message body
-		 */
-		public byte[] getBody()
-		{
-			return _body;
-		}
+        /**
+         * Retrieve the message body.
+         *
+         * @return the message body
+         */
+        public byte[] getBody() {
+            return _body;
+        }
 
-		/**
-		 * @return the consumerTag
-		 */
-		public String getConsumerTag()
-		{
-			return consumerTag;
-		}
+        /**
+         * @return the consumerTag
+         */
+        public String getConsumerTag() {
+            return consumerTag;
+        }
 
-	}
+    }
 }

@@ -12,11 +12,11 @@ public enum ErrorCodes {
     UNKNOWN_ERROR(INTERNAL_SERVER_ERROR.value(), "Unknown Error", INTERNAL_SERVER_ERROR),
     MATCH_MAKING_CONFIG_NOT_FOUND(NOT_FOUND.value(), "Match Making Config not found", NOT_FOUND),
     INVALID_TEMPLATE_IDS_FOR_MATCH_MAKING_CONFIG(
-            BAD_REQUEST.value(), "Invalid Template Ids for Matchmaking Config", BAD_REQUEST),
+          BAD_REQUEST.value(), "Invalid Template Ids for Matchmaking Config", BAD_REQUEST),
     DUPLICATE_MATCHMAKING_CONFIG_FOR_TEMPLATE(
-            BAD_REQUEST.value(),
-            " Matchmaking Config Already there for the selected template",
-            BAD_REQUEST),
+          BAD_REQUEST.value(),
+          " Matchmaking Config Already there for the selected template",
+          BAD_REQUEST),
     JSON_PROCESSING_ERROR(INTERNAL_SERVER_ERROR.value(), "Unknown Error", INTERNAL_SERVER_ERROR);
 
     private Integer errorCode;

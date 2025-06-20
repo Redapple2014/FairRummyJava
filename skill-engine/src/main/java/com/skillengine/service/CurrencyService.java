@@ -4,10 +4,9 @@ import com.skillengine.dto.BoardJoinDetails;
 import com.skillengine.dto.CurrencyDetails;
 import com.skillengine.dto.ExitDetails;
 
-public interface CurrencyService
-{
-	CurrencyDetails debit( BoardJoinDetails boardJoinDetails );
+public interface CurrencyService {
+    CurrencyDetails debit(BoardJoinDetails boardJoinDetails);
 
-	CurrencyDetails credit( ExitDetails ExitDetails );
+    CurrencyDetails credit(ExitDetails ExitDetails);
 
 }

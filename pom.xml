@@ -15,13 +15,8 @@
     <!-- Modules -->
 
     <modules>
-        <module>core</module>
-        <module>data</module>
-        <module>api-service</module>
         <module>connection-service</module>
-        <module>game-play-controller</module>
-        <!-- <module>gateway-service</module> -->
-        <!-- <module>wallet-service</module>-->
+        <module>skill-engine</module>
     </modules>
 
     <!-- Properties -->
@@ -46,6 +41,7 @@
         <maven.compiler.target>21</maven.compiler.target>
 
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
 
@@ -66,13 +62,14 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <netty.version>4.2.2.Final</netty.version>
         <postgresql.version>42.7.5</postgresql.version>
+        <rabbitmq.version>5.25.0</rabbitmq.version>
         <reactor.version>2025.0.0-M3</reactor.version>
         <spring-boot.version>3.5.0</spring-boot.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <slf4j-api.version>2.0.17</slf4j-api.version>
         <vavr.version>0.10.6</vavr.version>
 
-        <rabbitmq.version>5.25.0</rabbitmq.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
     </properties>
 
     <dependencyManagement>

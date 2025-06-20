@@ -1,117 +1,108 @@
 package com.fairrummy.utility;
 
 import java.io.Serializable;
-public class TableInfo implements Serializable
-{
-	private static final long serialVersionUID = 2850061435767767854L;
 
-	private long tableId = 0l;
-	private int availableSeats;
-	private long gameStartTime = 0;
-	private String engineIp;
-	private int templateId;
-	private int status;
-	private int maxPlayer;
+public class TableInfo implements Serializable {
+    private static final long serialVersionUID = 2850061435767767854L;
 
-	public TableInfo( long tableId )
-	{
-		this.tableId = tableId;
-	}
+    private long tableId = 0l;
+    private int availableSeats;
+    private long gameStartTime = 0;
+    private String engineIp;
+    private int templateId;
+    private int status;
+    private int maxPlayer;
 
-	public TableInfo( Long tableId, Integer availableSeats, Integer eligibility, long gameStartTime )
-	{
-		this.tableId = tableId;
-		this.availableSeats = availableSeats;
-		this.gameStartTime = gameStartTime;
-	}
+    public TableInfo(long tableId) {
+        this.tableId = tableId;
+    }
 
-	public Long getTableId()
-	{
-		return tableId;
-	}
+    public TableInfo(Long tableId, Integer availableSeats, Integer eligibility, long gameStartTime) {
+        this.tableId = tableId;
+        this.availableSeats = availableSeats;
+        this.gameStartTime = gameStartTime;
+    }
 
-	public void setTableId( Long tableId )
-	{
-		this.tableId = tableId;
-	}
+    public Long getTableId() {
+        return tableId;
+    }
 
-	public Integer getAvailableSeats()
-	{
-		return availableSeats;
-	}
+    public void setTableId(Long tableId) {
+        this.tableId = tableId;
+    }
 
-	public void setAvailableSeats( Integer availableSeats )
-	{
-		this.availableSeats = availableSeats;
-	}
+    public Integer getAvailableSeats() {
+        return availableSeats;
+    }
 
-	/**
-	 * @return the gameStartTime
-	 */
-	public long getGameStartTime()
-	{
-		return gameStartTime;
-	}
+    public void setAvailableSeats(Integer availableSeats) {
+        this.availableSeats = availableSeats;
+    }
 
-	/**
-	 * @param gameStartTime
-	 *                the gameStartTime to set
-	 */
-	public void setGameStartTime( long gameStartTime )
-	{
-		this.gameStartTime = gameStartTime;
-	}
+    /**
+     * @return the gameStartTime
+     */
+    public long getGameStartTime() {
+        return gameStartTime;
+    }
 
-	public String getEngineIp() {
-		return engineIp;
-	}
+    /**
+     * @param gameStartTime the gameStartTime to set
+     */
+    public void setGameStartTime(long gameStartTime) {
+        this.gameStartTime = gameStartTime;
+    }
 
-	public void setEngineIp(String engineIp) {
-		this.engineIp = engineIp;
-	}
+    public String getEngineIp() {
+        return engineIp;
+    }
 
-	public void setTableId(long tableId) {
-		this.tableId = tableId;
-	}
+    public void setEngineIp(String engineIp) {
+        this.engineIp = engineIp;
+    }
 
-	public void setAvailableSeats(int availableSeats) {
-		this.availableSeats = availableSeats;
-	}
+    public void setTableId(long tableId) {
+        this.tableId = tableId;
+    }
 
-	public int getTemplateId() {
-		return templateId;
-	}
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
+    }
 
-	public void setTemplateId(int templateId) {
-		this.templateId = templateId;
-	}
+    public int getTemplateId() {
+        return templateId;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public void setTemplateId(int templateId) {
+        this.templateId = templateId;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public int getMaxPlayer() {
-		return maxPlayer;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public void setMaxPlayer(int maxPlayer) {
-		this.maxPlayer = maxPlayer;
-	}
+    public int getMaxPlayer() {
+        return maxPlayer;
+    }
 
-	@Override
-	public String toString() {
-		return "TableInfo{" +
-				"tableId=" + tableId +
-				", availableSeats=" + availableSeats +
-				", gameStartTime=" + gameStartTime +
-				", engineIp='" + engineIp + '\'' +
-				", templateId=" + templateId +
-				", status=" + status +
-				", maxPlayer=" + maxPlayer +
-				'}';
-	}
+    public void setMaxPlayer(int maxPlayer) {
+        this.maxPlayer = maxPlayer;
+    }
+
+    @Override
+    public String toString() {
+        return "TableInfo{" +
+              "tableId=" + tableId +
+              ", availableSeats=" + availableSeats +
+              ", gameStartTime=" + gameStartTime +
+              ", engineIp='" + engineIp + '\'' +
+              ", templateId=" + templateId +
+              ", status=" + status +
+              ", maxPlayer=" + maxPlayer +
+              '}';
+    }
 }

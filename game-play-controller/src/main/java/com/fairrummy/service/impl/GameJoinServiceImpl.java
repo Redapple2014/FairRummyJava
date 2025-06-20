@@ -29,26 +29,22 @@ public class GameJoinServiceImpl implements GameJoinService {
         TemplateResponseDTO templateResponseDTO = templateService.getTemplate(templateId);
         FMGResponse response = null;
         TableInfo tableInfo = GCSTableStatus.getBestTable(templateId);
-        if (tableInfo != null)
-        {
+        if (tableInfo != null) {
             response = new FMGResponse();
             response.setTableId(tableInfo.getTableId());
             response.setEngineIP(tableInfo.getEngineIp());
 
-            return  response;
+            return response;
         }
 
         response = geRestClient.tableJoin(templateId);
 
-        if( response != null )
-        {
+        if (response != null) {
             GCSTableStatus.updateTableInfo(response, templateId, templateResponseDTO.getMaxPlayer());
-        }
-        else
-        {
+        } else {
             response = new FMGResponse();
             response.setErrorMessage("Unable to find the table");
         }
-        return  response;
+        return response;
     }
 }

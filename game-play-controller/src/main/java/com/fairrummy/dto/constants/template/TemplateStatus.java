@@ -4,7 +4,11 @@ public enum TemplateStatus {
     ACTIVE,
     DRAFTED;
 
-    public static boolean isActive(TemplateStatus templateStatus) { return templateStatus == ACTIVE;}
+    public static boolean isActive(TemplateStatus templateStatus) {
+        return templateStatus == ACTIVE;
+    }
 
-    public static boolean isDrafted(TemplateStatus templateStatus) { return templateStatus == DRAFTED; }
+    public static boolean isDrafted(TemplateStatus templateStatus) {
+        return templateStatus == DRAFTED;
+    }
 }

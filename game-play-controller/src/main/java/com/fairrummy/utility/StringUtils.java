@@ -34,7 +34,7 @@ public class StringUtils {
     /**
      * Checks whether a given String has a valid content or not. Empty spaces
      * are not treated as a valid content for a String.
-     * 
+     *
      * @param str
      * @return true if the string is null or empty spaces.
      */
@@ -45,7 +45,7 @@ public class StringUtils {
     /**
      * Tokenises a String based on a delimiter and returns the tokens in an
      * Array.
-     * 
+     *
      * @param string
      * @param token
      * @return String Array
@@ -65,7 +65,7 @@ public class StringUtils {
     /**
      * Tokenises a String based on the default delimiter(',') and returns the
      * tokens in an Array.
-     * 
+     *
      * @param string
      * @return String Array
      */
@@ -76,7 +76,7 @@ public class StringUtils {
     /**
      * Converts a String to a char messageType The length of the String must not
      * be greates that one.
-     * 
+     *
      * @param string
      * @return character
      */
@@ -88,18 +88,17 @@ public class StringUtils {
 
     /**
      * Converts a char to a String
-     * 
-     * @param c
-     *            char
+     *
+     * @param c char
      * @return string
      */
     public static String toString(char c) {
-        return new String(new char[] { c });
+        return new String(new char[]{c});
     }
 
     /**
      * Converts target string to uppercase
-     * 
+     *
      * @param target
      * @return converted string
      */
@@ -113,7 +112,7 @@ public class StringUtils {
      * @param regex
      * @param targetString
      * @return The result of String.split(regex) except that Trailing empty
-     *         strings are included in the resulting array
+     * strings are included in the resulting array
      */
     public static String[] split(String regex, String targetString) {
         if (targetString != null) {
@@ -137,15 +136,14 @@ public class StringUtils {
      * Returns a String with newline added between the content e.g.: if the
      * content is content={"Hi There, ", "I'm fine", "Thanks,"}, the returned
      * String would be:
-     * 
+     *
      * <pre>
      * Hi There,
      * I'm fine
      * Thanks,
      * </pre>
-     * 
-     * @param content
-     *            chunks of text that need to be separated by newline
+     *
+     * @param content chunks of text that need to be separated by newline
      * @return result string
      */
     public static String formatTextWithNewLine(String[] content) {
@@ -182,7 +180,7 @@ public class StringUtils {
     /**
      * Concatenates individual strings in the array, separated by the delimiter
      * string each time.
-     * 
+     *
      * @param array
      * @param delimiter
      * @return result string
@@ -203,7 +201,7 @@ public class StringUtils {
 
     /**
      * Checks whether a string has digits
-     * 
+     *
      * @param s
      * @return true if s contains at least 1 digit
      */
@@ -379,9 +377,8 @@ public class StringUtils {
 
     /**
      * Method to encode string to Base64 encoding
-     * 
-     * @param toEncode
-     *            String
+     *
+     * @param toEncode String
      * @return String
      * @throws UnsupportedEncodingException
      */
@@ -391,9 +388,8 @@ public class StringUtils {
 
     /**
      * Method to decode Base64 encoded string
-     * 
-     * @param toDecode
-     *            String
+     *
+     * @param toDecode String
      * @return String
      * @throws UnsupportedEncodingException
      */

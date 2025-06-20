@@ -29,9 +29,9 @@ public class PCObjectMapper {
         } catch (JsonProcessingException e) {
             log.error("Json Processing Exception while writeValueAsString for object {}", object, e);
             throw new InternalServerErrorException(
-                    JSON_PROCESSING_ERROR.getErrorCode(),
-                    JSON_PROCESSING_ERROR.getHttpStatus(),
-                    JSON_PROCESSING_ERROR.getMessage());
+                  JSON_PROCESSING_ERROR.getErrorCode(),
+                  JSON_PROCESSING_ERROR.getHttpStatus(),
+                  JSON_PROCESSING_ERROR.getMessage());
         }
     }
 
@@ -40,14 +40,14 @@ public class PCObjectMapper {
             return objectMapper.readValue(content, valueType);
         } catch (JsonProcessingException e) {
             log.error(
-                    "Json Processing Exception while readValue content {} valueType {}",
-                    content,
-                    valueType.getName(),
-                    e);
+                  "Json Processing Exception while readValue content {} valueType {}",
+                  content,
+                  valueType.getName(),
+                  e);
             throw new InternalServerErrorException(
-                    JSON_PROCESSING_ERROR.getErrorCode(),
-                    JSON_PROCESSING_ERROR.getHttpStatus(),
-                    JSON_PROCESSING_ERROR.getMessage());
+                  JSON_PROCESSING_ERROR.getErrorCode(),
+                  JSON_PROCESSING_ERROR.getHttpStatus(),
+                  JSON_PROCESSING_ERROR.getMessage());
         }
     }
 
@@ -57,9 +57,9 @@ public class PCObjectMapper {
         } catch (JsonProcessingException e) {
             log.error("Json Processing Exception while readTree content {}", content, e);
             throw new InternalServerErrorException(
-                    JSON_PROCESSING_ERROR.getErrorCode(),
-                    JSON_PROCESSING_ERROR.getHttpStatus(),
-                    JSON_PROCESSING_ERROR.getMessage());
+                  JSON_PROCESSING_ERROR.getErrorCode(),
+                  JSON_PROCESSING_ERROR.getHttpStatus(),
+                  JSON_PROCESSING_ERROR.getMessage());
         }
     }
 
@@ -68,14 +68,14 @@ public class PCObjectMapper {
             return objectMapper.readValue(content, valueTypeRef);
         } catch (JsonProcessingException e) {
             log.error(
-                    "Json Processing Exception while readValue content {} valueTypeRef {}",
-                    content,
-                    valueTypeRef.getType().getTypeName(),
-                    e);
+                  "Json Processing Exception while readValue content {} valueTypeRef {}",
+                  content,
+                  valueTypeRef.getType().getTypeName(),
+                  e);
             throw new InternalServerErrorException(
-                    JSON_PROCESSING_ERROR.getErrorCode(),
-                    JSON_PROCESSING_ERROR.getHttpStatus(),
-                    JSON_PROCESSING_ERROR.getMessage());
+                  JSON_PROCESSING_ERROR.getErrorCode(),
+                  JSON_PROCESSING_ERROR.getHttpStatus(),
+                  JSON_PROCESSING_ERROR.getMessage());
         }
     }
 
@@ -88,14 +88,14 @@ public class PCObjectMapper {
             return objectMapper.treeToValue(node, valueType);
         } catch (JsonProcessingException e) {
             log.error(
-                    "Json Processing Exception while treeToValue node {} valueType {}",
-                    node,
-                    valueType.getName(),
-                    e);
+                  "Json Processing Exception while treeToValue node {} valueType {}",
+                  node,
+                  valueType.getName(),
+                  e);
             throw new InternalServerErrorException(
-                    JSON_PROCESSING_ERROR.getErrorCode(),
-                    JSON_PROCESSING_ERROR.getHttpStatus(),
-                    JSON_PROCESSING_ERROR.getMessage());
+                  JSON_PROCESSING_ERROR.getErrorCode(),
+                  JSON_PROCESSING_ERROR.getHttpStatus(),
+                  JSON_PROCESSING_ERROR.getMessage());
         }
     }
 

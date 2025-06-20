@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardCreationInfo
-{
-	private long tableId;
-	private String engineIP;
+public class BoardCreationInfo {
+    private long tableId;
+    private String engineIP;
 
 }

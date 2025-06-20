@@ -42,10 +42,10 @@ public class GameEngineRestClient {
         TemplateInfo templateInfo = new TemplateInfo(templateId);
 
         ResponseEntity<String> responseEntity =
-                this.restClient.post(
-                        url,
-                        pcObjectMapper.writeValueAsString(templateInfo),
-                        props);
+              this.restClient.post(
+                    url,
+                    pcObjectMapper.writeValueAsString(templateInfo),
+                    props);
 
         if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             return pcObjectMapper.readValue(responseEntity.getBody(), FMGResponse.class);

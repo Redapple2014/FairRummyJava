@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -41,21 +42,21 @@ public class RestClient {
         httpClientBuilder.setConnectionManager(poolingHttpClientConnectionManager);
         this.closeableHttpClient = httpClientBuilder.build();
         HttpComponentsClientHttpRequestFactory factory =
-                new HttpComponentsClientHttpRequestFactory(closeableHttpClient);
+              new HttpComponentsClientHttpRequestFactory(closeableHttpClient);
 
         factory.setConnectionRequestTimeout(10000);
         factory.setConnectTimeout(10000);
         //factory.setReadTimeout(configuration.getInt(clientName + DOT + "http.read.timeout", 10000));
         restTemplate = new RestTemplate(factory);
         restTemplate
-                .getMessageConverters()
-                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+              .getMessageConverters()
+              .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
     }
 
     /**
      * @param clientName based on client name it fetched the properties from zk
      * @return PoolingHttpClientConnectionManager <br>
-     *     Based on zk properties initialise PoolingHttpClientConnectionManager
+     * Based on zk properties initialise PoolingHttpClientConnectionManager
      */
     private PoolingHttpClientConnectionManager getConnectionManager(String clientName) {
         PoolingHttpClientConnectionManager conMan = new PoolingHttpClientConnectionManager();
@@ -66,53 +67,53 @@ public class RestClient {
     }
 
     /**
-     * @param url url to which rest call has to be made
-     * @param props Header Properties
+     * @param url         url to which rest call has to be made
+     * @param props       Header Properties
      * @param queryParams query parameter in the url
-     * @param pathParams path params in the url
+     * @param pathParams  path params in the url
      * @return Response Entity with String as response body
      */
     public ResponseEntity<String> get(
-            String url,
-            Map<String, Object> props,
-            Map<String, Object> queryParams,
-            Map<String, Object> pathParams) {
+          String url,
+          Map<String, Object> props,
+          Map<String, Object> queryParams,
+          Map<String, Object> pathParams) {
 
         HttpHeaders httpHeaders = getAllHttpHeaders(props);
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
         if (log.isDebugEnabled()) {
             log.debug(
-                    "http GET req on {} ,queryParams {} pathParams {} httpHeaders {} ",
-                    url,
-                    queryParams,
-                    pathParams,
-                    httpHeaders);
+                  "http GET req on {} ,queryParams {} pathParams {} httpHeaders {} ",
+                  url,
+                  queryParams,
+                  pathParams,
+                  httpHeaders);
         }
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
         queryParams.forEach(uriComponentsBuilder::queryParam);
         ResponseEntity<String> responseEntity = null;
         responseEntity =
-                restTemplate.exchange(
-                        uriComponentsBuilder.buildAndExpand(pathParams).toUri(),
-                        HttpMethod.GET,
-                        entity,
-                        String.class);
+              restTemplate.exchange(
+                    uriComponentsBuilder.buildAndExpand(pathParams).toUri(),
+                    HttpMethod.GET,
+                    entity,
+                    String.class);
         if (log.isDebugEnabled()) {
             log.debug(
-                    "Received http GET response {} on url {} ,queryParams {} pathParams {} httpHeaders {}",
-                    responseEntity,
-                    url,
-                    queryParams,
-                    pathParams,
-                    httpHeaders);
+                  "Received http GET response {} on url {} ,queryParams {} pathParams {} httpHeaders {}",
+                  responseEntity,
+                  url,
+                  queryParams,
+                  pathParams,
+                  httpHeaders);
         }
         return responseEntity;
     }
 
     /**
-     * @param url url to which rest call has to be made
+     * @param url         url to which rest call has to be made
      * @param requestBody requestBody with which call has to be made
-     * @param headers Header Properties
+     * @param headers     Header Properties
      * @return
      */
     public ResponseEntity<String> post(String url, String requestBody, Map<String, Object> headers) {
@@ -120,20 +121,20 @@ public class RestClient {
         HttpEntity<String> entity = new HttpEntity<>(requestBody, httpHeaders);
         if (log.isDebugEnabled()) {
             log.debug(
-                    "Invoking http POST req on {}, properties {} , requestBody {}",
-                    url,
-                    headers,
-                    requestBody);
+                  "Invoking http POST req on {}, properties {} , requestBody {}",
+                  url,
+                  headers,
+                  requestBody);
         }
         ResponseEntity<String> responseEntity =
-                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+              restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         if (log.isDebugEnabled()) {
             log.debug(
-                    "Received http POST response on url {} for reqBody {} properties {} responseEntity {}",
-                    url,
-                    requestBody,
-                    headers,
-                    responseEntity);
+                  "Received http POST response on url {} for reqBody {} properties {} responseEntity {}",
+                  url,
+                  requestBody,
+                  headers,
+                  responseEntity);
         }
         return responseEntity;
     }
@@ -149,18 +150,18 @@ public class RestClient {
         HttpEntity<String> entity = new HttpEntity<>(requestBody, httpHeaders);
         if (log.isDebugEnabled()) {
             log.info(
-                    "Invoking http PUT req on {}, properties {} requestBody {} ", url, props, requestBody);
+                  "Invoking http PUT req on {}, properties {} requestBody {} ", url, props, requestBody);
         }
         ResponseEntity<String> responseEntity =
-                restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+              restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 
         if (log.isDebugEnabled()) {
             log.debug(
-                    "Received http PUT response on url {} for reqBody {} properties {} responseEntity {}",
-                    url,
-                    requestBody,
-                    props,
-                    responseEntity);
+                  "Received http PUT response on url {} for reqBody {} properties {} responseEntity {}",
+                  url,
+                  requestBody,
+                  props,
+                  responseEntity);
         }
         return responseEntity;
     }
@@ -170,20 +171,20 @@ public class RestClient {
         HttpEntity<String> entity = new HttpEntity<>(requestBody, httpHeaders);
         if (log.isDebugEnabled()) {
             log.debug(
-                    "Invoking http DELETE req on {}, requestBody {} using headers {}",
-                    url,
-                    requestBody,
-                    props);
+                  "Invoking http DELETE req on {}, requestBody {} using headers {}",
+                  url,
+                  requestBody,
+                  props);
         }
         ResponseEntity<String> responseEntity =
-                restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
+              restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
         if (log.isDebugEnabled()) {
             log.debug(
-                    "Received http DELETE response on url {} for reqBody {} properties {} responseEntity {}",
-                    url,
-                    requestBody,
-                    props,
-                    responseEntity);
+                  "Received http DELETE response on url {} for reqBody {} properties {} responseEntity {}",
+                  url,
+                  requestBody,
+                  props,
+                  responseEntity);
         }
         return responseEntity;
     }

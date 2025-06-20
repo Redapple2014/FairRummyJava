@@ -1,28 +1,36 @@
 package com.skillengine.rummy.message;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class PlayerSequence extends Message
-{
-	private List< Long > playerIdList;
+@EqualsAndHashCode(callSuper = true)
+public final class PlayerSequence extends Message {
 
-	/**
-	 * @param serviceType
-	 * @param msgType
-	 * @param tableId
-	 * @param playerIdList
-	 */
-	public PlayerSequence( long tableId, List< Long > playerIdList )
-	{
-		super( 1, MessageConstants.PLAYER_SEQ, tableId );
-		this.playerIdList = playerIdList;
-	}
+    /* ========== Constant(s) ========== */
+
+    private static final int SERVICE_TYPE = 1;
+
+    /* ========== Private member(s) ========== */
+
+    private List<Long> playerIdList;
+
+    /**
+     * Constructor
+     *
+     * @param tableId      Table Id
+     * @param playerIdList Player Id List
+     */
+    public PlayerSequence(long tableId, List<Long> playerIdList) {
+        super(SERVICE_TYPE, MessageConstants.PLAYER_SEQ, tableId);
+
+        this.playerIdList = playerIdList;
+    }
 
 }

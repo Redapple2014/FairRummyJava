@@ -11,41 +11,36 @@ import com.skillengine.rummy.table.RummyBoard;
 import com.skillengine.rummy.util.ActiveBoards;
 import com.skillengine.sessions.PlayerSession;
 
-public class FMGHandler implements MessageHandler< FMGRequest >
-{
+public class FMGHandler implements MessageHandler<FMGRequest> {
 
-	private TableDetailsDAO dao = null;
+    private TableDetailsDAO dao = null;
 
-	public FMGHandler( TableDetailsDAO dao )
-	{
-		this.dao = dao;
-	}
+    public FMGHandler(TableDetailsDAO dao) {
+        this.dao = dao;
+    }
 
-	@Override
-	public void handleMessage( PlayerSession session, FMGRequest message, long tableId )
-	{
-		if( tableId > 0 )
-		{
-			return;
-		}
-		GameTemplates gameTemplates = GameTemplates.builder().id( 10001 ).maxBuyin( 10000 ).maxPlayer( 6 ).minBuyin( 100 ).minPlayer( 2 ).noOfCards( 52 ).gameStartTime( 20000 )
-				.cardsPerPlayer( 13 ).noOfDeck( 1 ).playerTurnTime( 25000 ).graceTime( 10000 ).pointValue( 1 ).variantType( 1 ).build();
-		long chosenBoardId = ActiveBoards.getTable( gameTemplates.getId() );
-		if( chosenBoardId > 0 )
-		{
-			FMGResponse fmgResponse = new FMGResponse( chosenBoardId );
-			SkillEngineImpl.getInstance().getDispatcher().sendMessage( session, fmgResponse );
-			return;
-		}
-		TableDetails details = new TableDetails();
-		details.setTemplateId( gameTemplates.getId() );
-		details.setStatus( GameGlobals.STARTING );
-		tableId = dao.insertTableDetails( details );
-		RummyBoard board = new RummyBoard( tableId, gameTemplates );
-		ActiveBoards.addTable( tableId, board );
-		ActiveBoards.addTable( gameTemplates.getId(), tableId, System.currentTimeMillis() );
-		FMGResponse fmgResponse = new FMGResponse( tableId );
-		SkillEngineImpl.getInstance().getDispatcher().sendMessage( session, fmgResponse );
-	}
+    @Override
+    public void handleMessage(PlayerSession session, FMGRequest message, long tableId) {
+        if (tableId > 0) {
+            return;
+        }
+        GameTemplates gameTemplates = GameTemplates.builder().id(10001).maxBuyin(10000).maxPlayer(6).minBuyin(100).minPlayer(2).noOfCards(52).gameStartTime(20000)
+              .cardsPerPlayer(13).noOfDeck(1).playerTurnTime(25000).graceTime(10000).pointValue(1).variantType(1).build();
+        long chosenBoardId = ActiveBoards.getTable(gameTemplates.getId());
+        if (chosenBoardId > 0) {
+            FMGResponse fmgResponse = new FMGResponse(chosenBoardId);
+            SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, fmgResponse);
+            return;
+        }
+        TableDetails details = new TableDetails();
+        details.setTemplateId(gameTemplates.getId());
+        details.setStatus(GameGlobals.STARTING);
+        tableId = dao.insertTableDetails(details);
+        RummyBoard board = new RummyBoard(tableId, gameTemplates);
+        ActiveBoards.addTable(tableId, board);
+        ActiveBoards.addTable(gameTemplates.getId(), tableId, System.currentTimeMillis());
+        FMGResponse fmgResponse = new FMGResponse(tableId);
+        SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, fmgResponse);
+    }
 
 }
