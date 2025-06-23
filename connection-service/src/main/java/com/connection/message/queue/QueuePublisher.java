@@ -1,9 +1,9 @@
 package com.connection.message.queue;
 
-import java.io.IOException;
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+
+import java.io.IOException;
 
 public class QueuePublisher implements Publisher {
 

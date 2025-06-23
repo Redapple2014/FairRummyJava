@@ -14,9 +14,9 @@ public class DataSource {
 
     static {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5433/gamedb");
-        config.setUsername("gameuser");
-        config.setPassword("tester");
+        config.setJdbcUrl("jdbc:postgresql://18.191.105.81:5432/fair_rummy_db");
+        config.setUsername("pgadmin");
+        config.setPassword("pgadmin@2025");
         config.setDriverClassName("org.postgresql.Driver");
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);

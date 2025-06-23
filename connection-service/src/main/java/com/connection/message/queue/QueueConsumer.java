@@ -1,10 +1,10 @@
 package com.connection.message.queue;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 public class QueueConsumer implements Consumer {
 

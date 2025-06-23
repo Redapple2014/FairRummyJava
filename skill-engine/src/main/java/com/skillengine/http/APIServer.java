@@ -24,7 +24,7 @@ public class APIServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Server started at http://localhost:8082");
+        System.out.println("Server started at http://18.191.105.81:8082");
     }
 
 }

@@ -25,7 +25,7 @@ public class GameEngineRestClient {
     @Autowired
     private PCObjectMapper pcObjectMapper;
 
-    private String geURL = "http://localhost:8082/";
+    private String geURL = "http://18.191.105.81:8082/";
 
     @PostConstruct
     public void setup() {

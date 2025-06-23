@@ -1,9 +1,5 @@
 package com.connection.jackson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import com.connection.client.msg.Message;
 import com.connection.msg.Frames;
 import com.connection.msg.TransmittedMessage;
@@ -12,6 +8,10 @@ import com.connection.services.ServiceMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class JacksonObjectWrapper {
     private ObjectMapper mapper = null;

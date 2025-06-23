@@ -1,8 +1,6 @@
 package com.connection.client.msg;
 
 import com.connection.msg.MessageConstants;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

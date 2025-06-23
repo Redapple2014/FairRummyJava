@@ -1,9 +1,9 @@
 package com.connection.netty.channels;
 
+import com.connection.services.PlayerSession;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.connection.services.PlayerSession;
 
 public class UserIDVsChannelInfo {
     private static final Map<Long, PlayerSession> userVsChannelInfo = new ConcurrentHashMap<>();

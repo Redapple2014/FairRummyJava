@@ -1,7 +1,5 @@
 package com.connection.main;
 
-import java.io.IOException;
-
 import com.connection.jackson.JacksonObjectWrapper;
 import com.connection.message.queue.CSMessageHandler;
 import com.connection.message.queue.RabbitMQFrameworkImpl;
@@ -10,7 +8,11 @@ import com.connection.msg.dispatcher.CS2ClientDispatcher;
 import com.connection.msg.dispatcher.CS2ServiceDispatcher;
 import com.connection.msg.dispatcher.MessageDispatcher;
 import com.connection.netty.ServerInitializer;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+
+@Slf4j
 public class ConnectionServiceImpl {
     private CS2ClientDispatcher clientDispatcher;
     private MessageDispatcher messageDispatcher;
@@ -79,22 +81,30 @@ public class ConnectionServiceImpl {
     }
 
     public void initMessageQueue() {
+
+        if (log.isInfoEnabled()) {
+            log.info("MQ ..");
+        }
+
+        final String queuePublisher = "ge";
+        final String queueConsumer = "cs";
+
         try {
-            System.out.println("MQ ..");
-            String queuePublisher = "ge";
-            String queueConsumer = "cs";
+
             frameworkImpl = new RabbitMQFrameworkImpl();
+
             frameworkImpl.registerQueuePublisher(queuePublisher);
             frameworkImpl.registerQueueConsumer(queueConsumer, new CSMessageHandler());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to init message queue", e);
         } finally {
-            try {
-                frameworkImpl.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (frameworkImpl != null) {
+                try {
+                    frameworkImpl.close();
+                } catch (IOException e) {
+                    log.error("Failed to close message queue", e);
+                }
             }
         }
     }

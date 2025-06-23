@@ -1,12 +1,20 @@
 package com.connection.main;
 
-public class ConnectionServiceMain {
+/**
+ * Connection service
+ */
+public final class ConnectionServiceMain {
 
+    /**
+     * Main
+     *
+     * @param args Arguments
+     */
     public static void main(String[] args) {
+
         ConnectionServiceImpl connectionServiceImpl = ConnectionServiceImpl.init();
+
         connectionServiceImpl.initMessageQueue();
         connectionServiceImpl.startTheWebServer();
-
     }
-
 }

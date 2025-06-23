@@ -2,7 +2,6 @@ package com.connection.netty;
 
 import com.connection.jackson.JacksonObjectWrapper;
 import com.connection.msg.MessageDigester;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;

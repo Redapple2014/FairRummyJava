@@ -9,16 +9,17 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public class RabbitMQFrameworkImpl implements MessageFramework {
+
     private Connection connection;
 
     private ConcurrentMap<String, Publisher> publishers = new ConcurrentHashMap<>();
     private ConcurrentMap<String, Consumer> listeners = new ConcurrentHashMap<>();
 
     public RabbitMQFrameworkImpl(String mqAlias) throws TimeoutException {
-        String mqIP = "localhost";
-        int mqPort = 5672;
-        String mqUserName = "tester";
-        String mqPassword = "tester";
+        String mqIP = "18.191.105.81";
+        int mqPort = 15672;
+        String mqUserName = "admin";
+        String mqPassword = "admin@123";
         final boolean DEFAULT_AUTO_RECOVERY = true;
         final int DEFAULT_RECOVERY_INTERVAL = 1000;
         ConnectionFactory connectionFactory = new ConnectionFactory();

@@ -1,12 +1,12 @@
 package com.connection.message.queue;
 
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
-
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 public class RabbitMQFrameworkImpl implements MessageFramework {
     private Connection connection;
@@ -15,10 +15,10 @@ public class RabbitMQFrameworkImpl implements MessageFramework {
     private ConcurrentMap<String, Consumer> listeners = new ConcurrentHashMap<>();
 
     public RabbitMQFrameworkImpl() throws TimeoutException {
-        String mqIP = "localhost";
-        int mqPort = 5672;
-        String mqUserName = "tester";
-        String mqPassword = "tester";
+        String mqIP = "18.191.105.81";
+        int mqPort = 15672;
+        String mqUserName = "admin";
+        String mqPassword = "admin@123";
         final boolean DEFAULT_AUTO_RECOVERY = true;
         final int DEFAULT_RECOVERY_INTERVAL = 1000;
         ConnectionFactory connectionFactory = new ConnectionFactory();
@@ -29,6 +29,8 @@ public class RabbitMQFrameworkImpl implements MessageFramework {
         connectionFactory.setVirtualHost("qa1");
         connectionFactory.setAutomaticRecoveryEnabled(DEFAULT_AUTO_RECOVERY);
         connectionFactory.setNetworkRecoveryInterval(DEFAULT_RECOVERY_INTERVAL);
+        connectionFactory.setConnectionTimeout(10_000);
+
         try {
             this.connection = connectionFactory.newConnection();
         } catch (IOException e) {

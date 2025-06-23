@@ -1,11 +1,11 @@
 package com.connection.netty.channels;
 
+import io.netty.channel.Channel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.netty.channel.Channel;
 
 public class ChannelIDChannelInfoMap {
     private static final Map<Long, ChannelInfo> channelIDvsChannelMap = new ConcurrentHashMap<>();

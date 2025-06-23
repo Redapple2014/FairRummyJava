@@ -1,5 +1,17 @@
 package com.connection.msg.dispatcher;
 
+import com.connection.msg.SessionDetails;
+import com.connection.netty.channels.ChannelIDChannelInfoMap;
+import com.connection.netty.channels.ChannelInfo;
+import com.connection.netty.channels.UserIDVsChannelInfo;
+import com.connection.services.PlayerSession;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -8,20 +20,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.connection.msg.SessionDetails;
-import com.connection.netty.channels.ChannelIDChannelInfoMap;
-import com.connection.netty.channels.ChannelInfo;
-import com.connection.netty.channels.UserIDVsChannelInfo;
-import com.connection.services.PlayerSession;
-
-import io.netty.channel.Channel;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 public class CS2ClientDispatcher {
     private ExecutorService executorClientDispatcher;
