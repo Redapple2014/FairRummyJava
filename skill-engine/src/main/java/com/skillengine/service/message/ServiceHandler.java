@@ -14,6 +14,7 @@ import com.skillengine.rummy.message.LeaveBoard;
 import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.PickClosedDeck;
 import com.skillengine.rummy.message.PickOpenDeck;
+import com.skillengine.rummy.message.PingMessage;
 import com.skillengine.rummy.message.PlayerTableJoin;
 import com.skillengine.rummy.message.SetHandCards;
 import com.skillengine.rummy.message.TableCreation;
@@ -29,6 +30,7 @@ import com.skillengine.rummy.message.handler.HandCardHandler;
 import com.skillengine.rummy.message.handler.LeaveBoardHandler;
 import com.skillengine.rummy.message.handler.PickCloseHandler;
 import com.skillengine.rummy.message.handler.PickOpenHandler;
+import com.skillengine.rummy.message.handler.PingHandler;
 import com.skillengine.rummy.message.handler.PlayerJoinHandler;
 import com.skillengine.rummy.message.handler.SetupHandler;
 import com.skillengine.rummy.message.handler.TableCreationHandler;
@@ -76,7 +78,7 @@ public final class ServiceHandler {
 
         // log
         if (log.isDebugEnabled()) {
-            log.debug("Message: {}", serviceMessage);
+            log.info("Message: {}", serviceMessage);
         }
 
         switch (gamePayloadMessage) {
@@ -107,6 +109,8 @@ public final class ServiceHandler {
                   new TableReconnectionHandler().handleMessage(playerSession, tableReconReq, serviceMessage.getReceiverId());
             case SetHandCards handcards ->
                   new HandCardHandler().handleMessage(playerSession, handcards, serviceMessage.getReceiverId());
+            case PingMessage message ->
+                  new PingHandler().handleMessage(playerSession, message, serviceMessage.getReceiverId());
             case GameHistoryMessage message ->
                   new GameHistoryHandler().handleMessage(playerSession, message, serviceMessage.getReceiverId());
             default -> throw new IllegalArgumentException("Unexpected value: " + gamePayloadMessage);

@@ -1,7 +1,9 @@
 package com.connection.msg;
 
+import com.connection.client.msg.EchoRequest;
 import com.connection.client.msg.HandShakeRequest;
 import com.connection.client.msg.PingRequest;
+import com.connection.client.msg.handler.EchoHandler;
 import com.connection.client.msg.handler.HandShakeHandler;
 import com.connection.client.msg.handler.PingHandler;
 import com.connection.jackson.JacksonObjectWrapper;
@@ -43,6 +45,8 @@ public class MessageDigester {
                     PingHandler pingHandler = new PingHandler(jacksonObjectWrapper);
                     pingHandler.handleMessage(playerSession, jacksonObjectWrapper.readValue(messageParser.getSrvMsg(), PingRequest.class));
                     break;
+                case MessageConstants.ECHO_REQUEST:
+                    new EchoHandler(jacksonObjectWrapper).handleMessage(playerSession, jacksonObjectWrapper.readValue(messageParser.getSrvMsg(), EchoRequest.class));
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

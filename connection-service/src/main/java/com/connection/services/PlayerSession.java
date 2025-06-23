@@ -6,13 +6,6 @@ public class PlayerSession {
     private long userID;
     private int serviceId;
 
-    /**
-     * @return the serviceId
-     */
-    public int getServiceId() {
-        return serviceId;
-    }
-
     public PlayerSession() {
     }
 
@@ -28,6 +21,13 @@ public class PlayerSession {
 
     public long getChannelID() {
         return channelID;
+    }
+
+    /**
+     * @return the serviceId
+     */
+    public int getServiceId() {
+        return serviceId;
     }
 
     @Override

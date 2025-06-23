@@ -51,7 +51,9 @@ public final class MessageConstants {
     public static final String TABLE_RECON_REQ = "tableReconReq";
     public static final String SET_HAND_CARDS = "setHandCards";
 
+    public static final String PING = "PING";
     public static final String GAME_HISTORY = "GAME_HISTORY";
+    public static final String GAME_HISTORY_RESPONSE = "GAME_HISTORY_RESPONSE";
 
     /**
      * Private constructor

@@ -21,7 +21,5 @@ public class PingHandler implements MessageHandler<PingRequest> {
         PingResponse pingResponse = new PingResponse(message.getUserId(), System.currentTimeMillis());
         String response = jacksonObjectWrapper.writeValueAsString(pingResponse);
         ConnectionServiceImpl.getInstance().getMessageDispatcher().sendMessage(session, response);
-
     }
-
 }

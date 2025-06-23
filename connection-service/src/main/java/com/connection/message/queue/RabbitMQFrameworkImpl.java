@@ -9,24 +9,28 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
 
 public class RabbitMQFrameworkImpl implements MessageFramework {
+
     private Connection connection;
 
     private ConcurrentMap<String, Publisher> publishers = new ConcurrentHashMap<>();
     private ConcurrentMap<String, Consumer> listeners = new ConcurrentHashMap<>();
 
     public RabbitMQFrameworkImpl() throws TimeoutException {
+
         String mqIP = "18.191.105.81";
-        int mqPort = 15672;
+        int mqPort = 5672;
         String mqUserName = "admin";
         String mqPassword = "admin@123";
+
         final boolean DEFAULT_AUTO_RECOVERY = true;
         final int DEFAULT_RECOVERY_INTERVAL = 1000;
+
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost(mqIP);
         connectionFactory.setPort(mqPort);
         connectionFactory.setUsername(mqUserName);
         connectionFactory.setPassword(mqPassword);
-        connectionFactory.setVirtualHost("qa1");
+        connectionFactory.setVirtualHost("/");
         connectionFactory.setAutomaticRecoveryEnabled(DEFAULT_AUTO_RECOVERY);
         connectionFactory.setNetworkRecoveryInterval(DEFAULT_RECOVERY_INTERVAL);
         connectionFactory.setConnectionTimeout(10_000);

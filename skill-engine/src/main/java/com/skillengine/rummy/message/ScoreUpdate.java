@@ -1,28 +1,27 @@
 package com.skillengine.rummy.message;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ScoreUpdate extends Message {
-    private String jokerCardId;
-    private List<UserScore> userScore;
+
+    private final String jokerCardId;
+    private final List<UserScore> userScores;
 
     /**
-     * @param serviceType
-     * @param msgType
-     * @param tableId
-     * @param jokerCardId
-     * @param userScore
+     * Constructor
+     *
+     * @param tableId     Table id
+     * @param jokerCardId Joker card id
+     * @param userScores  User scores
      */
-    public ScoreUpdate(long tableId, String jokerCardId, List<UserScore> userScore) {
+    public ScoreUpdate(long tableId, String jokerCardId, List<UserScore> userScores) {
         super(1, MessageConstants.SCORE_UPDATE, tableId);
+
         this.jokerCardId = jokerCardId;
-        this.userScore = userScore;
+        this.userScores = userScores;
     }
 }

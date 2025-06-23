@@ -17,7 +17,7 @@ public class RabbitMQFrameworkImpl implements MessageFramework {
 
     public RabbitMQFrameworkImpl(String mqAlias) throws TimeoutException {
         String mqIP = "18.191.105.81";
-        int mqPort = 15672;
+        int mqPort = 5672;
         String mqUserName = "admin";
         String mqPassword = "admin@123";
         final boolean DEFAULT_AUTO_RECOVERY = true;
@@ -27,7 +27,7 @@ public class RabbitMQFrameworkImpl implements MessageFramework {
         connectionFactory.setPort(mqPort);
         connectionFactory.setUsername(mqUserName);
         connectionFactory.setPassword(mqPassword);
-        connectionFactory.setVirtualHost("qa1");
+        // connectionFactory.setVirtualHost("qa1");
         connectionFactory.setAutomaticRecoveryEnabled(DEFAULT_AUTO_RECOVERY);
         connectionFactory.setNetworkRecoveryInterval(DEFAULT_RECOVERY_INTERVAL);
         try {

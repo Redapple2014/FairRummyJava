@@ -1,5 +1,6 @@
 package com.skillengine.rummy.game;
 
+import com.skillengine.repository.GameRepository;
 import com.skillengine.rummy.cards.CardId;
 import com.skillengine.rummy.globals.PlayerKickOutState;
 import com.skillengine.rummy.globals.ResultantGameTypes;
@@ -1337,7 +1338,7 @@ public class RummyGame extends TrickTakingGame {
             UserScore userScore = getPlayerScoreObj(declaredPlayer, score, status);
             playerScoreList.add(userScore);
         }
-        List<Long> declaringPlayers = new ArrayList<Long>(getOrderedPlayerIds());
+        List<Long> declaringPlayers = new ArrayList<>(getOrderedPlayerIds());
         declaringPlayers.removeAll(getKnockedOutPlayer().keySet());
         declaringPlayers.removeAll(playerScoreMap.keySet());
         for (long declaringPlayer : declaringPlayers) {
@@ -1350,8 +1351,18 @@ public class RummyGame extends TrickTakingGame {
         }
 
         ScoreUpdate scoreBoard = new ScoreUpdate(table.getTableId(), handModel.getJokerCard().toString(), playerScoreList);
+
+        // save in database
+        try {
+            GameRepository.getInstance().save(scoreBoard);
+        } catch (Exception e) {
+            log.error("Failed to save score board in database", e);
+        }
+
         table.setScoreWindow(scoreBoard);
         table.getDispatcher().sendMessage(table.getAllplayer(), scoreBoard);
+
+        // why log error ????
         log.error("TableId : " + table.getTableId() + "   sendScoreBoard  : " + scoreBoard + "  all Players :" + table.getAllplayer());
 
     }

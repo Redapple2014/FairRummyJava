@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserIDVsChannelInfo {
+
     private static final Map<Long, PlayerSession> userVsChannelInfo = new ConcurrentHashMap<>();
 
     public static PlayerSession put(long userId, long channelId, int serviceId) {

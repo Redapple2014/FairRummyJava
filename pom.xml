@@ -53,7 +53,7 @@
         <guava.version>33.4.8-jre</guava.version>
         <hikaricp.version>6.3.0</hikaricp.version>
         <jackson.version>2.19.0</jackson.version>
-        <jdbi3.version>3.49.4</jdbi3.version>
+        <jdbi3.version>3.49.5</jdbi3.version>
         <jjwt.version>0.12.6</jjwt.version>
         <jspecify.version>1.0.0</jspecify.version>
         <junit.version>5.12.2</junit.version>

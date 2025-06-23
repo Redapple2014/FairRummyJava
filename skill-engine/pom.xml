@@ -29,6 +29,14 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!-- JDBI -->
+
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-core</artifactId>
+            <version>${jdbi3.version}</version>
+        </dependency>
+
         <!-- RabbitMQ -->
 
         <dependency>

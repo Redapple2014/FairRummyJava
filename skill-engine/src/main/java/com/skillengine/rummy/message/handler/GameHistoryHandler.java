@@ -1,15 +1,33 @@
 package com.skillengine.rummy.message.handler;
 
+import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.repository.GameRepository;
 import com.skillengine.rummy.message.GameHistoryMessage;
+import com.skillengine.rummy.message.GameHistoryResponse;
+import com.skillengine.rummy.message.ScoreUpdate;
 import com.skillengine.sessions.PlayerSession;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+
+import java.util.List;
 
 @Slf4j
 public final class GameHistoryHandler implements MessageHandler<GameHistoryMessage> {
 
     @Override
     public void handleMessage(@NonNull PlayerSession session, @NonNull GameHistoryMessage message, long tableId) {
+
+        // fetch game history and send back
         log.info("Game History Message: {}", message);
+
+        // get scores from database
+        List<ScoreUpdate> scoreUpdates =
+              GameRepository.getInstance().history(session.getUserID(), message.getLimit());
+
+        // build response
+        GameHistoryResponse response = new GameHistoryResponse(scoreUpdates);
+
+        // send response
+        SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, response);
     }
 }
