@@ -1396,7 +1396,7 @@ public class RummyGame extends TrickTakingGame {
         if (playerId != winner) {
             userScore = -(userScore * pointValue);
         }
-        UserScore userScoreMsg = new UserScore(playerId, userScore, getCustomGroupedCards(playerId), status, table.getGameTemplates().getPointValue());
+        UserScore userScoreMsg = new UserScore(playerId, userScore, table.getGameTemplates().getPointValue(), status, getCustomGroupedCards(playerId));
         return userScoreMsg;
     }
 

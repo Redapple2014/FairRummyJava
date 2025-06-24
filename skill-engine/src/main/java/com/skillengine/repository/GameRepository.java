@@ -16,21 +16,23 @@ import org.jspecify.annotations.NonNull;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.sql.Types.ARRAY;
 import static java.sql.Types.INTEGER;
 import static java.sql.Types.REF_CURSOR;
 import static java.sql.Types.TIMESTAMP_WITH_TIMEZONE;
 import static java.sql.Types.VARCHAR;
-import static java.util.stream.Collectors.groupingBy;
 import static org.jdbi.v3.core.transaction.TransactionIsolationLevel.READ_COMMITTED;
 
+/**
+ * Game repository
+ */
 public final class GameRepository implements AutoCloseable {
 
     private final Jdbi jdbi;
@@ -59,6 +61,11 @@ public final class GameRepository implements AutoCloseable {
         });
     }
 
+    /**
+     * Get game repository instance
+     *
+     * @return Instance of game repository
+     */
     public static GameRepository getInstance() {
         return INSTANCE;
     }
@@ -73,38 +80,18 @@ public final class GameRepository implements AutoCloseable {
         jdbi.useTransaction(READ_COMMITTED, handle -> {
 
             handle.createUpdate("""
-                            INSERT INTO public.games_history (
-                                game_table_id,
-                                game_joker_card_id,
-                                game_date_time
-                            ) VALUES (
-                                :game_table_id,
-                                :game_joker_card_id,
-                                :game_date_time
-                            )
+                        INSERT INTO public.games_history (game_table_id, game_joker_card_id, game_date_time)
+                            VALUES (:game_table_id, :game_joker_card_id, :game_date_time)
                         """)
                   .attachToHandleForCleanup()
                   .bindBySqlType("game_table_id", score.getTableId(), INTEGER)
                   .bindBySqlType("game_joker_card_id", score.getJokerCardId(), VARCHAR)
-                  .bindBySqlType("game_date_time", Timestamp.from(OffsetDateTime.now(ZoneOffset.UTC).toInstant()), TIMESTAMP_WITH_TIMEZONE)
+                  .bindBySqlType("game_date_time", OffsetDateTime.now(ZoneOffset.UTC), TIMESTAMP_WITH_TIMEZONE)
                   .execute();
 
             Update update = handle.createUpdate("""
-                            INSERT INTO public.games_history_players (
-                                game_table_id,
-                                game_player_id,
-                                game_player_score,
-                                game_player_status,
-                                game_txn_amount,
-                                game_cards
-                            ) VALUES (
-                                :game_table_id,
-                                :game_player_id,
-                                :game_player_score,
-                                :game_player_status,
-                                :game_txn_amount,
-                                :game_cards
-                            )
+                        INSERT INTO public.games_history_players (game_table_id, game_player_id, game_player_score, game_player_status, game_txn_amount, game_cards)
+                            VALUES (:game_table_id, :game_player_id, :game_player_score, :game_player_status, :game_txn_amount, :game_cards)
                         """)
                   .attachToHandleForCleanup()
                   .bindBySqlType("game_table_id", score.getTableId(), INTEGER);
@@ -134,40 +121,49 @@ public final class GameRepository implements AutoCloseable {
      * @param limit    Limit
      * @return List of score updates
      */
-    public List<ScoreUpdate> history(long playerId, int limit) {
+    public @NonNull List<ScoreUpdate> history(long playerId, int limit) {
 
-        return jdbi.inTransaction(READ_COMMITTED, handle -> handle
-              .createCall("{ call public.proc_games_history(:game_player_id, :game_history_limit, :game_history_cursor) }")
+        final List<TableData> tables = jdbi.inTransaction(READ_COMMITTED, handle -> handle
+              .createCall("{ call public.proc_games_tables_by_player(:games_player_id, :games_history_limit, :games_tables_cursor) }")
               .attachToHandleForCleanup()
-              .bindBySqlType("game_player_id", playerId, INTEGER)
-              .bindBySqlType("game_history_limit", limit, INTEGER)
-              .registerOutParameter("game_history_cursor", REF_CURSOR)
+              .bindBySqlType("games_player_id", playerId, INTEGER)
+              .bindBySqlType("games_history_limit", limit, INTEGER)
+              .registerOutParameter("games_tables_cursor", REF_CURSOR)
               .invoke(outParams -> {
+                  return outParams.getRowSet("games_tables_cursor")
+                        .map(new GameTableRowMapper())
+                        .collect(Collectors.toList());
+              })
+        );
 
-                  var result = outParams.getRowSet("game_history_cursor")
-                        .map(new GameHistoryRowMapper())
-                        .collect(groupingBy(GameData::getTableId));
+        final List<ScoreUpdate> scoreUpdates = new ArrayList<>(tables.size());
 
-                  final List<ScoreUpdate> scoreUpdates = new ArrayList<>(limit);
+        for (var table : tables) {
 
-                  for (var entry : result.entrySet()) {
+            final List<UserScore> players = jdbi.inTransaction(READ_COMMITTED, handle -> handle
+                  .createCall("{ call public.proc_games_tables_players(:games_table_id, :games_table_players_cursor) }")
+                  .attachToHandleForCleanup()
+                  .bindBySqlType("games_table_id", table.getTableId(), INTEGER)
+                  .registerOutParameter("games_table_players_cursor", REF_CURSOR)
+                  .invoke(outParams -> {
 
-                      var userScores = entry.getValue().stream()
-                            .map(score -> UserScore.builder()
-                                  .playingPlayerId(score.playerId)
-                                  .score(score.playerScore)
-                                  .status(score.playerStatus)
-                                  .txnAmt(score.txnAmount)
-                                  .cardIds(convertToList(score.cards))
-                                  .build()
-                            )
-                            .toList();
+                      return outParams.getRowSet("games_table_players_cursor")
+                            .map(new GamePlayerRowMapper())
+                            .map(player -> UserScore.builder()
+                                  .playingPlayerId(player.getId())
+                                  .score(player.getScore())
+                                  .status(player.getStatus())
+                                  .txnAmt(player.getTxnAmount())
+                                  .cardIds(convertToList(player.getCards()))
+                                  .build())
+                            .collect(Collectors.toList());
+                  })
+            );
 
-                      scoreUpdates.add(new ScoreUpdate(entry.getKey(), "", userScores));
-                  }
+            scoreUpdates.add(new ScoreUpdate(table.getTableId(), table.getJokerCardId(), players));
+        }
 
-                  return scoreUpdates;
-              }));
+        return scoreUpdates;
     }
 
     @Override
@@ -182,33 +178,51 @@ public final class GameRepository implements AutoCloseable {
     }
 
     /**
-     * Game history row mapper
+     * Game table row mapper
      */
-    private static final class GameHistoryRowMapper implements RowMapper<GameData> {
+    private static final class GameTableRowMapper implements RowMapper<TableData> {
 
         @Override
-        public GameData map(ResultSet rs, StatementContext ctx) throws SQLException {
+        public TableData map(ResultSet rs, StatementContext ctx) throws SQLException {
+            return TableData.builder()
+                  .tableId(rs.getInt("game_table_id"))
+                  .jokerCardId(rs.getString("game_joker_card_id"))
+                  .dateTime(OffsetDateTime.ofInstant(rs.getTimestamp("game_date_time").toInstant(), ZoneOffset.UTC))
+                  .build();
+        }
+    }
 
-            GameData.Builder builder = GameData.builder();
+    /**
+     * Game player row mapper
+     */
+    private static final class GamePlayerRowMapper implements RowMapper<PlayerData> {
 
-            builder.tableId(rs.getInt("game_table_id"));
-            builder.playerId(rs.getInt("game_player_id"));
-            builder.playerScore(rs.getInt("game_player_score"));
-            builder.playerStatus(rs.getInt("game_player_status"));
-            builder.txnAmount(rs.getInt("game_txn_amount"));
-            builder.cards((String[][]) rs.getArray("game_cards").getArray());
-
-            return builder.build();
+        @Override
+        public PlayerData map(ResultSet rs, StatementContext ctx) throws SQLException {
+            return PlayerData.builder()
+                  .id(rs.getInt("game_player_id"))
+                  .score(rs.getInt("game_player_score"))
+                  .status(rs.getInt("game_player_status"))
+                  .txnAmount(rs.getInt("game_txn_amount"))
+                  .cards((String[][]) rs.getArray("game_cards").getArray())
+                  .build();
         }
     }
 
     @Data
     @Builder(builderClassName = "Builder")
-    private static final class GameData {
+    private static final class TableData {
         private final int tableId;
-        private final int playerId;
-        private final int playerScore;
-        private final int playerStatus;
+        private final String jokerCardId;
+        private final OffsetDateTime dateTime;
+    }
+
+    @Data
+    @Builder(builderClassName = "Builder")
+    private static final class PlayerData {
+        private final int id;
+        private final int score;
+        private final int status;
         private final int txnAmount;
         private final String[][] cards;
     }

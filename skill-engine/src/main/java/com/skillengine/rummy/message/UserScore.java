@@ -2,14 +2,12 @@ package com.skillengine.rummy.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
+@Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder(builderClassName = "Builder")
 public class UserScore {
 

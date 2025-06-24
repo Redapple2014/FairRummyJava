@@ -1,11 +1,12 @@
 package com.skillengine.rummy.message;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
+@ToString
 public class ScoreUpdate extends Message {
 
     private final String jokerCardId;

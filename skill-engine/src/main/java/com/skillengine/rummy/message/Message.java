@@ -2,12 +2,14 @@ package com.skillengine.rummy.message;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Message
  */
 @Getter
 @NoArgsConstructor
+@ToString
 public abstract class Message {
 
     private int serviceType;
