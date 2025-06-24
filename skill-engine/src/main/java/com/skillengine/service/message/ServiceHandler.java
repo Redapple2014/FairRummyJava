@@ -9,7 +9,7 @@ import com.skillengine.rummy.message.DiscardCardReq;
 import com.skillengine.rummy.message.Drop;
 import com.skillengine.rummy.message.FMGRequest;
 import com.skillengine.rummy.message.Finish;
-import com.skillengine.rummy.message.GameHistoryMessage;
+import com.skillengine.rummy.message.GameHistoryRequest;
 import com.skillengine.rummy.message.LeaveBoard;
 import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.PickClosedDeck;
@@ -111,7 +111,7 @@ public final class ServiceHandler {
                   new HandCardHandler().handleMessage(playerSession, handcards, serviceMessage.getReceiverId());
             case PingMessage message ->
                   new PingHandler().handleMessage(playerSession, message, serviceMessage.getReceiverId());
-            case GameHistoryMessage message ->
+            case GameHistoryRequest message ->
                   new GameHistoryHandler().handleMessage(playerSession, message, serviceMessage.getReceiverId());
             default -> throw new IllegalArgumentException("Unexpected value: " + gamePayloadMessage);
         }

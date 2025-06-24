@@ -5,12 +5,14 @@ import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.service.message.ServiceMessage;
 import com.skillengine.sessions.PlayerSession;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class MessageDispatcher {
     private Jackson parse;
     private final String QUEUE_NAME = "cs";
@@ -86,7 +88,11 @@ public class MessageDispatcher {
         int serviceId = playerSession.getServiceId();
         ServiceMessage srvMsg = new ServiceMessage(parse.writeValueAsString(msg), parse.writeValueAsString(playerSession), -1l);
         String finalMsg = parse.writeValueAsString(srvMsg);
+
         SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+
+        // log
+        log.info("MessageDispatcher.sendMessage: {}", finalMsg);
     }
 
     private boolean isBlocked(long playerId) {

@@ -22,7 +22,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.connection.main.ConnectionServiceMain</mainClass>
+                  <mainClass>com.fcesur.cs.main.ConnectionServiceMain</mainClass>
                 </transformer>
               </transformers>
             </configuration>

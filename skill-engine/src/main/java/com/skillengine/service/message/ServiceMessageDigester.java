@@ -8,7 +8,7 @@ import com.skillengine.rummy.message.DiscardCardReq;
 import com.skillengine.rummy.message.Drop;
 import com.skillengine.rummy.message.FMGRequest;
 import com.skillengine.rummy.message.Finish;
-import com.skillengine.rummy.message.GameHistoryMessage;
+import com.skillengine.rummy.message.GameHistoryRequest;
 import com.skillengine.rummy.message.LeaveBoard;
 import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.MessageConstants;
@@ -51,7 +51,7 @@ public class ServiceMessageDigester {
             case MessageConstants.FMG_REQUEST -> jackson.readValue(payload, FMGRequest.class);
             case MessageConstants.TABLE_RECON_REQ -> jackson.readValue(payload, TableReconReq.class);
             case MessageConstants.SET_HAND_CARDS -> jackson.readValue(payload, SetHandCards.class);
-            case MessageConstants.GAME_HISTORY -> jackson.readValue(payload, GameHistoryMessage.class);
+            case MessageConstants.GAME_HISTORY -> jackson.readValue(payload, GameHistoryRequest.class);
             default -> null;
         };
     }
