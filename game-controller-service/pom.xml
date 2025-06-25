@@ -122,10 +122,13 @@
             <version>2.5.6</version>
         </dependency>
     </dependencies>
-    <build>
 
+    <!-- Build -->
+
+    <build>
         <finalName>game-controller-service</finalName>
 
+        <!-- Plugins -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

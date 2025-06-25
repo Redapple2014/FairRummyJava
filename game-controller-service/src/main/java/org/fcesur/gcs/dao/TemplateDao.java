@@ -24,13 +24,13 @@ public class TemplateDao {
           throws TemplateInternalServerException, TemplateBadRequestException {
 
         Template template = mapToTemplate(templateCreateRequestDTO);
-        gameTemplateMapper.save(template);
+        gameTemplateMapper.saveAndFlush(template);
 
         return template;
     }
 
     public Template getTemplate(int templateId) {
-        return gameTemplateMapper.findById(templateId).orElse(null);
+        return gameTemplateMapper.findOne(templateId).orElse(null);
     }
 
     public List<Template> searchAllActiveTemplates() {
