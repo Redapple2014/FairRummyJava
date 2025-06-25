@@ -1,13 +1,13 @@
 package org.fcesur.gcs.config;
 
-import javax.sql.DataSource;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+
+import javax.sql.DataSource;
 
 /**
  * Provides a DataSource instance based on config values in properties with the "member.database" prefix.
@@ -25,5 +25,4 @@ public class MemberDataSource {
     public DataSource dataSourceMember() {
         return DataSourceBuilder.create().build();
     }
-
 }

@@ -4,8 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>game-controller-service</artifactId>
+    <artifactId>game-service</artifactId>
     <packaging>jar</packaging>
+
+    <name>Fair Rummy Game Controller Service</name>
+    <description>Game Controller Service for Fair Rummy</description>
 
     <parent>
         <artifactId>parent</artifactId>
@@ -28,15 +31,30 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>2.5.6</version>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-            <version>2.5.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.data</groupId>-->
+        <!--            <artifactId>spring-data-jpa</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- Gson -->
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -45,17 +63,18 @@
         </dependency>
 
         <!-- Jackson -->
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.18.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.18.2</version>
         </dependency>
+
+        <!-- Javax -->
 
         <dependency>
             <groupId>javax.validation</groupId>
@@ -64,15 +83,23 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
-        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <!-- Http components -->
+
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.5</version>
         </dependency>
 
         <dependency>
@@ -87,24 +114,6 @@
             <version>42.7.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>2.5.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.5.6</version>
-        </dependency>
-
         <!-- JAXB dependencies required for Java 11+ -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -116,17 +125,13 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>2.5.6</version>
-        </dependency>
+
     </dependencies>
 
     <!-- Build -->
 
     <build>
-        <finalName>game-controller-service</finalName>
+        <finalName>game-service</finalName>
 
         <!-- Plugins -->
         <plugins>

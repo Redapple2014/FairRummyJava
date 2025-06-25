@@ -1,49 +1,49 @@
 package org.fcesur.gcs.message.queue;
 
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
 
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-
 public class RabbitMQMessageFramework implements MessageFramework {
 
-    private Connection connection;
+    private static final String MQ_IP = "18.191.105.81";
+    private static final Integer MQ_PORT = 5672;
+    private static final String MQ_USER_NAME = "admin";
+    private static final String MQ_PASSWORD = "admin@123";
 
-    private ConcurrentMap<String, Publisher> publishers = new ConcurrentHashMap<>();
-    private ConcurrentMap<String, Consumer> listeners = new ConcurrentHashMap<>();
+    private static final boolean DEFAULT_AUTO_RECOVERY = true;
+    private static final int DEFAULT_RECOVERY_INTERVAL = 1000;
+    private static final int DEFAULT_CONNECTION_TIMEOUT = 10000;
 
-    public RabbitMQMessageFramework(String mqAlias) throws TimeoutException {
-        String mqIP = "18.191.105.81";
-        int mqPort = 5672;
-        String mqUserName = "admin";
-        String mqPassword = "admin@123";
-        final boolean DEFAULT_AUTO_RECOVERY = true;
-        final int DEFAULT_RECOVERY_INTERVAL = 1000;
+    private final Connection connection;
+
+    private final ConcurrentMap<String, Publisher> publishers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Consumer> consumers = new ConcurrentHashMap<>();
+
+    /**
+     * Constructor
+     *
+     * @param mqAlias
+     * @throws TimeoutException
+     */
+    public RabbitMQMessageFramework(String mqAlias) throws TimeoutException, IOException {
 
         ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(mqIP);
-        connectionFactory.setPort(mqPort);
-        connectionFactory.setUsername(mqUserName);
-        connectionFactory.setPassword(mqPassword);
-        // connectionFactory.setVirtualHost("qa1");
+
+        connectionFactory.setHost(MQ_IP);
+        connectionFactory.setPort(MQ_PORT);
+        connectionFactory.setUsername(MQ_USER_NAME);
+        connectionFactory.setPassword(MQ_PASSWORD);
+        connectionFactory.setVirtualHost("/");
         connectionFactory.setAutomaticRecoveryEnabled(DEFAULT_AUTO_RECOVERY);
         connectionFactory.setNetworkRecoveryInterval(DEFAULT_RECOVERY_INTERVAL);
+        connectionFactory.setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
 
-        try {
-            this.connection = connectionFactory.newConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.err.println("this.connection.isOpen()" + this.connection.isOpen());
-    }
-
-    @Override
-    public void close() throws IOException {
-        // TODO Auto-generated method stub
-
+        this.connection = connectionFactory.newConnection();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class RabbitMQMessageFramework implements MessageFramework {
     public boolean registerQueueConsumer(String queueName, MessageHandler messageHandler) {
         boolean result = false;
         Consumer tempConsumer = new QueueConsumer(connection, queueName, messageHandler);
-        Consumer consumer = listeners.putIfAbsent(queueName, tempConsumer);
+        Consumer consumer = consumers.putIfAbsent(queueName, tempConsumer);
         System.out.println("consumer" + consumer);
         if (consumer != null) {
             try {
@@ -83,4 +83,8 @@ public class RabbitMQMessageFramework implements MessageFramework {
 
     }
 
+    @Override
+    public void close() throws IOException {
+        this.connection.close();
+    }
 }

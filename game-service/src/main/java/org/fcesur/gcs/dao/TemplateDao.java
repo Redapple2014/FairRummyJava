@@ -1,11 +1,11 @@
 package org.fcesur.gcs.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.fcesur.gcs.exception.TemplateBadRequestException;
 import org.fcesur.gcs.exception.TemplateInternalServerException;
 import org.fcesur.gcs.mapper.GameTemplateMapper;
 import org.fcesur.gcs.model.entity.Template;
 import org.fcesur.gcs.request.dto.TemplateCreateRequestDTO;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,7 @@ public class TemplateDao {
     }
 
     public Template getTemplate(int templateId) {
-        return gameTemplateMapper.findOne(templateId).orElse(null);
+        return gameTemplateMapper.findById(templateId).orElse(null);
     }
 
     public List<Template> searchAllActiveTemplates() {

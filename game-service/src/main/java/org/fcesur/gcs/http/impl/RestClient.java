@@ -1,17 +1,10 @@
 package org.fcesur.gcs.http.impl;
 
 
-import static org.springframework.util.StringUtils.hasText;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,6 +14,11 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Map;
 
 @Slf4j
 public class RestClient {
@@ -62,7 +60,7 @@ public class RestClient {
         PoolingHttpClientConnectionManager conMan = new PoolingHttpClientConnectionManager();
         conMan.setDefaultMaxPerRoute(100);
         conMan.setMaxTotal(100);
-        conMan.setValidateAfterInactivity(100);
+        // conMan.setValidateAfterInactivity(100);
         return conMan;
     }
 
