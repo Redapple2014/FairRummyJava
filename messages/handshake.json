@@ -1,0 +1,10 @@
+{
+  "authorizationtoken": "200",
+  "serviceType": "cs",
+  "timestamp": 1739811092,
+  "receiverId": 12345,
+  "payload": {
+    "msgType": "handShake",
+    "userId": 200
+  }
+}

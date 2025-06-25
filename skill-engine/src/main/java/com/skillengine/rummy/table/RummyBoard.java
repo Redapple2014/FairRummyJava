@@ -7,7 +7,7 @@ import com.skillengine.dto.ExitDetails;
 import com.skillengine.dto.PointSettlementInfo;
 import com.skillengine.dto.SettlementCurrencyInfo;
 import com.skillengine.dto.TableStatusInfo;
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.rummy.game.GameStateChanges;
 import com.skillengine.rummy.game.RummyGame;
 import com.skillengine.rummy.game.UserHandInfo;
@@ -75,7 +75,7 @@ public class RummyBoard extends Board {
 
             tableTimer = new Timer("Board-" + tableId, true);
             setStatus(GameGlobals.TABLE_OPEN);
-            dispatcher = new MessageDispatcher(SkillEngineImpl.getInstance().getJackson());
+            dispatcher = new MessageDispatcher(SkillEngine.getInstance().getJackson());
             currencyService = new CurrencyServiceImpl();
             ActiveBoards.addTable(tableId, this);
         } catch (Exception e) {

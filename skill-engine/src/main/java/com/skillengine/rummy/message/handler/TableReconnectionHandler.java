@@ -1,6 +1,6 @@
 package com.skillengine.rummy.message.handler;
 
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.rummy.message.ExitLobby;
 import com.skillengine.rummy.message.TableReconReq;
 import com.skillengine.rummy.table.RummyBoard;
@@ -15,19 +15,19 @@ public class TableReconnectionHandler implements MessageHandler<TableReconReq> {
         long playerId = session.getUserID();
         if (tableId <= 0) {
             ExitLobby exitLobby = new ExitLobby(tableId, playerId, "Table Is Invalid");
-            SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, exitLobby);
+            SkillEngine.getInstance().getDispatcher().sendMessage(session, exitLobby);
             return;
         }
         RummyBoard rummyBoard = (RummyBoard) ActiveBoards.getTable(tableId);
         if (rummyBoard == null) {
             ExitLobby exitLobby = new ExitLobby(tableId, playerId, "Table Is Closed/Invalid");
-            SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, exitLobby);
+            SkillEngine.getInstance().getDispatcher().sendMessage(session, exitLobby);
             return;
         }
         boolean isPresent = rummyBoard.isPlayerAlreadyPresent(playerId);
         if (!isPresent) {
             ExitLobby exitLobby = new ExitLobby(tableId, playerId, "No Presence Of Player");
-            SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, exitLobby);
+            SkillEngine.getInstance().getDispatcher().sendMessage(session, exitLobby);
             return;
         }
         rummyBoard.checkWhetherPlayerIsAlready(playerId);

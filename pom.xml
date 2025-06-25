@@ -16,6 +16,7 @@
 
     <modules>
         <module>connection-service</module>
+        <module>game-controller-service</module>
         <module>skill-engine</module>
     </modules>
 

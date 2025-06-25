@@ -2,7 +2,7 @@ package com.skillengine.http.handler;
 
 import com.skillengine.dto.BoardCreationInfo;
 import com.skillengine.dto.TemplateInfo;
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.message.parsers.Jackson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -25,7 +25,7 @@ public class TemplateHandler implements HttpHandler {
         if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
             InputStream inputStream = exchange.getRequestBody();
             TemplateInfo info = parser.readValue(inputStream, TemplateInfo.class);
-            BoardCreationInfo boardCreationInfo = SkillEngineImpl.getInstance().getBoardCreationService().boardCreation(info.getTemplateId());
+            BoardCreationInfo boardCreationInfo = SkillEngine.getInstance().getBoardCreationService().boardCreation(info.getTemplateId());
             String response = parser.writeValueAsString(boardCreationInfo);
             exchange.getResponseHeaders().set("Content-Type", "application/json");
             exchange.sendResponseHeaders(200, response.length());

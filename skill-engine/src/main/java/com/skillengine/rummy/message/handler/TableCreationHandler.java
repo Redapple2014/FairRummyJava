@@ -4,7 +4,7 @@ import com.skillengine.common.GameTemplates;
 import com.skillengine.dao.model.TableDetails;
 import com.skillengine.dto.BoardJoinDetails;
 import com.skillengine.dto.CurrencyDetails;
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.rummy.globals.APIErrorCodes;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.message.ExitLobby;
@@ -37,10 +37,10 @@ public class TableCreationHandler implements MessageHandler<TableCreation> {
             TableDetails details = new TableDetails();
             details.setTemplateId(gameTemplates.getId());
             details.setStatus(GameGlobals.STARTING);
-            tableId = SkillEngineImpl.getInstance().getTableDetailsDAO().insertTableDetails(details);
+            tableId = SkillEngine.getInstance().getTableDetailsDAO().insertTableDetails(details);
             if (tableId <= 0) {
                 ExitLobby lobby = new ExitLobby(tableId, session.getUserID(), "Invalid TableId");
-                SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, lobby);
+                SkillEngine.getInstance().getDispatcher().sendMessage(session, lobby);
                 return;
             }
 
@@ -49,7 +49,7 @@ public class TableCreationHandler implements MessageHandler<TableCreation> {
         if (currencyDetails == null || currencyDetails.getStatus() == APIErrorCodes.FAILURE) {
             ExitLobby lobby = new ExitLobby(tableId, playerId, "Funds Unavailable");
             log.info("Null from the Fund Service {} TableId {}", playerId, tableId);
-            SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, lobby);
+            SkillEngine.getInstance().getDispatcher().sendMessage(session, lobby);
             return;
         }
         RummyBoard board = new RummyBoard(tableId, gameTemplates);

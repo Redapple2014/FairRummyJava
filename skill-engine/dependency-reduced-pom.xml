@@ -24,7 +24,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.skillengine.main.SkillEngineMain</mainClass>
+                  <mainClass>com.skillengine.main.Application</mainClass>
                 </transformer>
               </transformers>
             </configuration>

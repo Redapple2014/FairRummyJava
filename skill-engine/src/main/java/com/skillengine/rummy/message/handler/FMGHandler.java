@@ -3,7 +3,7 @@ package com.skillengine.rummy.message.handler;
 import com.skillengine.common.GameTemplates;
 import com.skillengine.dao.TableDetailsDAO;
 import com.skillengine.dao.model.TableDetails;
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.message.FMGRequest;
 import com.skillengine.rummy.message.FMGResponse;
@@ -29,7 +29,7 @@ public class FMGHandler implements MessageHandler<FMGRequest> {
         long chosenBoardId = ActiveBoards.getTable(gameTemplates.getId());
         if (chosenBoardId > 0) {
             FMGResponse fmgResponse = new FMGResponse(chosenBoardId);
-            SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, fmgResponse);
+            SkillEngine.getInstance().getDispatcher().sendMessage(session, fmgResponse);
             return;
         }
         TableDetails details = new TableDetails();
@@ -40,7 +40,7 @@ public class FMGHandler implements MessageHandler<FMGRequest> {
         ActiveBoards.addTable(tableId, board);
         ActiveBoards.addTable(gameTemplates.getId(), tableId, System.currentTimeMillis());
         FMGResponse fmgResponse = new FMGResponse(tableId);
-        SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, fmgResponse);
+        SkillEngine.getInstance().getDispatcher().sendMessage(session, fmgResponse);
     }
 
 }

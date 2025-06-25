@@ -1,6 +1,6 @@
 package com.skillengine.rummy.message.handler;
 
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.repository.GameRepository;
 import com.skillengine.rummy.message.GameHistoryRequest;
 import com.skillengine.rummy.message.GameHistoryResponse;
@@ -17,8 +17,8 @@ public final class GameHistoryHandler implements MessageHandler<GameHistoryReque
     @Override
     public void handleMessage(@NonNull PlayerSession session, @NonNull GameHistoryRequest message, long tableId) {
 
-        // fetch game history and send back
-        log.info("Game History Message: {}", message);
+        // log
+        log.info("Message Received: {}", message);
 
         // get scores from database
         List<ScoreUpdate> scoreUpdates =
@@ -28,6 +28,6 @@ public final class GameHistoryHandler implements MessageHandler<GameHistoryReque
         GameHistoryResponse response = new GameHistoryResponse(scoreUpdates);
 
         // send response
-        SkillEngineImpl.getInstance().getDispatcher().sendMessage(session, response);
+        SkillEngine.getInstance().getDispatcher().sendMessage(session, response);
     }
 }

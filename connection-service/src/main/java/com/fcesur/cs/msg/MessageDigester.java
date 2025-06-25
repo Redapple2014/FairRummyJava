@@ -1,13 +1,13 @@
 package com.fcesur.cs.msg;
 
-import com.fcesur.cs.client.msg.EchoRequest;
-import com.fcesur.cs.client.msg.HandShakeRequest;
-import com.fcesur.cs.client.msg.PingRequest;
-import com.fcesur.cs.client.msg.handler.EchoHandler;
-import com.fcesur.cs.client.msg.handler.HandShakeHandler;
-import com.fcesur.cs.client.msg.handler.PingHandler;
+import com.fcesur.cs.message.EchoRequest;
+import com.fcesur.cs.message.HandShakeRequest;
+import com.fcesur.cs.message.PingRequest;
+import com.fcesur.cs.handler.EchoHandler;
+import com.fcesur.cs.handler.HandShakeHandler;
+import com.fcesur.cs.handler.PingHandler;
 import com.fcesur.cs.jackson.JacksonObjectWrapper;
-import com.fcesur.cs.main.ConnectionService;
+import com.fcesur.cs.ConnectionService;
 import com.fcesur.cs.services.PlayerSession;
 import com.fcesur.cs.services.ServiceMessage;
 
@@ -22,7 +22,7 @@ public class MessageDigester {
         this.jacksonObjectWrapper = jacksonObjectWrapper;
     }
 
-    public void messageProcessor(PlayerSession playerSession, Frames frames, MessageParser messageParser) {
+    public void messageProcessor(PlayerSession playerSession, Frame frames, MessageParser messageParser) {
         switch (frames.getServiceType()) {
             case CONNECTION_SERVICE:
                 processCSMessage(playerSession, frames, messageParser);
@@ -33,7 +33,7 @@ public class MessageDigester {
         }
     }
 
-    private void processCSMessage(PlayerSession playerSession, Frames frames, MessageParser messageParser) {
+    private void processCSMessage(PlayerSession playerSession, Frame frames, MessageParser messageParser) {
         try {
             String msgType = jacksonObjectWrapper.getMsgType(messageParser.getSrvMsg());
             switch (msgType) {
@@ -55,7 +55,8 @@ public class MessageDigester {
 
     }
 
-    private void procesGEMessage(PlayerSession playerSession, MessageParser messageParser, Frames frames) {
+    private void procesGEMessage(PlayerSession playerSession, MessageParser messageParser, Frame frames) {
+
         try {
             System.out.println("GE Message" + messageParser);
             String userSession = jacksonObjectWrapper.writeValueAsString(playerSession);

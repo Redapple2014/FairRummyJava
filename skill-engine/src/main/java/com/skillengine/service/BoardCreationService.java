@@ -3,7 +3,7 @@ package com.skillengine.service;
 import com.skillengine.common.GameTemplates;
 import com.skillengine.dao.model.TableDetails;
 import com.skillengine.dto.BoardCreationInfo;
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.table.RummyBoard;
 import com.skillengine.rummy.util.ActiveBoards;
@@ -18,7 +18,7 @@ public class BoardCreationService {
         TableDetails details = new TableDetails();
         details.setTemplateId(gameTemplates.getId());
         details.setStatus(GameGlobals.STARTING);
-        long tableId = SkillEngineImpl.getInstance().getTableDetailsDAO().insertTableDetails(details);
+        long tableId = SkillEngine.getInstance().getTableDetailsDAO().insertTableDetails(details);
         RummyBoard board = new RummyBoard(tableId, gameTemplates);
         ActiveBoards.addTable(tableId, board);
         ActiveBoards.addTable(gameTemplates.getId(), tableId, System.currentTimeMillis());

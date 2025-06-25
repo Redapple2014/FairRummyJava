@@ -1,7 +1,0 @@
-package com.fcesur.cs.message.queue;
-
-import java.io.Closeable;
-
-public interface Consumer extends Closeable {
-
-}

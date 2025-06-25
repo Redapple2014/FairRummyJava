@@ -1,13 +1,15 @@
 package com.skillengine.message.queue;
 
-import java.io.Closeable;
+import java.io.IOException;
 
-public interface MessageFramework extends Closeable {
+/**
+ * Message framework
+ */
+public interface MessageFramework extends AutoCloseable {
 
-    public boolean registerQueuePublisher(String queueName);
+    void registerQueuePublisher(String queueName) throws IOException;
 
-    public boolean publishToQueue(String queueName, String message);
+    void registerQueueConsumer(String queueName, MessageHandler messageHandler) throws IOException;
 
-    public boolean registerQueueConsumer(String queueName, MessageHandler messageHandler);
-
+    boolean publishToQueue(String queueName, String message);
 }

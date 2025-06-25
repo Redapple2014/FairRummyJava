@@ -1,6 +1,6 @@
 package com.skillengine.service.message;
 
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.rummy.message.BoardSetup;
 import com.skillengine.rummy.message.Declare;
@@ -104,7 +104,7 @@ public final class ServiceHandler {
             case DiscardCardReq discardCard ->
                   new DiscardCardHandler().handleMessage(playerSession, discardCard, serviceMessage.getReceiverId());
             case FMGRequest fmgReq ->
-                  new FMGHandler(SkillEngineImpl.getInstance().getTableDetailsDAO()).handleMessage(playerSession, fmgReq, serviceMessage.getReceiverId());
+                  new FMGHandler(SkillEngine.getInstance().getTableDetailsDAO()).handleMessage(playerSession, fmgReq, serviceMessage.getReceiverId());
             case TableReconReq tableReconReq ->
                   new TableReconnectionHandler().handleMessage(playerSession, tableReconReq, serviceMessage.getReceiverId());
             case SetHandCards handcards ->

@@ -63,7 +63,7 @@ public class ServerInitializer {
                           ch.pipeline().addLast("http-chunked", new ChunkedWriteHandler());
                           ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536));
                           ch.pipeline().addLast("websocketprotocolhandler", new WebSocketServerProtocolHandler("/ws"));
-                          ch.pipeline().addLast("handler", new WebSocketHandler(jacksonObjectWrapper, messageDigester));
+                          ch.pipeline().addLast("handler", new WebSocketHandler(messageDigester, jacksonObjectWrapper));
                       }
                   });
 

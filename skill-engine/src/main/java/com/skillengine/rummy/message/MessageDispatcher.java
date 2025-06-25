@@ -1,7 +1,7 @@
 package com.skillengine.rummy.message;
 
 import com.skillengine.dto.TableStatusInfo;
-import com.skillengine.main.SkillEngineImpl;
+import com.skillengine.main.SkillEngine;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.service.message.ServiceMessage;
 import com.skillengine.sessions.PlayerSession;
@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class MessageDispatcher {
+
     private Jackson parse;
     private final String QUEUE_NAME = "cs";
 
@@ -36,7 +37,9 @@ public class MessageDispatcher {
                 int serviceId = playerSession.getServiceId();
                 ServiceMessage message = new ServiceMessage(parse.writeValueAsString(msg), parse.writeValueAsString(playerSession), -1l);
                 String finalMsg = parse.writeValueAsString(message);
-                SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+
+
+                SkillEngine.getInstance().getMessageFramework().publishToQueue(QUEUE_NAME, finalMsg);
             }
         }
     }
@@ -47,7 +50,8 @@ public class MessageDispatcher {
             int serviceId = playerSession.getServiceId();
             ServiceMessage message = new ServiceMessage(parse.writeValueAsString(msg), parse.writeValueAsString(playerSession), -1l);
             String finalMsg = parse.writeValueAsString(message);
-            SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+
+            SkillEngine.getInstance().getMessageFramework().publishToQueue(QUEUE_NAME, finalMsg);
         }
     }
 
@@ -60,7 +64,7 @@ public class MessageDispatcher {
             int serviceId = playerSession.getServiceId();
             ServiceMessage srvMsg = new ServiceMessage(parse.writeValueAsString(message), parse.writeValueAsString(playerSession), -1l);
             String finalMsg = parse.writeValueAsString(srvMsg);
-            SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+            SkillEngine.getInstance().getMessageFramework().publishToQueue(QUEUE_NAME, finalMsg);
         }
     }
 
@@ -73,7 +77,7 @@ public class MessageDispatcher {
                 int serviceId = playerSession.getServiceId();
                 ServiceMessage srvMsg = new ServiceMessage(parse.writeValueAsString(message), parse.writeValueAsString(playerSession), -1l);
                 String finalMsg = parse.writeValueAsString(srvMsg);
-                SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+                SkillEngine.getInstance().getMessageFramework().publishToQueue(QUEUE_NAME, finalMsg);
             }
         }
     }
@@ -89,7 +93,7 @@ public class MessageDispatcher {
         ServiceMessage srvMsg = new ServiceMessage(parse.writeValueAsString(msg), parse.writeValueAsString(playerSession), -1l);
         String finalMsg = parse.writeValueAsString(srvMsg);
 
-        SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+        SkillEngine.getInstance().getMessageFramework().publishToQueue(QUEUE_NAME, finalMsg);
 
         // log
         log.info("MessageDispatcher.sendMessage: {}", finalMsg);
@@ -113,7 +117,7 @@ public class MessageDispatcher {
         int serviceId = playerSession.getServiceId();
         ServiceMessage srvMsg = new ServiceMessage(parse.writeValueAsString(message), parse.writeValueAsString(playerSession), -1l);
         String finalMsg = parse.writeValueAsString(srvMsg);
-        SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue(QUEUE_NAME, finalMsg);
+        SkillEngine.getInstance().getMessageFramework().publishToQueue(QUEUE_NAME, finalMsg);
     }
 
     public void removeBlock(long playerId) {
@@ -122,6 +126,6 @@ public class MessageDispatcher {
 
     public void publishTableStatus(TableStatusInfo statusInfo) {
         String tableInfo = parse.writeValueAsString(statusInfo);
-        SkillEngineImpl.getInstance().getFrameworkImpl().publishToQueue("gcs", tableInfo);
+        SkillEngine.getInstance().getMessageFramework().publishToQueue("gcs", tableInfo);
     }
 }

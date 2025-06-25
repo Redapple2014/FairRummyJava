@@ -1,18 +1,22 @@
 package com.fcesur.cs.jackson;
 
-import com.fcesur.cs.client.msg.Message;
-import com.fcesur.cs.msg.Frames;
-import com.fcesur.cs.msg.TransmittedMessage;
-import com.fcesur.cs.services.PlayerSession;
-import com.fcesur.cs.services.ServiceMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fcesur.cs.message.Message;
+import com.fcesur.cs.msg.Frame;
+import com.fcesur.cs.msg.TransmittedMessage;
+import com.fcesur.cs.services.PlayerSession;
+import com.fcesur.cs.services.ServiceMessage;
+import io.vavr.control.Try;
+import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+@Slf4j
 public class JacksonObjectWrapper {
     private ObjectMapper mapper = null;
 
@@ -29,7 +33,7 @@ public class JacksonObjectWrapper {
         }
     }
 
-    public String writeValueAsString(Frames message) {
+    public String writeValueAsString(Frame message) {
         try {
             return mapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
@@ -78,18 +82,17 @@ public class JacksonObjectWrapper {
         }
     }
 
-    public String getPayload(String payload) {
-        try {
-            System.out.println("Received " + payload);
-            JsonNode jsonNode = mapper.readTree(payload);
-            System.out.println("remainingPayload" + jsonNode.toPrettyString() + "::" + jsonNode.get("payload"));
-            JsonNode parsedPayload = jsonNode.get("payload");
-            System.out.println("parsedPayload" + parsedPayload.toString());
-            return parsedPayload.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    public String getPayload(@NonNull String payload) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("Received payload: {}", payload);
         }
+
+        return Try.of(() -> mapper.readTree(payload))
+              .map(node -> node.get("payload"))
+              .map(node -> node.toString())
+              .onFailure(e -> log.error("Error while getting payload", e))
+              .getOrNull();
     }
 
     public String writeValueAsString(JsonNode message) {

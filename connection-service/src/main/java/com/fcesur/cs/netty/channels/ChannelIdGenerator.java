@@ -2,8 +2,19 @@ package com.fcesur.cs.netty.channels;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ChannelIdGenerator {
-    static AtomicLong channelID = new AtomicLong(1);
+/**
+ * Channel id generator
+ */
+@Deprecated
+public final class ChannelIdGenerator {
+
+    private static final AtomicLong channelID = new AtomicLong(1);
+
+    /**
+     * Private constructor
+     */
+    private ChannelIdGenerator() {
+    }
 
     public static void init() {
         try {
