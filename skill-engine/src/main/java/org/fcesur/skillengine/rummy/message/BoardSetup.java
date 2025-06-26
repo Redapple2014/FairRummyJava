@@ -1,0 +1,15 @@
+package org.fcesur.skillengine.rummy.message;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.NoArgsConstructor;
+
+import static org.fcesur.skillengine.rummy.message.MessageConstants.BOARD_SETUP;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+public class BoardSetup extends Message {
+    public BoardSetup(int serviceType, String msgType, long tableId) {
+        super(serviceType, BOARD_SETUP, tableId);
+    }
+
+}

@@ -22,7 +22,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.fcesur.cs.Application</mainClass>
+                  <mainClass>org.fcesur.cs.Application</mainClass>
                 </transformer>
               </transformers>
             </configuration>

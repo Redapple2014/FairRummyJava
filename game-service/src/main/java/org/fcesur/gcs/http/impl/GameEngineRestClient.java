@@ -17,7 +17,7 @@ import java.util.Map;
 @Service
 public class GameEngineRestClient {
 
-    private static final String SERVICE_NAME = "ge";
+    private static final String SERVICE_NAME = MQ_EXCHANGE_GAME_ENGINE;
     private RestClient restClient;
 
     @Autowired

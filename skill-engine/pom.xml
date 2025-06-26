@@ -17,6 +17,14 @@
 
     <dependencies>
 
+        <!-- Fair Rummy -->
+
+        <dependency>
+            <groupId>org.fcesur</groupId>
+            <artifactId>messaging</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Jackson -->
 
         <dependency>
@@ -100,7 +108,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.skillengine.main.Application</mainClass>
+                                    <mainClass>org.fcesur.skillengine.Application</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
