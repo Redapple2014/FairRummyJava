@@ -13,15 +13,15 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public final class GameHistoryResponse extends Message {
 
-    @JsonProperty("scores")
-    private final List<ScoreUpdate2> scoreUpdates;
+    @JsonProperty("score_history")
+    private final List<ScoreUpdate2> scores;
 
     /**
      * Constructor
      */
-    public GameHistoryResponse(long tableId, List<ScoreUpdate2> scoreUpdates) {
+    public GameHistoryResponse(long tableId, List<ScoreUpdate2> scores) {
         super(1, MessageConstants.GAME_HISTORY_RESPONSE, tableId);
 
-        this.scoreUpdates = scoreUpdates;
+        this.scores = scores;
     }
 }

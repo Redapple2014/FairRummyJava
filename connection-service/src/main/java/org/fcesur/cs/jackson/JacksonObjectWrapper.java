@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 @Slf4j
+@Deprecated
 public class JacksonObjectWrapper {
     private ObjectMapper mapper = null;
 
@@ -28,6 +29,7 @@ public class JacksonObjectWrapper {
         try {
             return mapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
+
             e.printStackTrace();
             return null;
         }
