@@ -178,6 +178,7 @@ public final class GameRepository implements AutoCloseable {
                 return ScoreUpdate2.builder()
                       .tableId(table.getTableId())
                       .jokerCardId(table.getJokerCardId())
+                      .pointValue(1.0F)
                       .scores(scores)
                       .build();
 

@@ -16,6 +16,9 @@ public final class ScoreUpdate2 {
     @JsonProperty("joker_card_id")
     private final String jokerCardId;
 
+    @JsonProperty("point_value")
+    private final float pointValue;
+
     @JsonProperty("scores")
     private final List<UserScore2> scores;
 }
