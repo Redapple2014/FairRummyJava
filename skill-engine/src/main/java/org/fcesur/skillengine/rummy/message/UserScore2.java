@@ -15,8 +15,11 @@ public class UserScore2 {
     /**
      * Player id
      */
-    @JsonProperty("id")
+    @JsonProperty("player_id")
     private long id;
+
+    @JsonProperty("player_display_name")
+    private String displayName;
 
     /**
      * Player score

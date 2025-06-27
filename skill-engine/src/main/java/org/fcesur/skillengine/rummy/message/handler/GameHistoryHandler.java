@@ -25,7 +25,7 @@ public final class GameHistoryHandler implements MessageHandler<GameHistoryReque
               GameRepository.getInstance().history(message.getUserId(), message.getLimit());
 
         // build response
-        GameHistoryResponse response = new GameHistoryResponse(message.getTableId(), scoreUpdates);
+        GameHistoryResponse response = new GameHistoryResponse(message.getTableId(), 1, scoreUpdates);
 
         // send response
         SkillEngine.getInstance().getDispatcher().sendMessage(session, response);

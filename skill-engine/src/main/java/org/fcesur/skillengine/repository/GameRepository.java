@@ -1,12 +1,13 @@
 package org.fcesur.skillengine.repository;
 
-import org.fcesur.skillengine.rummy.message.ScoreUpdate;
-import org.fcesur.skillengine.rummy.message.ScoreUpdate2;
-import org.fcesur.skillengine.rummy.message.UserScore2;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.fcesur.skillengine.rummy.message.ScoreUpdate;
+import org.fcesur.skillengine.rummy.message.ScoreUpdate2;
+import org.fcesur.skillengine.rummy.message.UserScore2;
 import org.jdbi.v3.core.ConnectionFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -22,6 +23,10 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static java.sql.Types.ARRAY;
@@ -29,15 +34,18 @@ import static java.sql.Types.INTEGER;
 import static java.sql.Types.REF_CURSOR;
 import static java.sql.Types.TIMESTAMP_WITH_TIMEZONE;
 import static java.sql.Types.VARCHAR;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.jdbi.v3.core.transaction.TransactionIsolationLevel.READ_COMMITTED;
 
 /**
  * Game repository
  */
+@Slf4j
 public final class GameRepository implements AutoCloseable {
 
     private final Jdbi jdbi;
     private final HikariDataSource dataSource;
+    private final ExecutorService executor;
 
     private static final GameRepository INSTANCE = new GameRepository();
 
@@ -60,6 +68,8 @@ public final class GameRepository implements AutoCloseable {
                 return dataSource.getConnection();
             }
         });
+
+        this.executor = Executors.newVirtualThreadPerTaskExecutor();
     }
 
     /**
@@ -139,34 +149,58 @@ public final class GameRepository implements AutoCloseable {
 
         final List<ScoreUpdate2> scoreUpdates = new ArrayList<>(tables.size());
 
+        List<CompletableFuture<ScoreUpdate2>> futures = new ArrayList<>(tables.size());
+
         for (var table : tables) {
 
-            final List<UserScore2> scores = jdbi.inTransaction(READ_COMMITTED, handle -> handle
-                  .createCall("{ call public.proc_games_tables_players(:games_table_id, :games_table_players_cursor) }")
-                  .attachToHandleForCleanup()
-                  .bindBySqlType("games_table_id", table.getTableId(), INTEGER)
-                  .registerOutParameter("games_table_players_cursor", REF_CURSOR)
-                  .invoke(outParams -> {
+            CompletableFuture<ScoreUpdate2> future = supplyAsync(() -> {
 
-                      return outParams.getRowSet("games_table_players_cursor")
-                            .map(new GamePlayerRowMapper())
-                            .map(player -> UserScore2.builder()
-                                  .id(player.getId())
-                                  .score(player.getScore())
-                                  .status(player.getStatus())
-                                  .amount(player.getTxnAmount())
-                                  .cards(convertToList(player.getCards()))
-                                  .build())
-                            .collect(Collectors.toList());
-                  })
-            );
+                var scores = jdbi.inTransaction(READ_COMMITTED, handle -> handle
+                      .createCall("{ call public.proc_games_tables_players(:games_table_id, :games_table_players_cursor) }")
+                      .attachToHandleForCleanup()
+                      .bindBySqlType("games_table_id", table.getTableId(), INTEGER)
+                      .registerOutParameter("games_table_players_cursor", REF_CURSOR)
+                      .invoke(outParams -> {
 
-            scoreUpdates.add(ScoreUpdate2.builder()
-                  .tableId(table.getTableId())
-                  .jokerCardId(table.getJokerCardId())
-                  .scores(scores)
-                  .build()
-            );
+                          return outParams.getRowSet("games_table_players_cursor")
+                                .map(new GamePlayerRowMapper())
+                                .map(player -> UserScore2.builder()
+                                      .id(player.getId())
+                                      .score(player.getScore())
+                                      .status(player.getStatus())
+                                      .amount(player.getTxnAmount())
+                                      .cards(convertToList(player.getCards()))
+                                      .build())
+                                .collect(Collectors.toList());
+                      })
+                );
+
+                return ScoreUpdate2.builder()
+                      .tableId(table.getTableId())
+                      .jokerCardId(table.getJokerCardId())
+                      .scores(scores)
+                      .build();
+
+            }, executor).exceptionallyAsync(e -> {
+                log.error("Failed to get game history", e);
+                return null;
+            }, executor);
+
+            futures.add(future);
+        }
+
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        for (var future : futures) {
+            ScoreUpdate2 scoreUpdate = null;
+            try {
+                scoreUpdate = future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("Failed to get game history", e);
+            }
+            if (scoreUpdate != null) {
+                scoreUpdates.add(scoreUpdate);
+            }
         }
 
         return scoreUpdates;
@@ -174,7 +208,13 @@ public final class GameRepository implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        dataSource.close();
+        try {
+            dataSource.close();
+            executor.shutdown();
+            executor.close();
+        } catch (Exception e) {
+            log.error("Failed to close game repository", e);
+        }
     }
 
     private static List<List<String>> convertToList(@NonNull String[][] cards) {
@@ -207,6 +247,7 @@ public final class GameRepository implements AutoCloseable {
         public PlayerData map(ResultSet rs, StatementContext ctx) throws SQLException {
             return PlayerData.builder()
                   .id(rs.getInt("game_player_id"))
+                  .displayName(rs.getString("game_player_display_name"))
                   .score(rs.getInt("game_player_score"))
                   .status(rs.getInt("game_player_status"))
                   .txnAmount(rs.getInt("game_txn_amount"))
@@ -227,6 +268,7 @@ public final class GameRepository implements AutoCloseable {
     @Builder(builderClassName = "Builder")
     private static final class PlayerData {
         private final int id;
+        private final String displayName;
         private final int score;
         private final int status;
         private final int txnAmount;
