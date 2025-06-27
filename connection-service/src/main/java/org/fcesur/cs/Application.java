@@ -15,13 +15,12 @@ public final class Application {
      */
     public static void main(String[] args) throws InterruptedException {
 
-        final ConnectionService connectionServiceImpl =
-              ConnectionService.init();
+        final ConnectionService connectionService = ConnectionService.init();
 
         // initialize queue
-        connectionServiceImpl.initMessageQueue();
+        connectionService.initMessageQueue();
 
         // start web server
-        connectionServiceImpl.startTheWebServer();
+        connectionService.startTheWebServer();
     }
 }

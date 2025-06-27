@@ -1,31 +1,36 @@
 package org.fcesur.skillengine.rummy.game;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Date;
 import java.util.TimerTask;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 public abstract class GameTimer {
-    private Date startTime;
-    private Date _endTime;
 
-    public void startAt(Date time) {
-        if (time == null) {
-            time = new Date(System.currentTimeMillis());
-        } else {
-            startTime = time;
-        }
-        long l = time.getTime() - System.currentTimeMillis();
+    private Date startTime;
+    private Date endTime;
+
+    public void start(@Nullable Date time) {
+
+        startTime = nonNull(time)
+              ? time
+              : new Date(System.currentTimeMillis());
+
+        long l = startTime.getTime() - System.currentTimeMillis();
+
         if (l > 0) {
 
-            TimerTask t1 = new TimerTask() {
+            TimerTask task = new TimerTask() {
 
                 public void run() {
                     try {
                         startCallback();
                     } catch (Exception ex) {
-                        log.error("", ex);
+                        log.error("Failed to start callback", ex);
                     }
                 }
             };
@@ -35,23 +40,19 @@ public abstract class GameTimer {
         }
     }
 
-    public abstract void startCallback();
-
     public void end(Date endTime) {
         if (endTime == null) {
-            _endTime = new Date(System.currentTimeMillis());
+            this.endTime = new Date(System.currentTimeMillis());
         } else {
-            _endTime = endTime;
+            this.endTime = endTime;
         }
         validate();
     }
 
-
     public Date getEndTime() {
         validate();
-        return _endTime;
+        return endTime;
     }
-
 
     public Date getStartTime() {
         validate();
@@ -61,7 +62,7 @@ public abstract class GameTimer {
     public boolean hasEnded() {
         validate();
         Date now = new Date(System.currentTimeMillis());
-        if (_endTime != null && (_endTime.compareTo(now) <= 0)) {
+        if (endTime != null && (endTime.compareTo(now) <= 0)) {
             return true;
         }
         return false;
@@ -81,16 +82,17 @@ public abstract class GameTimer {
     private void validate() {
         boolean isValid = true;
         if (startTime != null) {
-            if (_endTime != null) {
-                if (startTime.compareTo(_endTime) > 0) {
+            if (endTime != null) {
+                if (startTime.compareTo(endTime) > 0) {
                     isValid = false;
                 }
             }
         } else {
-            if (_endTime != null) {
+            if (endTime != null) {
                 isValid = false;
             }
         }
-
     }
+
+    public abstract void startCallback();
 }

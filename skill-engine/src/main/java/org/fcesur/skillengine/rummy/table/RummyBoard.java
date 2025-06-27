@@ -180,7 +180,7 @@ public class RummyBoard extends Board {
                 TimerTask gameStartTask = new TimerTask() {
                     @Override
                     public void run() {
-                        rummyGame.startAt(null);
+                        rummyGame.start(null);
                     }
                 };
                 tableTimer.schedule(gameStartTask, 300);

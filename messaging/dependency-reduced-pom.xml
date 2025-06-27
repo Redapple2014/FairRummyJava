@@ -6,11 +6,11 @@
     <version>1.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>connection-service</artifactId>
-  <name>Fair Rummy Connection Service</name>
-  <description>Connection Service for Fair Rummy</description>
+  <artifactId>messaging</artifactId>
+  <name>Fair Rummy Messaging</name>
+  <description>Messaging for Fair Rummy</description>
   <build>
-    <finalName>connection-service</finalName>
+    <finalName>messaging</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
@@ -24,7 +24,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>org.fcesur.cs.Application</mainClass>
+                  <mainClass>com.fcesur.cs.Application</mainClass>
                 </transformer>
               </transformers>
             </configuration>

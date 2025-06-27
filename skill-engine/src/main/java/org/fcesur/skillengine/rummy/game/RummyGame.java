@@ -85,7 +85,7 @@ public class RummyGame extends TrickTakingGame {
         this.gameStartTime = System.currentTimeMillis();
         handModel = new HandModel(playerIdList, 2, table.getGameTemplates().getNoOfDeck(), table.getGameTemplates().getCardsPerPlayer());
         for (int i = 0; i < totalPlayer; i++) {
-            PlayerInfo playerInfo = (PlayerInfo) playerIdList.get(i);
+            PlayerInfo playerInfo = playerIdList.get(i);
             UserHandInfo handInfo = UserHandInfo.builder().userId(playerInfo.getUserId()).avatarId(playerInfo.getAvatarId()).depositBalance(playerInfo.getDepositBalance())
                   .withdrawable(playerInfo.getWithdrawable()).nonWithdrawable(playerInfo.getNonWithdrawable()).build();
             addOrderedPlayerIds(playerInfo.getUserId());
@@ -1325,6 +1325,7 @@ public class RummyGame extends TrickTakingGame {
 
 
     private void sendScores() {
+
         Iterator<Long> playerIdItr = playerScoreMap.keySet().iterator();
         List<UserScore> playerScoreList = new ArrayList<>();
         int winnerScore = 0;
