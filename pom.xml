@@ -55,7 +55,7 @@
         <guava.version>33.4.8-jre</guava.version>
         <hikaricp.version>6.3.0</hikaricp.version>
         <jackson.version>2.19.0</jackson.version>
-        <jdbi3.version>3.49.5</jdbi3.version>
+        <jdbi3.version>3.49.4</jdbi3.version>
         <jjwt.version>0.12.6</jjwt.version>
         <jspecify.version>1.0.0</jspecify.version>
         <junit.version>5.12.2</junit.version>
@@ -64,14 +64,13 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <netty.version>4.2.2.Final</netty.version>
         <postgresql.version>42.7.5</postgresql.version>
-        <rabbitmq.version>5.25.0</rabbitmq.version>
         <reactor.version>2025.0.0-M3</reactor.version>
         <spring-boot.version>3.5.0</spring-boot.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <slf4j-api.version>2.0.17</slf4j-api.version>
         <vavr.version>0.10.6</vavr.version>
 
-        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
+        <rabbitmq.version>5.25.0</rabbitmq.version>
     </properties>
 
     <dependencyManagement>
@@ -331,6 +330,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
 
         </plugins>
