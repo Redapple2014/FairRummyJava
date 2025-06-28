@@ -46,5 +46,6 @@ public class LobbyCashGameResponseDTO {
         private int graceTime;
         private int dealsPerGame;
         private int variantType;
+        private boolean skillBasedMM;
     }
 }

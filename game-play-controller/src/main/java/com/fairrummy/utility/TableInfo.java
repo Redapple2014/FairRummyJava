@@ -12,6 +12,7 @@ public class TableInfo implements Serializable
 	private int templateId;
 	private int status;
 	private int maxPlayer;
+	private double skill = 0d;
 
 	public TableInfo( long tableId )
 	{
@@ -102,6 +103,14 @@ public class TableInfo implements Serializable
 		this.maxPlayer = maxPlayer;
 	}
 
+	public double getSkill() {
+		return skill;
+	}
+
+	public void setSkill(double skill) {
+		this.skill = skill;
+	}
+
 	@Override
 	public String toString() {
 		return "TableInfo{" +
@@ -112,6 +121,7 @@ public class TableInfo implements Serializable
 				", templateId=" + templateId +
 				", status=" + status +
 				", maxPlayer=" + maxPlayer +
+				", skill=" + skill +
 				'}';
 	}
 }

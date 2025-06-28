@@ -1,6 +1,8 @@
 package com.fairrummy.service.impl;
 
 import com.fairrummy.http.impl.GameEngineRestClient;
+import com.fairrummy.mapper.PlayerStatsMapper;
+import com.fairrummy.model.entity.UserStats;
 import com.fairrummy.request.dto.FMGRequest;
 import com.fairrummy.response.dto.FMGResponse;
 import com.fairrummy.response.dto.TemplateResponseDTO;
@@ -22,13 +24,32 @@ public class GameJoinServiceImpl implements GameJoinService {
     @Autowired
     private TemplateService templateService;
 
+    @Autowired
+    private PlayerStatsMapper playerStatsMapper;
+
     @Override
     public FMGResponse joinTable(FMGRequest request) {
         int templateId = request.getTemplateId();
+        long playerId = request.getUserId();
 
         TemplateResponseDTO templateResponseDTO = templateService.getTemplate(templateId);
+
+        double skill = 0d;
+
+        if( templateResponseDTO.isSkillBasedMM())
+        {
+            UserStats userStats = playerStatsMapper.findById(playerId).orElse(null);
+            if( userStats != null )
+            {
+                skill = userStats.getSkill();
+            }
+            else {
+                userStats = new UserStats(skill, playerId);
+                playerStatsMapper.save(userStats);
+            }
+        }
         FMGResponse response = null;
-        TableInfo tableInfo = GCSTableStatus.getBestTable(templateId);
+        TableInfo tableInfo = GCSTableStatus.getBestTable(templateId, skill);
         if (tableInfo != null)
         {
             response = new FMGResponse();
@@ -42,7 +63,7 @@ public class GameJoinServiceImpl implements GameJoinService {
 
         if( response != null )
         {
-            GCSTableStatus.updateTableInfo(response, templateId, templateResponseDTO.getMaxPlayer());
+            GCSTableStatus.updateTableInfo(response, templateId, templateResponseDTO.getMaxPlayer(), skill);
         }
         else
         {

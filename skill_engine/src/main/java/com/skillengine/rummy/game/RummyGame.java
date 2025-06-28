@@ -351,7 +351,7 @@ public class RummyGame extends TrickTakingGame
 					}
 				}
 			}
-			PlayerDeclaringDetails playerStateDetails = getPlayerStateDetails( new ArrayList< Long >( getOrderedPlayerIds() ), Collections.emptyList(),false );
+			PlayerDeclaringDetails playerStateDetails = getPlayerStateDetails( new ArrayList< Long >( getOrderedPlayerIds() ) ,Collections.emptyList(),false);
 			if( playerStateDetails != null )
 			{
 				msgList.add( playerStateDetails );
@@ -1669,7 +1669,7 @@ public class RummyGame extends TrickTakingGame
 		}
 	}
 	
-	
+
 
 	private void sendScores()
 	{

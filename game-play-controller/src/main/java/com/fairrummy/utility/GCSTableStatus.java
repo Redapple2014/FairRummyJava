@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class GCSTableStatus {
 
-    public static boolean updateTableInfo(FMGResponse response, int templateId, int maxPlayers)
+    public static void updateTableInfo(FMGResponse response, int templateId, int maxPlayers, double skill)
     {
 
         long tableId = response.getTableId();
@@ -22,6 +22,7 @@ public class GCSTableStatus {
             tableInfo.setAvailableSeats( maxPlayers -1 );
             tableInfo.setTemplateId(templateId);
             tableInfo.setStatus(1);
+            tableInfo.setSkill(skill);
 
             TableInfoCache.putTableInfo(templateId, tableInfo);
         }
@@ -29,31 +30,67 @@ public class GCSTableStatus {
         {
             e.printStackTrace();
         }
-        return true;
     }
 
-    public static synchronized  TableInfo getBestTable(int templateId )
+    public static synchronized  TableInfo getBestTable(int templateId, double skill )
     {
         TableInfo info = null;
-        Collection< TableInfo > tableInfos = TableInfoCache.getAllTablesForTemplate(templateId);
-        if( tableInfos != null && tableInfos.size() > 0 )
+
+        if( skill > 0 )
         {
-            for(TableInfo tInfo : tableInfos )
+            info = getBestTableBasedOnSkill(templateId, skill);
+        }
+        else {
+            for(int i = 0; i < 10; i++ )
             {
-                if( tInfo.getAvailableSeats() > 0 && tInfo.getStatus() <= 3 || tInfo.getStatus() == 5 || tInfo.getStatus() == 7)
+                Collection< TableInfo > tableInfos = TableInfoCache.getAllTablesForTemplate(templateId);
+                if( tableInfos != null && !tableInfos.isEmpty())
                 {
-                    //tInfo.setAvailableSeats(tInfo.getAvailableSeats() - 1);
+                    for(TableInfo tInfo : tableInfos )
+                    {
+                        if( tInfo.getAvailableSeats() > 0 && tInfo.getStatus() < 3 || tInfo.getStatus() == 5 || tInfo.getStatus() == 7)
+                        {
+                            info = tInfo;
+                            break;
+                        }
+                    }
+                }
+            }
 
-                    info = tInfo;
+        }
 
-//                    if( tInfo.getAvailableSeats() == 0 )
-//                    {
-//                        TableInfoCache.removeTableInfo(templateId, tInfo.getTableId());
-//                    }
+        return info;
+    }
+
+    private static TableInfo getBestTableBasedOnSkill(int templateId, double skill)
+    {
+        TableInfo info = null;
+
+        int increment = 5;
+
+        for( int j = 1; j <= 2; j++)
+        {
+            double minSkill = skill - (j *increment);
+            double maxSkill = skill + (j * increment);
+
+            for(int i = 0; i < 10; i++ )
+            {
+                Collection< TableInfo > tableInfos = TableInfoCache.getAllTablesForTemplate(templateId);
+                if( tableInfos != null && !tableInfos.isEmpty())
+                {
+                    for(TableInfo tInfo : tableInfos )
+                    {
+                        if( tInfo.getAvailableSeats() > 0 && tInfo.getStatus() < 3 || tInfo.getStatus() == 5 || tInfo.getStatus() == 7 && tInfo.getSkill() >= minSkill && tInfo.getSkill() <= maxSkill)
+                        {
+                            info = tInfo;
+                            break;
+                        }
+                    }
                 }
             }
         }
 
         return info;
+
     }
 }

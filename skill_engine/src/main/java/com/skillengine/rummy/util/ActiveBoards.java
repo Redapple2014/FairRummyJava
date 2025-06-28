@@ -83,7 +83,6 @@ public class ActiveBoards
 	public static long getTable( int templateId )
 	{
 		List< BoardInfo > boardInfos = inProgressBoards.getOrDefault( templateId, Collections.emptyList() );
-		System.out.println( "inProgressBoards" + inProgressBoards );
 		if( boardInfos.isEmpty() )
 		{
 			return -1l;

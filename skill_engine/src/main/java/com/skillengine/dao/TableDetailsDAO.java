@@ -14,6 +14,7 @@ public class TableDetailsDAO
 		{
 			TableDetailsMapper mapper = session.getMapper( TableDetailsMapper.class );
 			mapper.insertTableDetails( tableDetails );
+			System.out.println( "tableDetails : "+tableDetails.getTableId() );
 			return tableDetails.getTableId();
 		}
 	}

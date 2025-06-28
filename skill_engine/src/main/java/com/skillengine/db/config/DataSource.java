@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import com.skillengine.dao.mapper.TableDetailsMapper;
+import com.skillengine.dao.mapper.UserStatMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -30,6 +31,7 @@ public class DataSource
 		Configuration configuration = new Configuration( environment );
 		configuration.setMapUnderscoreToCamelCase( true );
 		configuration.addMapper( TableDetailsMapper.class );
+		configuration.addMapper( UserStatMapper.class );
 		sessionFactory = new SqlSessionFactoryBuilder().build( configuration );
 	}
 

@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.skillengine.common.GameTemplates;
+import com.skillengine.dao.model.GameEndDetails;
 import com.skillengine.dto.BoardJoinDetails;
 import com.skillengine.dto.CurrencyDetails;
 import com.skillengine.dto.ExitDetails;
@@ -39,6 +40,7 @@ import com.skillengine.rummy.player.PlayerInfo;
 import com.skillengine.rummy.player.SeatPlayerInfo;
 import com.skillengine.rummy.settlement.PointsSettlement;
 import com.skillengine.rummy.util.ActiveBoards;
+import com.skillengine.rummy.util.SkillCalculation;
 import com.skillengine.service.CurrencyService;
 import com.skillengine.service.CurrencyServiceImpl;
 import com.skillengine.sessions.PlayerSession;
@@ -311,23 +313,43 @@ public class RummyBoard extends Board
 			{
 				return null;
 			}
+			List< GameEndDetails > endDetails = new ArrayList<>();
 			Map< Long, BigDecimal > losingInfo = info.getUserCurrencyDetails();
 			for( Long losingPlayerId : losingInfo.keySet() )
 			{
 				BigDecimal losingAmt = losingInfo.get( losingPlayerId );
 				if( info.getWinnerId() == losingPlayerId )
 				{
+					GameEndDetails gameEndDetails = new GameEndDetails();
+					gameEndDetails.setWinningAmt( losingAmt );
+					gameEndDetails.setRake( info.getCompanyRake() );
+					gameEndDetails.setUserId( losingPlayerId );
+					gameEndDetails.setDroppedOrNot( 0 );
+					gameEndDetails.setWinnerOrNot( 1 );
+					gameEndDetails.setGamecnt( 1 );
+					gameEndDetails.setLosingAmt( BigDecimal.ZERO );
+					endDetails.add( gameEndDetails );
 					CurrencyDetails winningDetails = userCurrencyDetails.get( losingPlayerId );
 					winningDetails.setWithdrawable( winningDetails.getWithdrawable().add( losingAmt ) );
 					userCurrencyDetails.put( losingPlayerId, winningDetails );
 					continue;
 				}
+				GameEndDetails gameEndDetails = new GameEndDetails();
+				gameEndDetails.setLosingAmt( losingAmt );
+				gameEndDetails.setWinningAmt( BigDecimal.ZERO );
+				gameEndDetails.setRake( info.getCompanyRake() );
+				gameEndDetails.setUserId( losingPlayerId );
+				gameEndDetails.setDroppedOrNot( rummyGame.getKnockedOutPlayer().containsKey( losingPlayerId ) ? 1 : 0 );
+				gameEndDetails.setWinnerOrNot( 0 );
+				gameEndDetails.setGamecnt( 1 );
+				endDetails.add( gameEndDetails );
 				calculateSeatBalance( losingPlayerId, losingAmt );
 			}
 			for( Long settledPlayers : info.getUserCurrencyDetails().keySet() )
 			{
 				updateTableSeatBalance( settledPlayers, info.getWinnerId() == settledPlayers );
 			}
+			SkillEngineImpl.getInstance().getStatsDAO().upsertGameEndDetails( endDetails, getTableId() );
 			return info;
 		}
 		catch( Exception e )
@@ -602,7 +624,7 @@ public class RummyBoard extends Board
 		if( status == GameGlobals.STARTING )
 		{
 			time = getGameTemplates().getGameStartTime();
-			if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_START && playerId > 0)
+			if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_START && playerId > 0 )
 			{
 				time = ( long ) currTask.scheduledExecutionTime() - System.currentTimeMillis();
 				time = time > 0 ? time : 0;
@@ -882,7 +904,7 @@ public class RummyBoard extends Board
 
 	public void scheduleStartGame( long time )
 	{
-		log.info("scheduleStartGame {}" ,gameStartFlag.get());
+		log.info( "scheduleStartGame {}", gameStartFlag.get() );
 		if( gameStartFlag.get() )
 		{
 			log.info( "TableId : " + getTableId() + " Game Already Started" );
@@ -947,13 +969,13 @@ public class RummyBoard extends Board
 			if( status == GameGlobals.STARTING )
 			{
 				time = getGameTemplates().getGameStartTime();
-				log.info("Time Happened{}",time );
-				if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_START && playerId > 0)
+				log.info( "Time Happened{}", time );
+				if( currTask != null && currTask.getTaskType() == TimeTaskTypes.GAME_START && playerId > 0 )
 				{
 					time = ( long ) currTask.scheduledExecutionTime() - System.currentTimeMillis();
 					time = time > 0 ? time : 0;
 				}
-				log.info("Time left Happened{}",time );
+				log.info( "Time left Happened{}", time );
 			}
 			else if( status == GameGlobals.REGISTERING && gameNo > 0 && rummyGame != null )
 			{
@@ -1087,12 +1109,10 @@ public class RummyBoard extends Board
 
 	protected void trackTableStatus()
 	{
-		TableStatusInfo statusInfo = TableStatusInfo.builder().templateId( getGameTemplates().getId() ).tableId( getTableId() ).maxPlayer( getGameTemplates().getMaxPlayer() ).availableSeats( getAvlSeat() )
-				.status( getStatus() ).build();
+		TableStatusInfo statusInfo = TableStatusInfo.builder().templateId( getGameTemplates().getId() ).tableId( getTableId() ).maxPlayer( getGameTemplates().getMaxPlayer() )
+				.availableSeats( getAvlSeat() ).status( getStatus() ).build();
 		dispatcher.publishTableStatus( statusInfo );
 
 	}
-	
-	
 
 }

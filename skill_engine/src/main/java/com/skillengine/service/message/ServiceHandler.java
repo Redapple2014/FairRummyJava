@@ -54,7 +54,6 @@ public class ServiceHandler
 		ServiceMessage message = jackson.readValue( gameSrvMsg, ServiceMessage.class );
 		PlayerSession playerSession = messageDigester.deserializeSession( message.getPlayerSession() );
 		Message messages = messageDigester.deserialize( message.getGamePayload() );
-		System.out.println( "messages" + message );
 		switch( messages )
 		{
 		case PlayerTableJoin playerJoin -> new PlayerJoinHandler( currencyService ).handleMessage( playerSession, playerJoin, message.getReceiverId() );

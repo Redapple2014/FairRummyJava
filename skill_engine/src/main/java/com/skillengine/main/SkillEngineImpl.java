@@ -1,6 +1,7 @@
 package com.skillengine.main;
 
 import com.skillengine.dao.TableDetailsDAO;
+import com.skillengine.dao.UserStatsDAO;
 import com.skillengine.http.APIServer;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.message.queue.GameMessageHandler;
@@ -23,6 +24,7 @@ public class SkillEngineImpl
 	private MessageDispatcher dispatcher;
 	private RabbitMQFrameworkImpl frameworkImpl;
 	private TableDetailsDAO detailsDAO;
+	private UserStatsDAO statsDAO;
 	private BoardCreationService boardCreationService;
 	private APIServer apiServer;
 
@@ -43,6 +45,7 @@ public class SkillEngineImpl
 		handler = new ServiceHandler( digester, currencyService, jackson );
 		dispatcher = new MessageDispatcher( jackson );
 		detailsDAO = new TableDetailsDAO();
+		statsDAO = new UserStatsDAO();
 		boardCreationService = new BoardCreationService();
 		apiServer = new APIServer( jackson );
 		apiServer.init();
@@ -139,6 +142,14 @@ public class SkillEngineImpl
 	public BoardCreationService getBoardCreationService()
 	{
 		return boardCreationService;
+	}
+
+	/**
+	 * @return the statsDAO
+	 */
+	public UserStatsDAO getStatsDAO()
+	{
+		return statsDAO;
 	}
 
 }

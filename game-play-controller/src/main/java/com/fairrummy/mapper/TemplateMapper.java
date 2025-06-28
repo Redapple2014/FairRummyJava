@@ -6,8 +6,6 @@ import com.fairrummy.request.dto.TemplateCreateRequestDTO;
 import com.fairrummy.response.dto.LobbyCashGameResponseDTO;
 import com.fairrummy.response.dto.TemplateResponseDTO;
 
-import java.util.Map;
-
 public class TemplateMapper {
 
     public static Template mapToTemplate(TemplateCreateRequestDTO templateCreateRequestDTO) {
@@ -29,6 +27,8 @@ public class TemplateMapper {
                 .graceTime(templateCreateRequestDTO.getGraceTime())
                 .dealsPerGame(templateCreateRequestDTO.getDealsPerGame())
                 .variantType(templateCreateRequestDTO.getVariantType())
+                .skillBasedMM(templateCreateRequestDTO.isSkillBasedMM())
+
         .build();
     }
 
@@ -53,6 +53,7 @@ public class TemplateMapper {
                 .graceTime(template.getGraceTime())
                 .dealsPerGame(template.getDealsPerGame())
                 .variantType(template.getVariantType())
+                .skillBasedMM(template.isSkillBasedMM())
                 .build();
     }
 
@@ -77,6 +78,7 @@ public class TemplateMapper {
             .graceTime(template.getGraceTime())
             .dealsPerGame(template.getDealsPerGame())
             .variantType(template.getVariantType())
+            .skillBasedMM(template.isSkillBasedMM())
             .build();
     }
 

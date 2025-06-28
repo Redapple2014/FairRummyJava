@@ -31,6 +31,7 @@ public class TemplateResponseDTO {
     private int graceTime;
     private int dealsPerGame;
     private int variantType;
+    private boolean skillBasedMM;
 
     public int getId() {
         return id;
@@ -102,5 +103,9 @@ public class TemplateResponseDTO {
 
     public int getVariantType() {
         return variantType;
+    }
+
+    public boolean isSkillBasedMM() {
+        return skillBasedMM;
     }
 }

@@ -29,6 +29,7 @@ public class TemplateCreateRequestDTO {
     private int graceTime;
     private int dealsPerGame;
     private int variantType;
+    private boolean skillBasedMM;
 
     public int getMinBuyin() {
         return minBuyin;
@@ -96,5 +97,9 @@ public class TemplateCreateRequestDTO {
 
     public int getVariantType() {
         return variantType;
+    }
+
+    public boolean isSkillBasedMM() {
+        return skillBasedMM;
     }
 }
