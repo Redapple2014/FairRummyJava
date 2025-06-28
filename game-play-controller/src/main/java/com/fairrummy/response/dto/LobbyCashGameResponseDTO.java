@@ -1,12 +1,6 @@
 package com.fairrummy.response.dto;
 
 import java.util.List;
-import java.util.Map;
-
-import com.fairrummy.dto.constants.template.GameType;
-import com.fairrummy.dto.constants.template.PrizeType;
-import com.fairrummy.dto.constants.template.ServiceFeeType;
-import com.fairrummy.dto.constants.template.TemplateStatus;
 import lombok.Getter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;

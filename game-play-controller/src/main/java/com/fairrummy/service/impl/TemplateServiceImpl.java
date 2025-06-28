@@ -27,16 +27,6 @@ public class TemplateServiceImpl implements TemplateService {
         return responseDTO;
     }
 
-//    @Override
-//    public void moveTemplateToDraft(String templateId) throws TemplateInternalServerException {
-//        templateDao.moveTemplateToDraft(templateId);
-//    }
-//
-//    @Override
-//    public void moveTemplateToActive(String templateId) throws TemplateInternalServerException {
-//        templateDao.moveTemplateToActive(templateId);
-//    }
-
     @Override
     public TemplateResponseDTO getTemplate(int templateId) throws TemplateInternalServerException {
         Template template = templateDao.getTemplate(templateId);
@@ -58,18 +48,10 @@ public class TemplateServiceImpl implements TemplateService {
         return responseList;
     }
 
-    /*@Override
-    public List<TemplateResponseDTO> getTemplateByIds(List<String> templateIds) throws TemplateInternalServerException
-    {
-        List<Template> templates = templateDao.getTemplateByIds(templateIds);
-        List<TemplateResponseDTO> responseList = new ArrayList<>();
-
-        if(!CollectionUtils.isEmpty(templates))
-        {
-            for(Template template: templates)
-                responseList.add(mapToResponseDTO(template));
-        }
-
-        return responseList;
-    }*/
+    @Override
+    public TemplateResponseDTO updateTemplate(int templateId, TemplateCreateRequestDTO templateRequestDTO) throws TemplateInternalServerException, TemplateBadRequestException {
+        Template template = templateDao.updateTemplate(templateId, templateRequestDTO);
+        TemplateResponseDTO responseDTO = mapToResponseDTO(template);
+        return responseDTO;
+    }
 }

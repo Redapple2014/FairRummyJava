@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
+import java.util.Optional;
 
 import static com.fairrummy.mapper.TemplateMapper.mapToTemplate;
 
@@ -35,6 +36,18 @@ public class TemplateDao {
     public List<Template> searchAllActiveTemplates() {
         List<Template> templates = gameTemplateMapper.findAll();
         return templates;
+    }
+
+    public Template updateTemplate(int templateId, TemplateCreateRequestDTO templateCreateRequestDTO)
+    {
+        Template template = mapToTemplate(templateCreateRequestDTO);
+        Optional<Template> optionalTemplate = gameTemplateMapper.findById(templateId);
+        if (optionalTemplate.isPresent()) {
+            template.setId(templateId);
+            gameTemplateMapper.save(template);
+            return template;
+        }
+        return null;
     }
 
     /*public List<Template> getTemplateByIds(List<String> templateIds) {

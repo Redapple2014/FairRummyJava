@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Data;
+import javax.validation.constraints.*;
 
 @Getter
 @Builder
@@ -12,23 +13,59 @@ import lombok.Data;
 @NoArgsConstructor
 @Data
 public class TemplateCreateRequestDTO {
-    protected int minBuyin;
-    protected int maxBuyin;
-    protected int status;
-    protected int gid;
-    protected String name;
-    protected int minPlayer;
-    protected int maxPlayer;
+
+    @Min(1)
+    private int minBuyin;
+
+    @Min(1)
+    private int maxBuyin;
+
+    @Min(0)
+    private int status;
+
+    @Min(1)
+    private int gid;
+
+    @NotBlank
+    @Size(max = 100)
+    private String name;
+
+    @Min(2)
+    private int minPlayer;
+
+    @Min(2)
+    private int maxPlayer;
+
+    @Min(52)
     private int noOfCards;
-    private int gameStartTime;
+
+    @Min(10000)
+    private int gameStartTime;  // in ms
+
+    @Min(1)
     private int pointValue;
+
+    @Min(2)
     private int noOfDeck;
+
+    @Min(13)
     private int cardsPerPlayer;
+
+    @Min(5000)
     private int playerTurnTime;
+
+    @DecimalMin(value = "0.0", inclusive = true)
     private double serviceFee;
+
+    @Min(0)
     private int graceTime;
+
+    @Min(1)
     private int dealsPerGame;
+
+    @Min(0)
     private int variantType;
+
     private boolean skillBasedMM;
 
     public int getMinBuyin() {

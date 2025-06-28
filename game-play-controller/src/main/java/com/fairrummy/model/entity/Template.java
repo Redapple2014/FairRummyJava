@@ -38,6 +38,10 @@ public class Template
     private int variantType;
     private boolean skillBasedMM;
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }

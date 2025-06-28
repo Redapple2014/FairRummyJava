@@ -16,10 +16,12 @@ import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/template")
+@CrossOrigin(origins = "*")
 //@Slf4j
 public class TemplateController {
     @Autowired
     private TemplateService templateService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<TemplateResponseDTO>> createTemplate(
             @Valid @RequestBody TemplateCreateRequestDTO templateCreateRequestDTO)
@@ -32,24 +34,6 @@ public class TemplateController {
                                 templateService.createTemplate(templateCreateRequestDTO)));
     }
 
-//    @PutMapping("/disable")
-//    public ResponseEntity<ApiResponse> moveTemplateToDraft( @NotBlank @RequestParam String templateId)
-//            throws TemplateBadRequestException {
-//
-//        templateService.moveTemplateToDraft(templateId);
-//        return ResponseEntity.status(HttpStatus.ACCEPTED)
-//                .body(new ApiResponse<>(HttpStatus.ACCEPTED.value(), null));
-//    }
-//
-//    @PutMapping("/enable")
-//    public ResponseEntity<ApiResponse> moveTemplateToActive( @NotBlank @RequestParam String templateId)
-//            throws TemplateBadRequestException {
-//
-//        templateService.moveTemplateToActive(templateId);
-//        return ResponseEntity.status(HttpStatus.ACCEPTED)
-//                .body(new ApiResponse<>(HttpStatus.ACCEPTED.value(), null));
-//    }
-
     @GetMapping
     public ResponseEntity<ApiResponse<TemplateResponseDTO>> getTemplate(
             @NotBlank @RequestParam int templateId) throws TemplateBadRequestException {
@@ -60,4 +44,18 @@ public class TemplateController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(HttpStatus.OK.value(), templateResponseDTO));
     }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<TemplateResponseDTO>> updateTemplate(
+            @NotBlank @RequestParam int templateId, @Valid @RequestBody TemplateCreateRequestDTO templateCreateRequestDTO)
+            throws TemplateBadRequestException {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(
+                                HttpStatus.OK.value(),
+                                templateService.updateTemplate(templateId, templateCreateRequestDTO)));
+    }
+
+
 }
