@@ -1,4 +1,4 @@
-package org.fcesur.gcs.message.queue;
+package org.fcesur.messaging;
 
 import java.io.Closeable;
 

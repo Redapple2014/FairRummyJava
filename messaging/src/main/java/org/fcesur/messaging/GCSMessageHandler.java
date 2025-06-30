@@ -1,15 +1,16 @@
-package org.fcesur.gcs.message.queue;
+package org.fcesur.messaging;
 
-import org.fcesur.gcs.utility.GsonUtils;
-import org.fcesur.gcs.utility.TableInfo;
-import org.fcesur.gcs.utility.TableInfoCache;
 import lombok.extern.slf4j.Slf4j;
+import org.fcesur.messaging.model.TableInfo;
+import org.fcesur.messaging.model.TableInfoCache;
+import org.fcesur.messaging.util.GsonUtils;
+import org.jspecify.annotations.NonNull;
 
 @Slf4j
-public class GCSMessageHandler implements MessageHandler {
+public final class GCSMessageHandler implements MessageHandler {
 
     @Override
-    public void handleMessage(String message) {
+    public void handleMessage(@NonNull String message) {
         log.info("GCSMessageHandler Received Message {}", message);
         TableInfo tableInfo = GsonUtils.fromJson(message, TableInfo.class);
         System.out.println("GCSMessageHandler Typecasted : " + tableInfo);

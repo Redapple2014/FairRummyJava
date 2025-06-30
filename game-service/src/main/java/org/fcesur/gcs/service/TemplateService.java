@@ -3,7 +3,7 @@ package org.fcesur.gcs.service;
 import org.fcesur.gcs.exception.TemplateBadRequestException;
 import org.fcesur.gcs.exception.TemplateInternalServerException;
 import org.fcesur.gcs.request.dto.TemplateCreateRequestDTO;
-import org.fcesur.gcs.response.dto.TemplateResponseDTO;
+import org.fcesur.messaging.dto.TemplateResponseDTO;
 
 import java.util.List;
 

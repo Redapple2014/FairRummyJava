@@ -1,6 +1,6 @@
-package org.fcesur.gcs.message.queue;
+package org.fcesur.messaging;
 
-import com.rabbitmq.client.AMQP.Queue.DeclareOk;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 
@@ -18,7 +18,7 @@ public class QueueConsumer implements Consumer {
         try {
             System.out.println("QueueConsumer" + queueName);
             channel = connection.createChannel();
-            DeclareOk declareOk = channel.queueDeclare(queueName, true, false, false, null);
+            AMQP.Queue.DeclareOk declareOk = channel.queueDeclare(queueName, true, false, false, null);
             this.consumer = new CustomMQConsumer(channel);
             channel.basicConsume(queueName, false, consumer);
             listernerThread = new ConsumerListernerThread(consumer, queueName, handler);

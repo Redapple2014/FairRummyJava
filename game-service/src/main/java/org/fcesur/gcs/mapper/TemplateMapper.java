@@ -4,7 +4,7 @@ package org.fcesur.gcs.mapper;
 import org.fcesur.gcs.model.entity.Template;
 import org.fcesur.gcs.request.dto.TemplateCreateRequestDTO;
 import org.fcesur.gcs.response.dto.LobbyCashGameResponseDTO;
-import org.fcesur.gcs.response.dto.TemplateResponseDTO;
+import org.fcesur.messaging.dto.TemplateResponseDTO;
 
 public class TemplateMapper {
 
@@ -75,6 +75,4 @@ public class TemplateMapper {
               .variantType(template.getVariantType())
               .build();
     }
-
-
 }

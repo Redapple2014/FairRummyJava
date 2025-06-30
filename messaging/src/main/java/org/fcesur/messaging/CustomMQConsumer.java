@@ -1,6 +1,6 @@
-package org.fcesur.gcs.message.queue;
+package org.fcesur.messaging;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -17,7 +17,7 @@ public class CustomMQConsumer extends DefaultConsumer {
     }
 
     @Override
-    public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body) throws IOException {
+    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
         queue.add(new Delivery(envelope, properties, body, consumerTag));
     }
 
@@ -28,10 +28,10 @@ public class CustomMQConsumer extends DefaultConsumer {
     public static class Delivery {
         private String consumerTag;
         private final Envelope _envelope;
-        private final BasicProperties _properties;
+        private final AMQP.BasicProperties _properties;
         private final byte[] _body;
 
-        public Delivery(Envelope envelope, BasicProperties properties, byte[] body, String consumerTag) {
+        public Delivery(Envelope envelope, AMQP.BasicProperties properties, byte[] body, String consumerTag) {
             _envelope = envelope;
             _properties = properties;
             _body = body;
@@ -52,7 +52,7 @@ public class CustomMQConsumer extends DefaultConsumer {
          *
          * @return the message properties
          */
-        public BasicProperties getProperties() {
+        public AMQP.BasicProperties getProperties() {
             return _properties;
         }
 

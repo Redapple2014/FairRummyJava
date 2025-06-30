@@ -9,14 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
 
-import static org.fcesur.model.RabbitMQConfig.MQ_DEFAULT_AUTO_RECOVERY;
-import static org.fcesur.model.RabbitMQConfig.MQ_DEFAULT_CONNECTION_TIMEOUT;
-import static org.fcesur.model.RabbitMQConfig.MQ_DEFAULT_RECOVERY_INTERVAL;
-import static org.fcesur.model.RabbitMQConfig.MQ_HOST;
-import static org.fcesur.model.RabbitMQConfig.MQ_PASSWORD;
-import static org.fcesur.model.RabbitMQConfig.MQ_PORT;
-import static org.fcesur.model.RabbitMQConfig.MQ_USERNAME;
-import static org.fcesur.model.RabbitMQConfig.MQ_VHOST;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_DEFAULT_AUTO_RECOVERY;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_DEFAULT_CONNECTION_TIMEOUT;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_DEFAULT_RECOVERY_INTERVAL;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_HOST;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_PASSWORD;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_PORT;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_USERNAME;
+import static org.fcesur.messaging.RabbitMQConfig.MQ_VHOST;
 
 public class RabbitMQMessageFramework implements MessageFramework {
 

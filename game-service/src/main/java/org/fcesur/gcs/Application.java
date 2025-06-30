@@ -1,6 +1,6 @@
 package org.fcesur.gcs;
 
-import org.fcesur.gcs.utility.TableInfoCache;
+import org.fcesur.messaging.model.TableInfoCache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;

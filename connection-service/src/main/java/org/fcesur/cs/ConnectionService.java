@@ -1,20 +1,20 @@
 package org.fcesur.cs;
 
-import org.fcesur.cs.jackson.JacksonObjectWrapper;
-import org.fcesur.cs.queue.CSMessageHandler;
-import org.fcesur.cs.queue.RabbitMessageFramework;
-import org.fcesur.cs.msg.MessageDigester;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.fcesur.cs.dispatcher.CS2ClientDispatcher;
 import org.fcesur.cs.dispatcher.CS2ServiceDispatcher;
 import org.fcesur.cs.dispatcher.MessageDispatcher;
+import org.fcesur.cs.jackson.JacksonObjectWrapper;
+import org.fcesur.cs.msg.MessageDigester;
 import org.fcesur.cs.netty.ServerInitializer;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.fcesur.cs.queue.CSMessageHandler;
+import org.fcesur.messaging.RabbitMQMessageFramework;
 
 import java.io.IOException;
 
-import static org.fcesur.model.ServiceType.CONN_SERVICE;
-import static org.fcesur.model.ServiceType.GAME_SERVICE;
+import static org.fcesur.messaging.ServiceType.CONN_SERVICE;
+import static org.fcesur.messaging.ServiceType.GAME_SERVICE;
 
 @Slf4j
 @Getter
@@ -38,7 +38,7 @@ public final class ConnectionService {
     private final MessageDispatcher messageDispatcher;
 
     private ServerInitializer serverInitializer;
-    private RabbitMessageFramework messageQueueFramework;
+    private RabbitMQMessageFramework messageQueueFramework;
 
     /**
      * Constructor
@@ -92,7 +92,7 @@ public final class ConnectionService {
 
         try {
 
-            messageQueueFramework = new RabbitMessageFramework();
+            messageQueueFramework = new RabbitMQMessageFramework("");
 
             messageQueueFramework.registerQueuePublisher(GAME_SERVICE);
             messageQueueFramework.registerQueueConsumer(CONN_SERVICE, new CSMessageHandler());

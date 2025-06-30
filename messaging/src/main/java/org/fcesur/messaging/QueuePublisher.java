@@ -1,11 +1,11 @@
-package org.fcesur.gcs.message.queue;
+package org.fcesur.messaging;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 
 import java.io.IOException;
 
-public class QueuePublisher implements Publisher {
+public final class QueuePublisher implements Publisher {
 
     private Connection connection;
 

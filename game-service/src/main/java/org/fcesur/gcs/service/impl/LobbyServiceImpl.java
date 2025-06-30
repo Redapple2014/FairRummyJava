@@ -1,15 +1,14 @@
 package org.fcesur.gcs.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.fcesur.gcs.mapper.TemplateMapper;
 import org.fcesur.gcs.request.dto.LobbyValidationRequest;
 import org.fcesur.gcs.response.dto.LobbyCashGameResponseDTO;
 import org.fcesur.gcs.response.dto.LobbyValidationResponse;
-import org.fcesur.gcs.response.dto.TemplateResponseDTO;
 import org.fcesur.gcs.service.LobbyService;
 import org.fcesur.gcs.service.TemplateService;
+import org.fcesur.messaging.dto.TemplateResponseDTO;
 import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

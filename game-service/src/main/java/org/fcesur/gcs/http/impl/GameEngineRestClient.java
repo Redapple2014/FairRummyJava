@@ -17,7 +17,7 @@ import java.util.Map;
 @Service
 public class GameEngineRestClient {
 
-    private static final String SERVICE_NAME = MQ_EXCHANGE_GAME_ENGINE;
+    // private static final String SERVICE_NAME = MQ_EXCHANGE_GAME_ENGINE;
     private RestClient restClient;
 
     @Autowired
@@ -27,7 +27,7 @@ public class GameEngineRestClient {
 
     @PostConstruct
     public void setup() {
-        restClient = new RestClient(SERVICE_NAME);
+        restClient = new RestClient(geURL);
     }
 
     public FMGResponse tableJoin(int templateId) {

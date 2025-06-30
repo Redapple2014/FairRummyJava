@@ -3,6 +3,7 @@ package org.fcesur.cs.queue;
 import org.fcesur.cs.ConnectionService;
 import org.fcesur.cs.services.PlayerSession;
 import org.fcesur.cs.services.ServiceMessage;
+import org.fcesur.messaging.MessageHandler;
 
 public class CSMessageHandler implements MessageHandler {
 

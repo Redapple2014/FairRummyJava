@@ -1,8 +1,8 @@
 package org.fcesur.gcs;
 
 import lombok.Getter;
-import org.fcesur.gcs.message.queue.GCSMessageHandler;
-import org.fcesur.gcs.message.queue.RabbitMQMessageFramework;
+import org.fcesur.messaging.GCSMessageHandler;
+import org.fcesur.messaging.RabbitMQMessageFramework;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;

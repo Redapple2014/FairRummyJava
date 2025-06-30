@@ -2,6 +2,8 @@ package org.fcesur.gcs.utility;
 
 
 import org.fcesur.gcs.response.dto.FMGResponse;
+import org.fcesur.messaging.model.TableInfo;
+import org.fcesur.messaging.model.TableInfoCache;
 
 import java.util.Collection;
 

@@ -1,7 +1,7 @@
-package org.fcesur.cs.queue;
-
-import java.io.Closeable;
-
-public interface Publisher extends Closeable {
-    public boolean publishMessage(String message);
-}
+//package org.fcesur.cs.queue;
+//
+//import java.io.Closeable;
+//
+//public interface Publisher extends Closeable {
+//    public boolean publishMessage(String message);
+//}

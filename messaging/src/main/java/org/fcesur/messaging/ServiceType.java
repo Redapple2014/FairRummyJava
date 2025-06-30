@@ -1,4 +1,4 @@
-package org.fcesur.model;
+package org.fcesur.messaging;
 
 /**
  * RabbitMQ configuration

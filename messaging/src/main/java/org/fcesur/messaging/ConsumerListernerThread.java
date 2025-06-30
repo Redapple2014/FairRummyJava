@@ -1,10 +1,16 @@
-package org.fcesur.gcs.message.queue;
+package org.fcesur.messaging;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j

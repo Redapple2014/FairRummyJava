@@ -1,14 +1,14 @@
 package org.fcesur.gcs.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.fcesur.gcs.http.impl.GameEngineRestClient;
 import org.fcesur.gcs.request.dto.FMGRequest;
 import org.fcesur.gcs.response.dto.FMGResponse;
-import org.fcesur.gcs.response.dto.TemplateResponseDTO;
 import org.fcesur.gcs.service.TemplateService;
 import org.fcesur.gcs.service.message.GameJoinService;
 import org.fcesur.gcs.utility.GCSTableStatus;
-import org.fcesur.gcs.utility.TableInfo;
-import lombok.RequiredArgsConstructor;
+import org.fcesur.messaging.dto.TemplateResponseDTO;
+import org.fcesur.messaging.model.TableInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

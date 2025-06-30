@@ -13,8 +13,8 @@ import org.fcesur.cs.services.ServiceMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 
-import static org.fcesur.model.ServiceType.CONN_SERVICE;
-import static org.fcesur.model.ServiceType.GAME_SERVICE;
+import static org.fcesur.messaging.ServiceType.CONN_SERVICE;
+import static org.fcesur.messaging.ServiceType.GAME_SERVICE;
 
 @Slf4j
 public class MessageDigester {

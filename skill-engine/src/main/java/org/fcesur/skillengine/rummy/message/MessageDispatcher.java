@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.fcesur.model.ServiceType.CONN_SERVICE;
-import static org.fcesur.model.ServiceType.GCS_SERVICE;
+import static org.fcesur.messaging.ServiceType.CONN_SERVICE;
+import static org.fcesur.messaging.ServiceType.GCS_SERVICE;
 
 @Slf4j
 public class MessageDispatcher {

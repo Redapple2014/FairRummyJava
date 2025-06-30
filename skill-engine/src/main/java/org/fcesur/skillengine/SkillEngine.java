@@ -16,9 +16,9 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import static org.fcesur.model.ServiceType.CONN_SERVICE;
-import static org.fcesur.model.ServiceType.GAME_SERVICE;
-import static org.fcesur.model.ServiceType.GCS_SERVICE;
+import static org.fcesur.messaging.ServiceType.CONN_SERVICE;
+import static org.fcesur.messaging.ServiceType.GAME_SERVICE;
+import static org.fcesur.messaging.ServiceType.GCS_SERVICE;
 
 @Getter
 public final class SkillEngine implements AutoCloseable {
