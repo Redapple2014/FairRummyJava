@@ -17,7 +17,7 @@
     <modules>
         <module>messaging</module>
         <module>connection-service</module>
-        <!--        <module>game-service</module>-->
+        <module>game-service</module>
         <module>skill-engine</module>
     </modules>
 

@@ -2,11 +2,21 @@ package org.fcesur.gcs.message.queue;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.fcesur.model.RabbitMQConfig;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
+
+import static org.fcesur.model.RabbitMQConfig.MQ_DEFAULT_AUTO_RECOVERY;
+import static org.fcesur.model.RabbitMQConfig.MQ_DEFAULT_CONNECTION_TIMEOUT;
+import static org.fcesur.model.RabbitMQConfig.MQ_DEFAULT_RECOVERY_INTERVAL;
+import static org.fcesur.model.RabbitMQConfig.MQ_HOST;
+import static org.fcesur.model.RabbitMQConfig.MQ_PASSWORD;
+import static org.fcesur.model.RabbitMQConfig.MQ_PORT;
+import static org.fcesur.model.RabbitMQConfig.MQ_USERNAME;
+import static org.fcesur.model.RabbitMQConfig.MQ_VHOST;
 
 public class RabbitMQMessageFramework implements MessageFramework {
 
@@ -25,14 +35,14 @@ public class RabbitMQMessageFramework implements MessageFramework {
 
         ConnectionFactory connectionFactory = new ConnectionFactory();
 
-        connectionFactory.setHost(MQ_IP);
+        connectionFactory.setHost(MQ_HOST);
         connectionFactory.setPort(MQ_PORT);
-        connectionFactory.setUsername(MQ_USER_NAME);
+        connectionFactory.setUsername(MQ_USERNAME);
         connectionFactory.setPassword(MQ_PASSWORD);
-        connectionFactory.setVirtualHost(VHOST);
-        connectionFactory.setAutomaticRecoveryEnabled(DEFAULT_AUTO_RECOVERY);
-        connectionFactory.setNetworkRecoveryInterval(DEFAULT_RECOVERY_INTERVAL);
-        connectionFactory.setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
+        connectionFactory.setVirtualHost(MQ_VHOST);
+        connectionFactory.setAutomaticRecoveryEnabled(MQ_DEFAULT_AUTO_RECOVERY);
+        connectionFactory.setNetworkRecoveryInterval(MQ_DEFAULT_RECOVERY_INTERVAL);
+        connectionFactory.setConnectionTimeout(MQ_DEFAULT_CONNECTION_TIMEOUT);
 
         this.connection = connectionFactory.newConnection();
     }
@@ -60,7 +70,9 @@ public class RabbitMQMessageFramework implements MessageFramework {
         boolean result = false;
         Consumer tempConsumer = new QueueConsumer(connection, queueName, messageHandler);
         Consumer consumer = consumers.putIfAbsent(queueName, tempConsumer);
+
         System.out.println("consumer" + consumer);
+
         if (consumer != null) {
             try {
                 tempConsumer.close();

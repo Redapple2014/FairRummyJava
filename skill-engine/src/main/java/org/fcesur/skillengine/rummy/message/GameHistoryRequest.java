@@ -26,16 +26,16 @@ public final class GameHistoryRequest extends Message {
         this.limit = 5;
     }
 
-    /**
-     * Constructor
-     *
-     * @param userId User id
-     * @param limit  Limit
-     */
-    public GameHistoryRequest(long userId, int limit) {
-        super(1, MessageConstants.GAME_HISTORY_REQUEST, 0L);
-
-        this.userId = userId;
-        this.limit = limit;
-    }
+    //    /**
+    //     * Constructor
+    //     *
+    //     * @param userId  User id
+    //     * @param limit   Limit
+    //     */
+    //    public GameHistoryRequest(long userId, int limit) {
+    //        super(1, MessageConstants.GAME_HISTORY_REQUEST, 0L);
+    //
+    //        this.userId = userId;
+    //        this.limit = limit;
+    //    }
 }
