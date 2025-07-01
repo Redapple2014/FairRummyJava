@@ -13,6 +13,7 @@ public class ScoreUpdate extends Message
 {
 	private String jokerCardId;
 	private List< UserScore > userScore;
+	private int gameNo;
 
 	/**
 	 * @param serviceType
@@ -21,10 +22,11 @@ public class ScoreUpdate extends Message
 	 * @param jokerCardId
 	 * @param userScore
 	 */
-	public ScoreUpdate( long tableId, String jokerCardId, List< UserScore > userScore )
+	public ScoreUpdate( long tableId, String jokerCardId, List< UserScore > userScore, int gameNo )
 	{
 		super( 1, MessageConstants.SCORE_UPDATE, tableId );
 		this.jokerCardId = jokerCardId;
 		this.userScore = userScore;
+		this.gameNo = gameNo;
 	}
 }

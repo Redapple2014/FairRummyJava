@@ -13,6 +13,7 @@ public class PlayerDeclaringDetails extends Message
 {
 	private long winnerId;
 	private List< PlayerDeclaringState > declaringStates;
+	private int gameNo;
 
 	/**
 	 * @param serviceType
@@ -21,11 +22,12 @@ public class PlayerDeclaringDetails extends Message
 	 * @param winnerId
 	 * @param declaringStates
 	 */
-	public PlayerDeclaringDetails( long tableId, long winnerId, List< PlayerDeclaringState > declaringStates )
+	public PlayerDeclaringDetails( long tableId, long winnerId, List< PlayerDeclaringState > declaringStates, int gameNo )
 	{
 		super( 1, MessageConstants.DECLARE_DETAILS, tableId );
 		this.winnerId = winnerId;
 		this.declaringStates = declaringStates;
+		this.gameNo = gameNo;
 	}
 
 }

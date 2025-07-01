@@ -40,7 +40,6 @@ import com.skillengine.rummy.player.PlayerInfo;
 import com.skillengine.rummy.player.SeatPlayerInfo;
 import com.skillengine.rummy.settlement.PointsSettlement;
 import com.skillengine.rummy.util.ActiveBoards;
-import com.skillengine.rummy.util.SkillCalculation;
 import com.skillengine.service.CurrencyService;
 import com.skillengine.service.CurrencyServiceImpl;
 import com.skillengine.sessions.PlayerSession;
@@ -72,6 +71,7 @@ public class RummyBoard extends Board
 	private ScoreUpdate scoreUpdate;
 	private long gameEndTime = 0l;
 	private long winnerId = 0;
+	private Map< Long, Integer > totalScoreMap = new ConcurrentHashMap< Long, Integer >();
 
 	public RummyBoard( long tableId, GameTemplates templateDetails )
 	{
@@ -255,6 +255,18 @@ public class RummyBoard extends Board
 			Iterator< Long > playerIdItr = playerMap.keySet().iterator();
 			long winner = rummyGame.getWinner();
 			winnerId = rummyGame.getWinner();
+			Map< Long, Integer > scoreMap = rummyGame.getScoreMap();
+			if( getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
+			{
+				for( Map.Entry< Long, Integer > entryScoreMap : scoreMap.entrySet() )
+				{
+					totalScoreMap.merge( entryScoreMap.getKey(), entryScoreMap.getValue(), Integer::sum );
+				}
+			}
+			else
+			{
+				totalScoreMap = scoreMap;
+			}
 			while( playerIdItr.hasNext() )
 			{
 				long playerId = playerIdItr.next();
@@ -465,7 +477,7 @@ public class RummyBoard extends Board
 			List< Message > msgList = new ArrayList< Message >();
 			log.debug( "player is already there " + playerId + " TableId : " + getTableId() );
 			BoardInfo boardInfo = new BoardInfo( getGameTemplates().getMaxPlayer(), getGameTemplates().getMinBuyin(), getGameTemplates().getMaxBuyin(), getTableId(),
-					getGameTemplates().getNoOfCards(), gameNo, getGameTemplates().getId() );
+					getGameTemplates().getNoOfCards(), getCurrentGameNo(), getGameTemplates().getId(), getGameTemplates().getDealsPerGame() );
 			msgList.add( boardInfo );
 			Seats seats = new Seats( getTableId(), Converter.convertSeatsList( getSeats(), playerId ) );
 			msgList.add( seats );
@@ -653,7 +665,7 @@ public class RummyBoard extends Board
 		try
 		{
 			BoardInfo boardInfo = new BoardInfo( getGameTemplates().getMaxPlayer(), getGameTemplates().getMinBuyin(), getGameTemplates().getMaxBuyin(), getTableId(),
-					getGameTemplates().getNoOfCards(), gameNo, getGameTemplates().getId() );
+					getGameTemplates().getNoOfCards(), getCurrentGameNo(), getGameTemplates().getId(), getGameTemplates().getDealsPerGame() );
 			msgList.add( boardInfo );
 			sendTableSeatMsg( 0 );
 			Seats seats = new Seats( getTableId(), Converter.convertSeatsList( getSeats(), playerId ) );
@@ -883,6 +895,7 @@ public class RummyBoard extends Board
 	{
 		try
 		{
+			log.info( "Closing the Table {}", getTableId() );
 			setStatus( GameGlobals.COMPLETED );
 			if( currTask != null )
 				currTask.cancel();
@@ -892,6 +905,7 @@ public class RummyBoard extends Board
 				tableCompletedStatus = true;
 			}
 			trackTableStatus();
+			tableTimer = null;
 			ActiveBoards.removeTable( getTableId() );
 			ActiveBoards.removeTable( getGameTemplates().getId(), getTableId() );
 
@@ -1113,6 +1127,16 @@ public class RummyBoard extends Board
 				.availableSeats( getAvlSeat() ).status( getStatus() ).build();
 		dispatcher.publishTableStatus( statusInfo );
 
+	}
+
+	public int getCurrentGameNo()
+	{
+		return gameNo == 0 ? 1 : gameNo;
+	}
+
+	protected Map< Long, Integer > getTotalScoreMap()
+	{
+		return totalScoreMap;
 	}
 
 }

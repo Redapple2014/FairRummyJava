@@ -10,6 +10,7 @@ import com.skillengine.common.GameTemplates;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.globals.TimeTaskTypes;
 import com.skillengine.rummy.globals.VariantTypes;
+import com.skillengine.rummy.message.DealsResult;
 import com.skillengine.rummy.player.PlayerInfo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ public class DealsRummyBoard extends RummyBoard
 	public DealsRummyBoard( long tableId, GameTemplates templateDetails )
 	{
 		super( tableId, templateDetails );
+		log.info( "DealsRummyBoard {}", templateDetails );
+
 	}
 
 	@Override
@@ -172,6 +175,7 @@ public class DealsRummyBoard extends RummyBoard
 		boolean status = super.endGame();
 		if( currentDealNo == getGameTemplates().getDealsPerGame() && getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
 		{
+			log.info( "All games are Ended {} currentDealNo {}", getTableId(), currentDealNo );
 			isAllGamesCompleted.set( true );
 		}
 		long winnerId = getWinner();
@@ -182,13 +186,18 @@ public class DealsRummyBoard extends RummyBoard
 			return false;
 		}
 		// If all the games completed
+		log.info( "playerWinningCnt tableId {} playerWinningCnt {}", getTableId(), playerWinningCnt );
 		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
 		for( Long plId : playerWinningCnt.keySet() )
 		{
 			Integer cnt = playerWinningCnt.get( plId );
 			if( cnt >= requiredWinningCnt )
 			{
-				// Deal Winner Will be Announced
+				log.info( "Deal Winner tableId {} PlayerId {}", getTableId(), plId );
+				DealsResult dealsResult = new DealsResult( getTableId(), winnerId );
+				getDispatcher().sendMessage( getAllplayer(), dealsResult );
+				scheduleTableClose( 5000 );
+				break;
 			}
 		}
 		return status;
@@ -202,4 +211,27 @@ public class DealsRummyBoard extends RummyBoard
 		}
 		return( ( n / 2 ) + 1 );
 	}
+
+	public void scheduleTableClose( long time )
+	{
+		try
+		{
+			if( currTask != null )
+				currTask.cancel();
+			currTask = new TableTimerTask( TimeTaskTypes.DEALS_END )
+			{
+				public void run()
+				{
+					setCompletedStatus();
+				}
+			};
+			scheduleTask( currTask, time );
+		}
+		catch( Exception e )
+		{
+			e.printStackTrace();
+		}
+
+	}
+
 }

@@ -47,4 +47,5 @@ public final class MessageConstants
 	public final static String UPDATE_SEAT_BALANCE = "updateSeatBalance";
 	public final static String TABLE_RECON_REQ = "tableReconReq";
 	public final static String SET_HAND_CARDS = "setHandCards";
+	public final static String DEAL_RESULT = "dealsResult";
 }

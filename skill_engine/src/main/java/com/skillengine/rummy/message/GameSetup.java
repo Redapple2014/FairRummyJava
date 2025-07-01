@@ -29,4 +29,5 @@ public class GameSetup extends Message
 	private List< String > openDeck;
 	private float closedDeckSize;
 	private long gameId;
+	private int currentDealNo;
 }

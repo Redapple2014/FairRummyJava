@@ -4,4 +4,5 @@ public final class TimeTaskTypes
 {
 	public static final int GAME_START = 1;
 	public static final int GAME_END = 2;
+	public static final int DEALS_END = 3;
 }

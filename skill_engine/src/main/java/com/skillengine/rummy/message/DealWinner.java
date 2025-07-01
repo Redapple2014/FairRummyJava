@@ -13,6 +13,7 @@ public class DealWinner extends Message
 	private double winningAmount;
 	private boolean winningHappened;
 	private List< List< String > > grpCardIds;
+	private int dealNumber;
 
 	/**
 	 * @param serviceType
@@ -21,13 +22,14 @@ public class DealWinner extends Message
 	 * @param playerId
 	 * @param winningAmount
 	 */
-	public DealWinner( long tableId, long playerId, double winningAmount, boolean winningHappened, List< List< String > > grpCards )
+	public DealWinner( long tableId, long playerId, double winningAmount, boolean winningHappened, List< List< String > > grpCards, int dealNumber )
 	{
 		super( 1, MessageConstants.DEAL_WINNER, tableId );
 		this.winningPlayerId = playerId;
 		this.winningAmount = winningAmount;
 		this.winningHappened = winningHappened;
 		this.grpCardIds = grpCards;
+		this.dealNumber = dealNumber;
 	}
 
 }

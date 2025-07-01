@@ -16,8 +16,9 @@ public class BoardInfo extends Message
 	private int noOfCards;
 	private int gameNo;
 	private int templateId;
+	private int totalDeals;
 
-	public BoardInfo( int maxPlayer, int minBuyin, int maxBuyin, long tableID, int noOfCards, int gameNo, int templateId )
+	public BoardInfo( int maxPlayer, int minBuyin, int maxBuyin, long tableID, int noOfCards, int gameNo, int templateId, int totalDeals )
 	{
 		super( 1, BOARD_INFO, tableID );
 		this.maxPlayer = maxPlayer;
@@ -26,6 +27,7 @@ public class BoardInfo extends Message
 		this.noOfCards = noOfCards;
 		this.gameNo = gameNo;
 		this.templateId = templateId;
+		this.totalDeals = totalDeals;
 	}
 
 	public int getMaxPlayer()
@@ -56,6 +58,14 @@ public class BoardInfo extends Message
 	public int getTemplateId()
 	{
 		return templateId;
+	}
+
+	/**
+	 * @return the totalDeals
+	 */
+	public int getTotalDeals()
+	{
+		return totalDeals;
 	}
 
 }
