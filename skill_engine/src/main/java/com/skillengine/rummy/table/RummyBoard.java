@@ -36,6 +36,7 @@ import com.skillengine.rummy.message.MessageDispatcher;
 import com.skillengine.rummy.message.ScoreUpdate;
 import com.skillengine.rummy.message.Seats;
 import com.skillengine.rummy.message.UpdateSeatBalance;
+import com.skillengine.rummy.message.UserInfo;
 import com.skillengine.rummy.player.PlayerInfo;
 import com.skillengine.rummy.player.SeatPlayerInfo;
 import com.skillengine.rummy.settlement.PointsSettlement;
@@ -203,7 +204,18 @@ public class RummyBoard extends Board
 				for( PlayerInfo player : currentPlayers )
 				{
 					Long playerId = player.getUserId();
-					currentPlayerIds.add( playerId );
+					if( getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY && isTiebreaker.get() )
+					{
+						if( !dealsBootedOut.contains( playerId ) )
+						{
+							currentPlayerIds.add( playerId );
+						}
+					}
+					else
+					{
+						currentPlayerIds.add( playerId );
+
+					}
 					log.info( "TableId : " + getTableId() + " PlayerId : " + player.getUserId() + " Bal at GameStart : " + userCurrencyMap.get( playerId ) );
 				}
 				log.info( "TableId : " + getTableId() + " Players at GameStart : " + currentPlayerIds + " GameNo : " + gameNo + "  tossRequired  :" + tossRequired.get()
@@ -211,7 +223,7 @@ public class RummyBoard extends Board
 				setTossRequired();
 				boolean toss = tossRequired.get();
 				tossRequired.set( false );
-				rummyGame = new RummyGame( this, currentPlayers, toss );
+				rummyGame = new RummyGame( this, currentPlayers, toss, dealsBootedOut );
 				TimerTask gameStartTask = new TimerTask()
 				{
 					@Override
@@ -1137,6 +1149,28 @@ public class RummyBoard extends Board
 	protected Map< Long, Integer > getTotalScoreMap()
 	{
 		return totalScoreMap;
+	}
+
+	protected PlayerInfo getPlayerDetails( long playerId )
+	{
+		return userCurrencyMap.get( playerId );
+	}
+
+	private AtomicBoolean isTiebreaker = new AtomicBoolean( false );
+	private List< Long > dealsBootedOut = new ArrayList< Long >();
+
+	protected void setTieBreaker( List< Long > eliminatedPlayers )
+	{
+		if( getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
+		{
+			isTiebreaker.set( true );
+			dealsBootedOut.addAll( eliminatedPlayers );
+		}
+	}
+	
+	public boolean isTiebreaker()
+	{
+		return isTiebreaker.get();
 	}
 
 }

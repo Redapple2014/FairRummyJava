@@ -30,4 +30,5 @@ public class GameSetup extends Message
 	private float closedDeckSize;
 	private long gameId;
 	private int currentDealNo;
+	private int tieBreakerStatus;
 }

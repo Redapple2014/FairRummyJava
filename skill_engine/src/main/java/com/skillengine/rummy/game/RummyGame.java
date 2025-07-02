@@ -79,7 +79,7 @@ public class RummyGame extends TrickTakingGame
 	protected AtomicLong finishPlayer = new AtomicLong( 0 );
 	protected Map< Long, List< List< String > > > declaredCards = new ConcurrentHashMap<>();
 
-	public RummyGame( RummyBoard table, List< PlayerInfo > playerIdList, boolean tossRequired )
+	public RummyGame( RummyBoard table, List< PlayerInfo > playerIdList, boolean tossRequired, List< Long > dealsBootedOut )
 	{
 		this.table = table;
 		this.tossRequired = tossRequired;
@@ -93,6 +93,10 @@ public class RummyGame extends TrickTakingGame
 					.withdrawable( playerInfo.getWithdrawable() ).nonWithdrawable( playerInfo.getNonWithdrawable() ).build();
 			addOrderedPlayerIds( playerInfo.getUserId() );
 			gamePlayerMap.put( playerInfo.getUserId(), handInfo );
+		}
+		for( Long plId : dealsBootedOut )
+		{
+			setKnockedPlayer( plId, 0 );
 		}
 
 	}
@@ -258,6 +262,7 @@ public class RummyGame extends TrickTakingGame
 				gameSetup.setJokerCard( handModel.getJokerCard().toString() );
 				gameSetup.setOpenDeck( handModel.getOpenStackString() );
 				gameSetup.setGameId( getGameId() );
+				gameSetup.setCurrentDealNo( table.getCurrentGameNo() );
 				msgList.add( gameSetup );
 			}
 			// Game Status
@@ -562,6 +567,7 @@ public class RummyGame extends TrickTakingGame
 			gameSetup.setOpenDeck( handModel.getOpenStackString() );
 			gameSetup.setGameId( getGameId() );
 			gameSetup.setCurrentDealNo( table.getCurrentGameNo() );
+			gameSetup.setTieBreakerStatus( table.isTiebreaker() ? 1 : 0 );
 			table.getDispatcher().sendMessage( playerId, gameSetup );
 
 		}
@@ -580,6 +586,7 @@ public class RummyGame extends TrickTakingGame
 				gameSetup.setOpenDeck( handModel.getOpenStackString() );
 				gameSetup.setGameId( getGameId() );
 				gameSetup.setCurrentDealNo( table.getCurrentGameNo() );
+				gameSetup.setTieBreakerStatus( table.isTiebreaker() ? 1 : 0 );
 				table.getDispatcher().sendMessage( nonPlayingPlayers, gameSetup );
 			}
 		}
@@ -1919,9 +1926,6 @@ public class RummyGame extends TrickTakingGame
 				List< Message > messages = new ArrayList<>();
 				DealWinner dealWinner = new DealWinner( table.getTableId(), playerId, 0.0, true, getCustomGroupedCards( playerId ), table.getCurrentGameNo() );
 				messages.add( dealWinner );
-				// PlayerDeclaringDetails declaringDetails =
-				// sendPlayerState();
-				// messages.add( declaringDetails );
 				table.getDispatcher().sendMessage( table.getAllplayer(), messages );
 				scheduleWinningTimeout( playerId, HandConfigs.FINISH_PLAYER_WINNING_TIMEOUT );
 				log.info( "TableId : " + table.getTableId() + " PlayerId : " + playerId + " finish with show" );
@@ -1938,11 +1942,7 @@ public class RummyGame extends TrickTakingGame
 		}
 		else
 		{
-			if( score == 0 )
-			{
-				score = 2;
-			}
-			playerScoreMap.put( playerId, score );
+			playerScoreMap.put( playerId, score == 0 ? 2 : score );
 			log.info( "TableId : " + table.getTableId() + " PlayerId : " + playerId + "Game.. Looser" );
 			List< Long > playerIdList = new ArrayList< Long >();
 			playerIdList.add( playerId );

@@ -3,6 +3,7 @@ package com.skillengine.service.message;
 import com.skillengine.main.SkillEngineImpl;
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.rummy.message.BoardSetup;
+import com.skillengine.rummy.message.DealScoreRequest;
 import com.skillengine.rummy.message.Declare;
 import com.skillengine.rummy.message.Discard;
 import com.skillengine.rummy.message.DiscardCardReq;
@@ -17,6 +18,7 @@ import com.skillengine.rummy.message.PlayerTableJoin;
 import com.skillengine.rummy.message.SetHandCards;
 import com.skillengine.rummy.message.TableCreation;
 import com.skillengine.rummy.message.TableReconReq;
+import com.skillengine.rummy.message.handler.DealScoreHandler;
 import com.skillengine.rummy.message.handler.DeclareHandler;
 import com.skillengine.rummy.message.handler.DiscardCardHandler;
 import com.skillengine.rummy.message.handler.DiscardHandler;
@@ -70,6 +72,7 @@ public class ServiceHandler
 		case FMGRequest fmgReq -> new FMGHandler( SkillEngineImpl.getInstance().getTableDetailsDAO() ).handleMessage( playerSession, fmgReq, message.getReceiverId() );
 		case TableReconReq tableReconReq -> new TableReconnectionHandler().handleMessage( playerSession, tableReconReq, message.getReceiverId() );
 		case SetHandCards handcards -> new HandCardHandler().handleMessage( playerSession, handcards, message.getReceiverId() );
+		case DealScoreRequest dealScoreReq -> new DealScoreHandler().handleMessage( playerSession, dealScoreReq, message.getReceiverId() );
 		default -> throw new IllegalArgumentException( "Unexpected value: " + messages );
 		}
 	}

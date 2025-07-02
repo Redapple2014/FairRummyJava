@@ -2,6 +2,7 @@ package com.skillengine.service.message;
 
 import com.skillengine.message.parsers.Jackson;
 import com.skillengine.rummy.message.BoardSetup;
+import com.skillengine.rummy.message.DealScoreRequest;
 import com.skillengine.rummy.message.Declare;
 import com.skillengine.rummy.message.Discard;
 import com.skillengine.rummy.message.DiscardCardReq;
@@ -66,6 +67,8 @@ public class ServiceMessageDigester
 			return jackson.readValue( payload, TableReconReq.class );
 		case MessageConstants.SET_HAND_CARDS:
 			return jackson.readValue( payload, SetHandCards.class );
+		case MessageConstants.DEAL_SCORE_CARD_REQ:
+			return jackson.readValue( payload, DealScoreRequest.class );
 		default:
 			return null;
 

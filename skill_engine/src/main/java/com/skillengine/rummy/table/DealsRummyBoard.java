@@ -1,8 +1,13 @@
 package com.skillengine.rummy.table;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -10,6 +15,8 @@ import com.skillengine.common.GameTemplates;
 import com.skillengine.rummy.globals.GameGlobals;
 import com.skillengine.rummy.globals.TimeTaskTypes;
 import com.skillengine.rummy.globals.VariantTypes;
+import com.skillengine.rummy.message.DealScoreCard;
+import com.skillengine.rummy.message.DealScoreCardDetails;
 import com.skillengine.rummy.message.DealsResult;
 import com.skillengine.rummy.player.PlayerInfo;
 
@@ -21,6 +28,7 @@ public class DealsRummyBoard extends RummyBoard
 	private int currentDealNo;
 	private Map< Long, Integer > playerRankMap;
 	private AtomicBoolean isAllGamesCompleted = new AtomicBoolean( false );
+	private AtomicBoolean isTieBreaker = new AtomicBoolean( false );
 	private Map< Long, Integer > playerWinningCnt = new ConcurrentHashMap<>();
 
 	public DealsRummyBoard( long tableId, GameTemplates templateDetails )
@@ -185,14 +193,53 @@ public class DealsRummyBoard extends RummyBoard
 			checkForNextDeal();
 			return false;
 		}
-		// If all the games completed
+		TieBreakerDetails breakerDetails = null;
+		if( isAllGamesCompleted.get() && !isTieBreaker.get() )
+		{
+			breakerDetails = checkTieBreaker();
+			if( breakerDetails != null && breakerDetails.isTieBreaker() )
+			{
+				isTieBreaker.set( true );
+				List< Long > dealsBootOut = new ArrayList< Long >();
+				List< Long > playersInTable = getAllplayer();
+				for( Long plId : playersInTable )
+				{
+					if( !breakerDetails.tiebreakerEligiblePlayers().contains( plId ) )
+					{
+						dealsBootOut.add( plId );
+					}
+				}
+				setTieBreaker( dealsBootOut );
+				// Send New Message
+				com.skillengine.rummy.message.TieBreakerDetails details = new com.skillengine.rummy.message.TieBreakerDetails( getTableId(), dealsBootOut, 2000 );
+				getDispatcher().sendMessage( getAllplayer(), details );
+				scheduleTieBreaker( 2000 );
+				return false;
+			}
+		}
+		if( isTieBreaker.get() )
+		{
+			// Announce the Winner
+			if( winnerId <= 0 )
+			{
+				return false;
+			}
+			log.info( "TieBreaker Deal Winner tableId {} winnerId {}", getTableId(), winnerId );
+			DealsResult dealsResult = new DealsResult( getTableId(), winnerId );
+			getDispatcher().sendMessage( getAllplayer(), dealsResult );
+			scheduleTableClose( 5000 );
+			return false;
+		}
+		// If all the games completed and tie Breaker Not Eligible
 		log.info( "playerWinningCnt tableId {} playerWinningCnt {}", getTableId(), playerWinningCnt );
 		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
+		boolean isWinnerAnnounced = false;
 		for( Long plId : playerWinningCnt.keySet() )
 		{
 			Integer cnt = playerWinningCnt.get( plId );
 			if( cnt >= requiredWinningCnt )
 			{
+				isWinnerAnnounced = true;
 				log.info( "Deal Winner tableId {} PlayerId {}", getTableId(), plId );
 				DealsResult dealsResult = new DealsResult( getTableId(), winnerId );
 				getDispatcher().sendMessage( getAllplayer(), dealsResult );
@@ -200,14 +247,34 @@ public class DealsRummyBoard extends RummyBoard
 				break;
 			}
 		}
+		if( isWinnerAnnounced )
+		{
+			log.info( "Winner Already Informed so skipping tableId {} ", getTableId() );
+			return false;
+		}
+		// Check for the Score if the TieBreaker Not Enabled
+		if( !isTieBreaker.get() )
+		{
+			Map< Long, Integer > scoreMap = getTotalScoreMap();
+			TreeMap< Integer, Long > sortedScores = new TreeMap< Integer, Long >();
+			for( Map.Entry< Long, Integer > entryScoreMap : scoreMap.entrySet() )
+			{
+				sortedScores.put( entryScoreMap.getValue(), entryScoreMap.getKey() );
+			}
+			Entry< Integer, Long > sortedEntry = sortedScores.firstEntry();
+			long lowScoreWinner = sortedEntry.getValue();
+			DealsResult dealsResult = new DealsResult( getTableId(), lowScoreWinner );
+			getDispatcher().sendMessage( getAllplayer(), dealsResult );
+			scheduleTableClose( 5000 );
+		}
 		return status;
 	}
 
 	public int bestOfNMatch( int n )
 	{
-		if( n % 2 == 0 )
+		if( n == 2 || n == 6 )
 		{
-			throw new IllegalArgumentException( "N must be odd for a 'Best of N' match." );
+			return n == 2 ? 2 : 4;
 		}
 		return( ( n / 2 ) + 1 );
 	}
@@ -231,6 +298,85 @@ public class DealsRummyBoard extends RummyBoard
 		{
 			e.printStackTrace();
 		}
+
+	}
+
+	public void scheduleTieBreaker( long time )
+	{
+		try
+		{
+			if( currTask != null )
+				currTask.cancel();
+			currTask = new TableTimerTask( TimeTaskTypes.TIEBREAKER )
+			{
+				public void run()
+				{
+					checkForNextDeal();
+				}
+			};
+			scheduleTask( currTask, time );
+		}
+		catch( Exception e )
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	public DealScoreCard generateScoreCard()
+	{
+		Map< Long, Integer > scoreMap = getTotalScoreMap();
+		List< DealScoreCardDetails > dealScoreCards = new ArrayList<>();
+		for( Map.Entry< Long, Integer > entryScoreMap : scoreMap.entrySet() )
+		{
+			long playerId = entryScoreMap.getKey();
+			int score = entryScoreMap.getValue();
+			PlayerInfo playerDet = getPlayerDetails( playerId );
+			if( playerDet == null )
+			{
+				continue;
+			}
+			DealScoreCardDetails cardDetails = new DealScoreCardDetails( getTableId(), playerId, playerDet.getUserName(), score );
+			dealScoreCards.add( cardDetails );
+		}
+		return new DealScoreCard( getTableId(), dealScoreCards );
+	}
+
+	private TieBreakerDetails checkTieBreaker()
+	{
+		boolean isTieBreaker = false;
+		boolean isMaximumDealsWinningHappened = false;
+		TieBreakerDetails breakerDetails = null;
+		List< Long > identicalPlayers = null;
+		TreeMap< Integer, List< Long > > identicalScorePlayers = new TreeMap<>();
+		Map< Long, Integer > scoreMap = getTotalScoreMap();
+		for( Map.Entry< Long, Integer > entryScoreMap : scoreMap.entrySet() )
+		{
+			long userId = entryScoreMap.getKey();
+			int score = entryScoreMap.getValue();
+			identicalScorePlayers.computeIfAbsent( score, a -> new ArrayList< Long >() ).add( userId );
+		}
+		Entry< Integer, List< Long > > sortedIdentical = identicalScorePlayers.firstEntry();
+		identicalPlayers = sortedIdentical.getValue();
+		int scoreCnt = identicalPlayers.size();
+		isTieBreaker = scoreCnt > 1 ? true : false;
+		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
+		for( Long plId : playerWinningCnt.keySet() )
+		{
+			Integer cnt = playerWinningCnt.get( plId );
+			if( cnt >= requiredWinningCnt )
+			{
+				isMaximumDealsWinningHappened = true;
+			}
+		}
+		breakerDetails = new TieBreakerDetails( identicalPlayers, isMaximumDealsWinningHappened ? false : isTieBreaker );
+		log.info( "Tiebreaker Details {} TableId {}", breakerDetails, getTableId() );
+		return breakerDetails;
+
+	}
+
+	private record TieBreakerDetails( List< Long > tiebreakerEligiblePlayers, boolean isTieBreaker )
+	{
 
 	}
 

@@ -48,4 +48,8 @@ public final class MessageConstants
 	public final static String TABLE_RECON_REQ = "tableReconReq";
 	public final static String SET_HAND_CARDS = "setHandCards";
 	public final static String DEAL_RESULT = "dealsResult";
+	public final static String DEAL_SCORE_CARD_DETAILS = "dealScoreCard";
+	public final static String DEAL_SCORE_CARD_DETAILS_LIST = "dealScoreCardList";
+	public final static String DEAL_SCORE_CARD_REQ = "dealScoreCardReq";
+	public final static String TIE_BREAKER = "tieBreaker";
 }
