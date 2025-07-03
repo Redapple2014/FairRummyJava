@@ -30,6 +30,7 @@ import com.skillengine.rummy.globals.VariantTypes;
 import com.skillengine.rummy.message.BoardInfo;
 import com.skillengine.rummy.message.BoardStatus;
 import com.skillengine.rummy.message.Converter;
+import com.skillengine.rummy.message.DealScoreCardDetails;
 import com.skillengine.rummy.message.ExitLobby;
 import com.skillengine.rummy.message.Message;
 import com.skillengine.rummy.message.MessageDispatcher;
@@ -73,6 +74,7 @@ public class RummyBoard extends Board
 	private long gameEndTime = 0l;
 	private long winnerId = 0;
 	private Map< Long, Integer > totalScoreMap = new ConcurrentHashMap< Long, Integer >();
+	private Map< Integer, List< DealScoreCardDetails > > scoreByDeals = new ConcurrentHashMap<>();
 
 	public RummyBoard( long tableId, GameTemplates templateDetails )
 	{
@@ -270,6 +272,7 @@ public class RummyBoard extends Board
 			Map< Long, Integer > scoreMap = rummyGame.getScoreMap();
 			if( getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
 			{
+				generateScoreByDeals( scoreMap );
 				for( Map.Entry< Long, Integer > entryScoreMap : scoreMap.entrySet() )
 				{
 					totalScoreMap.merge( entryScoreMap.getKey(), entryScoreMap.getValue(), Integer::sum );
@@ -1167,10 +1170,40 @@ public class RummyBoard extends Board
 			dealsBootedOut.addAll( eliminatedPlayers );
 		}
 	}
-	
+
 	public boolean isTiebreaker()
 	{
 		return isTiebreaker.get();
+	}
+
+	private void generateScoreByDeals( Map< Long, Integer > playerScoreMap )
+	{
+		if( isTiebreaker() )
+		{
+			return;
+		}
+		List< DealScoreCardDetails > dealScoreCardDetails = new ArrayList< DealScoreCardDetails >();
+		int currentDealNo = getCurrentGameNo();
+		for( Map.Entry< Long, Integer > scoreDetails : playerScoreMap.entrySet() )
+		{
+			long playerId = scoreDetails.getKey();
+			int score = scoreDetails.getValue();
+			String userName = "na";
+			PlayerInfo playerInfo = getPlayerDetails( playerId );
+			if( playerInfo != null )
+			{
+				userName = playerInfo.getUserName();
+			}
+			DealScoreCardDetails cardDetails = new DealScoreCardDetails( getTableId(), playerId, userName, score, playerId == getWinner() );
+			dealScoreCardDetails.add( cardDetails );
+		}
+		scoreByDeals.put( currentDealNo, dealScoreCardDetails );
+		log.info( "Deals Info tableId {}", scoreByDeals );
+	}
+
+	protected Map< Integer, List< DealScoreCardDetails > > getScoreByDeals()
+	{
+		return scoreByDeals;
 	}
 
 }

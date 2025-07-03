@@ -325,21 +325,7 @@ public class DealsRummyBoard extends RummyBoard
 
 	public DealScoreCard generateScoreCard()
 	{
-		Map< Long, Integer > scoreMap = getTotalScoreMap();
-		List< DealScoreCardDetails > dealScoreCards = new ArrayList<>();
-		for( Map.Entry< Long, Integer > entryScoreMap : scoreMap.entrySet() )
-		{
-			long playerId = entryScoreMap.getKey();
-			int score = entryScoreMap.getValue();
-			PlayerInfo playerDet = getPlayerDetails( playerId );
-			if( playerDet == null )
-			{
-				continue;
-			}
-			DealScoreCardDetails cardDetails = new DealScoreCardDetails( getTableId(), playerId, playerDet.getUserName(), score );
-			dealScoreCards.add( cardDetails );
-		}
-		return new DealScoreCard( getTableId(), dealScoreCards );
+		return new DealScoreCard( getTableId(), getScoreByDeals() );
 	}
 
 	private TieBreakerDetails checkTieBreaker()
