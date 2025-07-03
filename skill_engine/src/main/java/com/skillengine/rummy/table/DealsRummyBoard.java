@@ -231,27 +231,27 @@ public class DealsRummyBoard extends RummyBoard
 			return false;
 		}
 		// If all the games completed and tie Breaker Not Eligible
-		log.info( "playerWinningCnt tableId {} playerWinningCnt {}", getTableId(), playerWinningCnt );
-		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
-		boolean isWinnerAnnounced = false;
-		for( Long plId : playerWinningCnt.keySet() )
-		{
-			Integer cnt = playerWinningCnt.get( plId );
-			if( cnt >= requiredWinningCnt )
-			{
-				isWinnerAnnounced = true;
-				log.info( "Deal Winner tableId {} PlayerId {}", getTableId(), plId );
-				DealsResult dealsResult = new DealsResult( getTableId(), winnerId );
-				getDispatcher().sendMessage( getAllplayer(), dealsResult );
-				scheduleTableClose( 5000 );
-				break;
-			}
-		}
-		if( isWinnerAnnounced )
-		{
-			log.info( "Winner Already Informed so skipping tableId {} ", getTableId() );
-			return false;
-		}
+//		log.info( "playerWinningCnt tableId {} playerWinningCnt {}", getTableId(), playerWinningCnt );
+//		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
+//		boolean isWinnerAnnounced = false;
+//		for( Long plId : playerWinningCnt.keySet() )
+//		{
+//			Integer cnt = playerWinningCnt.get( plId );
+//			if( cnt >= requiredWinningCnt )
+//			{
+//				isWinnerAnnounced = true;
+//				log.info( "Deal Winner tableId {} PlayerId {}", getTableId(), plId );
+//				DealsResult dealsResult = new DealsResult( getTableId(), winnerId );
+//				getDispatcher().sendMessage( getAllplayer(), dealsResult );
+//				scheduleTableClose( 5000 );
+//				break;
+//			}
+//		}
+//		if( isWinnerAnnounced )
+//		{
+//			log.info( "Winner Already Informed so skipping tableId {} ", getTableId() );
+//			return false;
+//		}
 		// Check for the Score if the TieBreaker Not Enabled
 		if( !isTieBreaker.get() )
 		{
@@ -346,16 +346,16 @@ public class DealsRummyBoard extends RummyBoard
 		identicalPlayers = sortedIdentical.getValue();
 		int scoreCnt = identicalPlayers.size();
 		isTieBreaker = scoreCnt > 1 ? true : false;
-		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
-		for( Long plId : playerWinningCnt.keySet() )
-		{
-			Integer cnt = playerWinningCnt.get( plId );
-			if( cnt >= requiredWinningCnt )
-			{
-				isMaximumDealsWinningHappened = true;
-			}
-		}
-		breakerDetails = new TieBreakerDetails( identicalPlayers, isMaximumDealsWinningHappened ? false : isTieBreaker );
+//		int requiredWinningCnt = bestOfNMatch( getGameTemplates().getDealsPerGame() );
+//		for( Long plId : playerWinningCnt.keySet() )
+//		{
+//			Integer cnt = playerWinningCnt.get( plId );
+//			if( cnt >= requiredWinningCnt )
+//			{
+//				isMaximumDealsWinningHappened = true;
+//			}
+//		}
+		breakerDetails = new TieBreakerDetails( identicalPlayers, isTieBreaker );
 		log.info( "Tiebreaker Details {} TableId {}", breakerDetails, getTableId() );
 		return breakerDetails;
 
