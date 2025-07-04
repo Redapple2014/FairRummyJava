@@ -844,16 +844,27 @@ public class RummyGame extends TrickTakingGame
 					{
 						score = HandConfigs.EARLY_DROP_POINTS;
 					}
+					
+					if(table.getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY) {
+
+						playerScoreMap.put( playerId, score );
+						setKnockedPlayer( playerId, KickedOutStates.PLAYER_DROP );
+						DropResponse dropResponse = new DropResponse( table.getTableId(), playerId );
+						table.getDispatcher().sendMessage( table.getAllplayer(), dropResponse );
+						
+					}else {
+					
 					playerScoreMap.put( playerId, score );
 					setKnockedPlayer( playerId, KickedOutStates.BOOTED_OUT );
 					PlayerBootedOut bootedOut = new PlayerBootedOut( table.getTableId(), playerId, score, PlayerKickOutState.PLAYER_DROP );
 					table.getDispatcher().sendMessage( table.getAllplayer(), bootedOut );
 					table.userLeft( playerId, 2 );
+					}
 
 				}
 				else
 				{
-					if( table.getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
+					/*if( table.getGameTemplates().getVariantType() == VariantTypes.DEALS_RUMMY )
 					{
 						int score = 0;
 						if( gamePlayer.getMoveCount() > 0 )
@@ -873,7 +884,10 @@ public class RummyGame extends TrickTakingGame
 					{
 						PlayerTurnTimeOut playerTurnTimeOut = new PlayerTurnTimeOut( table.getTableId(), currentPlayer );
 						table.getDispatcher().sendMessage( table.getAllplayer(), playerTurnTimeOut );
-					}
+					}*/
+					
+					PlayerTurnTimeOut playerTurnTimeOut = new PlayerTurnTimeOut( table.getTableId(), currentPlayer );
+					table.getDispatcher().sendMessage( table.getAllplayer(), playerTurnTimeOut );
 				}
 			}
 			scheduleMoveTimeOut( HandConfigs.MOVE_TIMEOUT );
@@ -890,7 +904,7 @@ public class RummyGame extends TrickTakingGame
 
 		int bootoutTurn = HandConfigs.PLAYER_BOOTOUT_TURN;
 		boolean flag = false;
-		if( table.getGameTemplates().getVariantType() == VariantTypes.POINTS_RUMMY && handModel.getMissedMoveCount( playerId ) == bootoutTurn )
+		if(handModel.getMissedMoveCount( playerId ) == bootoutTurn )
 		{
 			flag = true;
 		}
