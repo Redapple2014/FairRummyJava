@@ -1,22 +1,21 @@
-package org.fcesur.gcs.model.entity;
+package com.fairrummy.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-
-@Data
-@Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Template {
+@NoArgsConstructor
+@Data
+@Getter
+@Setter
+@Entity
+public class Template
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
@@ -37,6 +36,11 @@ public class Template {
     private int graceTime;
     private int dealsPerGame;
     private int variantType;
+    private boolean skillBasedMM;
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getId() {
         return id;
@@ -108,5 +112,9 @@ public class Template {
 
     public int getVariantType() {
         return variantType;
+    }
+
+    public boolean isSkillBasedMM() {
+        return skillBasedMM;
     }
 }

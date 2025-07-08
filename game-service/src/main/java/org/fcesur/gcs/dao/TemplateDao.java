@@ -1,17 +1,17 @@
-package org.fcesur.gcs.dao;
+package com.fairrummy.dao;
 
+import com.fairrummy.exception.TemplateBadRequestException;
+import com.fairrummy.exception.TemplateInternalServerException;
+import com.fairrummy.mapper.GameTemplateMapper;
+import com.fairrummy.model.entity.Template;
+import com.fairrummy.request.dto.TemplateCreateRequestDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.fcesur.gcs.exception.TemplateBadRequestException;
-import org.fcesur.gcs.exception.TemplateInternalServerException;
-import org.fcesur.gcs.mapper.GameTemplateMapper;
-import org.fcesur.gcs.model.entity.Template;
-import org.fcesur.gcs.request.dto.TemplateCreateRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
+import java.util.Optional;
 
-import static org.fcesur.gcs.mapper.TemplateMapper.mapToTemplate;
+import static com.fairrummy.mapper.TemplateMapper.mapToTemplate;
 
 @Slf4j
 @Component
@@ -21,10 +21,10 @@ public class TemplateDao {
     private GameTemplateMapper gameTemplateMapper;
 
     public Template createTemplate(TemplateCreateRequestDTO templateCreateRequestDTO)
-          throws TemplateInternalServerException, TemplateBadRequestException {
+            throws TemplateInternalServerException, TemplateBadRequestException {
 
         Template template = mapToTemplate(templateCreateRequestDTO);
-        gameTemplateMapper.saveAndFlush(template);
+        gameTemplateMapper.save(template);
 
         return template;
     }
@@ -36,6 +36,18 @@ public class TemplateDao {
     public List<Template> searchAllActiveTemplates() {
         List<Template> templates = gameTemplateMapper.findAll();
         return templates;
+    }
+
+    public Template updateTemplate(int templateId, TemplateCreateRequestDTO templateCreateRequestDTO)
+    {
+        Template template = mapToTemplate(templateCreateRequestDTO);
+        Optional<Template> optionalTemplate = gameTemplateMapper.findById(templateId);
+        if (optionalTemplate.isPresent()) {
+            template.setId(templateId);
+            gameTemplateMapper.save(template);
+            return template;
+        }
+        return null;
     }
 
     /*public List<Template> getTemplateByIds(List<String> templateIds) {

@@ -1,13 +1,13 @@
-package org.fcesur.gcs.service.impl;
+package com.fairrummy.service.impl;
 
-import org.fcesur.gcs.http.impl.GameEngineRestClient;
-import org.fcesur.gcs.request.dto.FMGRequest;
-import org.fcesur.gcs.response.dto.FMGResponse;
-import org.fcesur.gcs.response.dto.TemplateResponseDTO;
-import org.fcesur.gcs.service.TemplateService;
-import org.fcesur.gcs.service.message.GameJoinService;
-import org.fcesur.gcs.utility.GCSTableStatus;
-import org.fcesur.gcs.utility.TableInfo;
+import com.fairrummy.http.impl.GameEngineRestClient;
+import com.fairrummy.request.dto.FMGRequest;
+import com.fairrummy.response.dto.FMGResponse;
+import com.fairrummy.response.dto.TemplateResponseDTO;
+import com.fairrummy.service.TemplateService;
+import com.fairrummy.service.message.GameJoinService;
+import com.fairrummy.utility.GCSTableStatus;
+import com.fairrummy.utility.TableInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,22 +29,26 @@ public class GameJoinServiceImpl implements GameJoinService {
         TemplateResponseDTO templateResponseDTO = templateService.getTemplate(templateId);
         FMGResponse response = null;
         TableInfo tableInfo = GCSTableStatus.getBestTable(templateId);
-        if (tableInfo != null) {
+        if (tableInfo != null)
+        {
             response = new FMGResponse();
             response.setTableId(tableInfo.getTableId());
             response.setEngineIP(tableInfo.getEngineIp());
 
-            return response;
+            return  response;
         }
 
         response = geRestClient.tableJoin(templateId);
 
-        if (response != null) {
+        if( response != null )
+        {
             GCSTableStatus.updateTableInfo(response, templateId, templateResponseDTO.getMaxPlayer());
-        } else {
+        }
+        else
+        {
             response = new FMGResponse();
             response.setErrorMessage("Unable to find the table");
         }
-        return response;
+        return  response;
     }
 }

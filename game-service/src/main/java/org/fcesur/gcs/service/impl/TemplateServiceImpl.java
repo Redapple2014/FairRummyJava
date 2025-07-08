@@ -1,26 +1,24 @@
-package org.fcesur.gcs.service.impl;
+package com.fairrummy.service.impl;
 
-import org.fcesur.gcs.dao.TemplateDao;
-import org.fcesur.gcs.exception.TemplateBadRequestException;
-import org.fcesur.gcs.exception.TemplateInternalServerException;
-import org.fcesur.gcs.model.entity.Template;
-import org.fcesur.gcs.request.dto.TemplateCreateRequestDTO;
-import org.fcesur.gcs.response.dto.TemplateResponseDTO;
-import org.fcesur.gcs.service.TemplateService;
+import com.fairrummy.dao.TemplateDao;
+import com.fairrummy.exception.TemplateBadRequestException;
+import com.fairrummy.exception.TemplateInternalServerException;
+import com.fairrummy.model.entity.Template;
+import com.fairrummy.request.dto.TemplateCreateRequestDTO;
+import com.fairrummy.response.dto.TemplateResponseDTO;
+import com.fairrummy.service.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.fcesur.gcs.mapper.TemplateMapper.mapToResponseDTO;
+import static com.fairrummy.mapper.TemplateMapper.mapToResponseDTO;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
 
-    @Autowired
-    private TemplateDao templateDao;
+    @Autowired private TemplateDao templateDao;
 
     @Override
     public TemplateResponseDTO createTemplate(TemplateCreateRequestDTO templateRequestDTO) throws TemplateInternalServerException, TemplateBadRequestException {
@@ -28,16 +26,6 @@ public class TemplateServiceImpl implements TemplateService {
         TemplateResponseDTO responseDTO = mapToResponseDTO(template);
         return responseDTO;
     }
-
-    //    @Override
-    //    public void moveTemplateToDraft(String templateId) throws TemplateInternalServerException {
-    //        templateDao.moveTemplateToDraft(templateId);
-    //    }
-    //
-    //    @Override
-    //    public void moveTemplateToActive(String templateId) throws TemplateInternalServerException {
-    //        templateDao.moveTemplateToActive(templateId);
-    //    }
 
     @Override
     public TemplateResponseDTO getTemplate(int templateId) throws TemplateInternalServerException {
@@ -51,20 +39,6 @@ public class TemplateServiceImpl implements TemplateService {
 
         List<TemplateResponseDTO> responseList = new ArrayList<>();
 
-        if (!CollectionUtils.isEmpty(templates)) {
-            for (Template template : templates)
-                responseList.add(mapToResponseDTO(template));
-        }
-
-        return responseList;
-    }
-
-    /*@Override
-    public List<TemplateResponseDTO> getTemplateByIds(List<String> templateIds) throws TemplateInternalServerException
-    {
-        List<Template> templates = templateDao.getTemplateByIds(templateIds);
-        List<TemplateResponseDTO> responseList = new ArrayList<>();
-
         if(!CollectionUtils.isEmpty(templates))
         {
             for(Template template: templates)
@@ -72,5 +46,12 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         return responseList;
-    }*/
+    }
+
+    @Override
+    public TemplateResponseDTO updateTemplate(int templateId, TemplateCreateRequestDTO templateRequestDTO) throws TemplateInternalServerException, TemplateBadRequestException {
+        Template template = templateDao.updateTemplate(templateId, templateRequestDTO);
+        TemplateResponseDTO responseDTO = mapToResponseDTO(template);
+        return responseDTO;
+    }
 }

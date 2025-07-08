@@ -1,7 +1,6 @@
-package org.fcesur.gcs.response.dto;
+package com.fairrummy.response.dto;
 
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
@@ -41,5 +40,6 @@ public class LobbyCashGameResponseDTO {
         private int graceTime;
         private int dealsPerGame;
         private int variantType;
+        private boolean skillBasedMM;
     }
 }
