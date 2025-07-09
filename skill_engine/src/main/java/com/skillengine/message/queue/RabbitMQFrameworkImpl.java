@@ -19,8 +19,8 @@ public class RabbitMQFrameworkImpl implements MessageFramework
 	{
 		String mqIP = "localhost";
 		int mqPort = 5672;
-		String mqUserName = "tester";
-		String mqPassword = "tester";
+		String mqUserName = "admin";
+		String mqPassword = "admin@123";
 		final boolean DEFAULT_AUTO_RECOVERY = true;
 		final int DEFAULT_RECOVERY_INTERVAL = 1000;
 		ConnectionFactory connectionFactory = new ConnectionFactory();
@@ -28,7 +28,7 @@ public class RabbitMQFrameworkImpl implements MessageFramework
 		connectionFactory.setPort( mqPort );
 		connectionFactory.setUsername( mqUserName );
 		connectionFactory.setPassword( mqPassword );
-		connectionFactory.setVirtualHost( "qa1" );
+		connectionFactory.setVirtualHost( "/" );
 		connectionFactory.setAutomaticRecoveryEnabled( DEFAULT_AUTO_RECOVERY );
 		connectionFactory.setNetworkRecoveryInterval( DEFAULT_RECOVERY_INTERVAL );
 		try
