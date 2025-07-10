@@ -19,8 +19,8 @@ public class RabbitMQFrameworkImpl implements MessageFramework
     {
         String mqIP = "localhost";
         int mqPort = 5672;
-        String mqUserName = "tester";
-        String mqPassword = "tester";
+        String mqUserName = "admin";
+        String mqPassword = "admin@123";
         final boolean DEFAULT_AUTO_RECOVERY = true;
         final int DEFAULT_RECOVERY_INTERVAL = 1000;
         ConnectionFactory connectionFactory = new ConnectionFactory();
