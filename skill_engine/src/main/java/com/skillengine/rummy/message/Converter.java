@@ -6,9 +6,10 @@ import java.util.List;
 import com.skillengine.rummy.player.SeatPlayerInfo;
 import com.skillengine.rummy.table.SeatInfo;
 
-public class Converter {
-	
-	public static List< SeatDetails > convertSeatsList( List<SeatInfo> seatInfos,long seatPlayerId )
+public class Converter
+{
+
+	public static List< SeatDetails > convertSeatsList( List< SeatInfo > seatInfos, long seatPlayerId, int playerScore )
 	{
 
 		List< SeatDetails > outSeatList = new ArrayList<>();
@@ -21,8 +22,8 @@ public class Converter {
 			{
 				continue;
 			}
-			UserInfo userInfo = new UserInfo(-1, player.getUserId() ,player.getUserName(), player.getAvatarId());
-			SeatDetails seatDetails = new SeatDetails(-1, seatInfo.getId(), seatInfo.getState(), userInfo, seatInfo.getSeatPlayerBalance());
+			UserInfo userInfo = new UserInfo( -1, player.getUserId(), player.getUserName(), player.getAvatarId() );
+			SeatDetails seatDetails = new SeatDetails( -1, seatInfo.getId(), seatInfo.getState(), userInfo, seatInfo.getSeatPlayerBalance(), playerScore );
 			outSeatList.add( seatDetails );
 		}
 		return outSeatList;

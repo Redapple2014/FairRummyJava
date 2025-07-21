@@ -16,6 +16,7 @@ public class SeatDetails extends Message
 	private int state;
 	private UserInfo userInfo;
 	private BigDecimal seatBalance;
+	private int playerScore;
 
 	public int getId()
 	{
@@ -37,13 +38,14 @@ public class SeatDetails extends Message
 		return userInfo;
 	}
 
-	public SeatDetails( long tableId, int id, int state, UserInfo userInfo, BigDecimal seatBalance )
+	public SeatDetails( long tableId, int id, int state, UserInfo userInfo, BigDecimal seatBalance , int playerScore )
 	{
 		super( 1, SEAT_INFO, tableId );
 		this.id = id;
 		this.state = state;
 		this.userInfo = userInfo;
 		this.seatBalance = seatBalance;
+		this.playerScore = playerScore;
 	}
 
 }

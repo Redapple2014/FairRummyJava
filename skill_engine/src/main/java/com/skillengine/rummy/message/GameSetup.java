@@ -31,4 +31,5 @@ public class GameSetup extends Message
 	private long gameId;
 	private int currentDealNo;
 	private int tieBreakerStatus;
+	private int playerScore;
 }

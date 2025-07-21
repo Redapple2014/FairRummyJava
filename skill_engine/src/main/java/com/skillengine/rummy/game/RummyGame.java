@@ -263,6 +263,8 @@ public class RummyGame extends TrickTakingGame
 				gameSetup.setOpenDeck( handModel.getOpenStackString() );
 				gameSetup.setGameId( getGameId() );
 				gameSetup.setCurrentDealNo( table.getCurrentGameNo() );
+				gameSetup.setTieBreakerStatus( table.isTiebreaker() ? 1 : 0 );
+				gameSetup.setPlayerScore( table.getPlayerScore( playerid ) );
 				msgList.add( gameSetup );
 			}
 			// Game Status
@@ -568,6 +570,7 @@ public class RummyGame extends TrickTakingGame
 			gameSetup.setGameId( getGameId() );
 			gameSetup.setCurrentDealNo( table.getCurrentGameNo() );
 			gameSetup.setTieBreakerStatus( table.isTiebreaker() ? 1 : 0 );
+			gameSetup.setPlayerScore( table.getPlayerScore( playerId ) );
 			table.getDispatcher().sendMessage( playerId, gameSetup );
 
 		}
@@ -587,6 +590,7 @@ public class RummyGame extends TrickTakingGame
 				gameSetup.setGameId( getGameId() );
 				gameSetup.setCurrentDealNo( table.getCurrentGameNo() );
 				gameSetup.setTieBreakerStatus( table.isTiebreaker() ? 1 : 0 );
+				gameSetup.setPlayerScore( table.getPlayerScore( nonPlayingPlayers ) );
 				table.getDispatcher().sendMessage( nonPlayingPlayers, gameSetup );
 			}
 		}
@@ -853,7 +857,6 @@ public class RummyGame extends TrickTakingGame
 						table.getDispatcher().sendMessage( table.getAllplayer(), dropResponse );
 						
 					}else {
-					
 					playerScoreMap.put( playerId, score );
 					setKnockedPlayer( playerId, KickedOutStates.BOOTED_OUT );
 					PlayerBootedOut bootedOut = new PlayerBootedOut( table.getTableId(), playerId, score, PlayerKickOutState.PLAYER_DROP );

@@ -15,7 +15,7 @@ public class BoardCreationService
 	public BoardCreationInfo boardCreation( long templateId )
 	{
 		int minPlayer = templateId == 9 ? 6 : 2;
-		int variantType = (templateId == 3 || templateId == 4) ? 3 : 1;
+		int variantType = (templateId == 3 || templateId == 4 || templateId == 9) ? 3 : 1;
 		int dealsPerGame = templateId == 3 ? 2 : 3;
 		int maxPlayer = (templateId == 1 || templateId == 3 || templateId == 4) ? 2 : 6;
 		int noOfDeck = maxPlayer == 2 ? 1 : 2;
